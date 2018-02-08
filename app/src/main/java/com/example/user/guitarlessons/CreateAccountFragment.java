@@ -32,8 +32,10 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         fragment.setArguments(args);
         return fragment;
     }
+
     EditText email;
     EditText password;
+    EditText userName;
     Button confirmButton;
     final static String TAG = "mylog";
     ViewSwitcher viewSwitcher;
@@ -41,8 +43,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView=inflater.inflate(R.layout.create_account_fragment,container,false);
-
+        View rootView = inflater.inflate(R.layout.create_account_fragment, container, false);
+        userName = rootView.findViewById(R.id.user_name);
         email = rootView.findViewById(R.id.user_email);
         password = rootView.findViewById(R.id.user_password);
         confirmButton = rootView.findViewById(R.id.ok_button);
@@ -56,17 +58,21 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.ok_button:
-                if (!email.getText().toString().isEmpty() && !password.getText().toString().isEmpty())
-                    registrateUser(email.getText().toString(), password.getText().toString());
+                if (!email.getText().toString().isEmpty() && !password.getText().toString().isEmpty()
+                        &&!userName.getText().toString().isEmpty())
+                    registrateUser(email.getText().toString(), password.getText().toString()
+                            ,userName.getText().toString());
                 break;
         }
 
     }
-    private void registrateUser(String userEmail, String userPassword) {
+
+    private void registrateUser(String userEmail, String userPassword,String userName) {
         BackendlessUser user = new BackendlessUser();
         user.setProperty("email", userEmail);
+        user.setProperty("name",userName);
         user.setPassword(userPassword);
         Log.d(TAG, "email" + userEmail);
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
@@ -77,8 +83,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 Log.d(TAG, "success");
                 viewSwitcher.setDisplayedChild(0);
                 Intent i = new Intent(getActivity(), UserProfile.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
-                getActivity().finish();
             }
 
             @Override

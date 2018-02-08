@@ -5,6 +5,7 @@
     <string name="password">Пароль:</string>
     <string name="create_account">Создать аккаунт</string>
     <string name="log_in">Войти</string>
+    <string name="user_name">Логин</string>
 
 
 </resources>

@@ -19,6 +19,12 @@ public class User {
     private List<Lesson> favorite;
     @MapToProperty(property = "isView")
     private List<Lesson> viewLessons;
+    @MapToProperty(property = "gp_family_name")
+    private String familyName;
+    @MapToProperty(property = "gp_given_name")
+    private String givenName;
+    @MapToProperty(property = "id")
+    private String id;
 
     public List<Lesson> getViewLessons() {
         return viewLessons;
@@ -37,6 +43,31 @@ public class User {
                 ", email='" + email + '\'' +
                 ", favorite=" + favorite +
                 '}';
+    }
+
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public String getGivenName() {
+        return givenName;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getObjectId() {

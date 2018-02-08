@@ -146,8 +146,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
     public void goToUserProfile() {
         Intent i = new Intent(getActivity(), UserProfile.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivity(i);
-        getActivity().finish();
     }
 
     @Override
@@ -231,7 +231,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                                     backendlessFault.getMessage() +
                                     " code: " + backendlessFault.getCode());
                         }
-                    });
+                    },true);
     }
 
 }

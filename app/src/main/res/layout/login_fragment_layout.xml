@@ -8,17 +8,20 @@
     <ViewSwitcher
         android:id="@+id/viewSwitcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/progress_bar"
-            layout="@layout/progress_bar_layout" />
+            layout="@layout/progress_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <EditText
                 android:id="@+id/email"
@@ -53,11 +56,12 @@
 
             <TextView
                 android:id="@+id/create_account"
-                android:text="@string/create_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"/>
-
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/create_user_margin"
+                android:clickable="true"
+                android:text="@string/create_account" />
 
 
         </LinearLayout>

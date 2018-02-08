@@ -32,12 +32,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         logOutButton=findViewById(R.id.log_out);
         logOutButton.setOnClickListener(this);
 
-//        Backendless.Data.mapTableToClass("Lessons", Lesson.class);
-//        Backendless.Data.mapTableToClass("Users", User.class);
+       Backendless.Data.mapTableToClass("Lessons", Lesson.class);
+       Backendless.Data.mapTableToClass("BackendlessUser", User.class);
 
 
-      //  getLessons();
-      //  updateUserLessons();
+        getLessons();
+        updateUserLessons();
     }
 
     private void updateUserLessons() {
