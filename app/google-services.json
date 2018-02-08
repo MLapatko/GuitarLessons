@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "964645203843",
+    "project_id": "guitarlessons-194311"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964645203843:android:0e4a456500385cef",
+        "android_client_info": {
+          "package_name": "com.example.user.guitarlessons"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "964645203843-s3hdmmqfq6elltdtbc1p814fg9hllm3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user.guitarlessons",
+            "certificate_hash": "3ce292809eaba13b73fa4351d880eb0c2879c448"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWuNtNXlWbHteB_JQHTPeHt2QeaqBTQj4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
