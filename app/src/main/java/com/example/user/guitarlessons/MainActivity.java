@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.backendless.Backendless;
@@ -39,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Backendless.initApp(getApplicationContext(), Defaults.APPLICATION_ID, Defaults.API_KEY);
         Fragment fragment=LoginFragment.newInstance();
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        Log.d(TAG,"MainActivity onCreate");
-        ft.addToBackStack(LoginFragment.class.getSimpleName());
+       // ft.addToBackStack(LoginFragment.class.getSimpleName());
         ft.add(R.id.content_main,fragment,null);
         ft.commit();
 
