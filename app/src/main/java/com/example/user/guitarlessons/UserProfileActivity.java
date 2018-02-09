@@ -3,6 +3,7 @@ package com.example.user.guitarlessons;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +22,10 @@ import java.util.List;
  * Created by user on 05.02.2018.
  */
 
-public class UserProfile extends AppCompatActivity implements View.OnClickListener {
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     Button logOutButton;
     final static String TAG="mylog";
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
        Backendless.Data.mapTableToClass("Lessons", Lesson.class);
        Backendless.Data.mapTableToClass("BackendlessUser", User.class);
 
+        toolbar =findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
         getLessons();
         updateUserLessons();
@@ -93,10 +97,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Backendless.UserService.logout(new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
-                Toast.makeText(UserProfile.this,"log out successfully",
+                Toast.makeText(UserProfileActivity.this,"log out successfully",
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG,"log out successfully");
-                Intent i=new Intent(UserProfile.this,MainActivity.class);
+                Intent i=new Intent(UserProfileActivity.this,MainActivity.class);
                 startActivity(i);
                 finish();
             }

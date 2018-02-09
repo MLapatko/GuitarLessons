@@ -73,7 +73,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
     public void goToUserProfile(){
 
-        Intent i =new Intent(LogInActivity.this,UserProfile.class);
+        Intent i =new Intent(LogInActivity.this,UserProfileActivity.class);
         startActivity(i);
         finish();
     }

@@ -82,7 +82,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "success");
                 viewSwitcher.setDisplayedChild(0);
-                Intent i = new Intent(getActivity(), UserProfile.class);
+                Intent i = new Intent(getActivity(), UserProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             }

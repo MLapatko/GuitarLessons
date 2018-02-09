@@ -6,6 +6,7 @@
     <string name="create_account">Создать аккаунт</string>
     <string name="log_in">Войти</string>
     <string name="user_name">Логин</string>
+    <string name="log_out">Выйти</string>
 
 
 </resources>
