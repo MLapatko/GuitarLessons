@@ -10,41 +10,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/progress_bar"
-            layout="@layout/progress_bar_layout" />
+        <include layout="@layout/progress_bar_layout" />
 
         <LinearLayout
-            android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/email"
-                android:hint="@string/email"
+                android:id="@+id/user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/user_name"
                 android:inputType="textEmailAddress"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="16dp" />
 
             <EditText
-                android:id="@+id/password"
-                android:hint="@string/password"
+                android:id="@+id/user_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+            <EditText
+                android:id="@+id/user_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="47dp" />
 
             <Button
-                android:id="@+id/login_button"
+                android:id="@+id/ok_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/log_in" />
+                android:text="@string/create_account" />
+
+
         </LinearLayout>
     </ViewSwitcher>
 </LinearLayout>
