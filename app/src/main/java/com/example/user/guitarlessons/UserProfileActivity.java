@@ -1,5 +1,6 @@
 package com.example.user.guitarlessons;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,11 @@ import java.util.List;
  */
 
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    public static void start(Context context) {
+        Intent starter = new Intent(context, UserProfileActivity.class);
+        starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(starter);
+    }
     Button logOutButton;
     final static String TAG="mylog";
     Toolbar toolbar;
@@ -100,9 +106,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(UserProfileActivity.this,"log out successfully",
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG,"log out successfully");
-                Intent i=new Intent(UserProfileActivity.this,MainActivity.class);
-                startActivity(i);
-                finish();
+                goToMainActivity();
             }
 
             @Override
@@ -110,5 +114,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 Log.d(TAG,"log out problems " +fault.getCode());
             }
         });
+    }
+
+    private void goToMainActivity() {
+        MainActivity.start(this);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.user.guitarlessons;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-
 import com.backendless.Backendless;
 import com.backendless.persistence.local.UserTokenStorageFactory;
 
 public class MainActivity extends AppCompatActivity  {
+    public static void start(Context context) {
+        Intent starter = new Intent(context, MainActivity.class);
+        context.startActivity(starter);
+    }
     final String TAG="mylog";
     Toolbar toolbar;
 
@@ -42,9 +46,7 @@ public class MainActivity extends AppCompatActivity  {
         String userToken = UserTokenStorageFactory.instance().getStorage().get();
        Log.d(TAG,"userToken"+userToken);
         if (userToken != null && !userToken.equals("")) {
-            Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
+            UserProfileActivity.start(this);
         }
     }
 }
