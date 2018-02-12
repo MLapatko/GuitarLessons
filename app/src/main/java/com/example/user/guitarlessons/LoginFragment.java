@@ -52,6 +52,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         fragment.setArguments(args);
         return fragment;
     }
+    final int CREATE_USER_FRAGMENT=2;
 
     TextView createAccTextView;
     EditText email;
@@ -106,6 +107,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                 .enableAutoManage( fragmentActivity, this )
                 .addApi( Auth.GOOGLE_SIGN_IN_API, gSignInOptions ).build();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((LogInActivity)getActivity()).setBackButtonStatus(false);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -114,11 +122,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                     logIn(email.getText().toString(), password.getText().toString());
                 break;
             case R.id.create_account:
-                Fragment fragment = CreateAccountFragment.newInstance();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addToBackStack(CreateAccountFragment.class.getSimpleName());
-                ft.replace(R.id.content_main, fragment, null);
-                ft.commit();
+                ((LogInActivity)getActivity()).putFragments(CREATE_USER_FRAGMENT,R.id.content_main);
+                ((LogInActivity)getActivity()).setBackButtonStatus(true);
                 break;
             case R.id.sign_in_google:
                 googleLogIn();
@@ -132,7 +137,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             public void handleResponse(BackendlessUser user) {
                 Log.d(TAG, "user email" + user.getEmail());
                 viewSwitcher.setDisplayedChild(0);
-                goToUserProfile();
+                goToMainActivity();
             }
 
             @Override
@@ -144,8 +149,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         }, true);
     }
 
-    public void goToUserProfile() {
-        UserProfileActivity.start(this.getActivity());
+    public void goToMainActivity() {
+        MainActivity.start(this.getActivity());
     }
 
     @Override
@@ -166,7 +171,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             Log.d(TAG, "google result" + result.isSuccess());
             if (result.isSuccess()) {
                 loginInBackendless(result.getSignInAccount());
-                goToUserProfile();
+                goToMainActivity();
             }
 
         }
@@ -174,7 +179,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
     private void loginInBackendless(final GoogleSignInAccount acct) {
         Log.d(TAG, "handleSignInResult: try login to backendless");
-        final MainActivity mainActivity = (MainActivity) this.getActivity();
+        final LogInActivity logInActivity = (LogInActivity) this.getActivity();
         final String accountName = acct.getEmail();
         final String scopes = "oauth2:" + Scopes.PLUS_LOGIN + " " +
                 Scopes.PLUS_ME + " " + Scopes.PROFILE + " " +
@@ -185,8 +190,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             protected String doInBackground(Void... params) {
                 String token = null;
                 try {
-                    token = GoogleAuthUtil.getToken(mainActivity, accountName, scopes);
-                    GoogleAuthUtil.invalidateToken(mainActivity, token);
+                    token = GoogleAuthUtil.getToken(logInActivity, accountName, scopes);
+                    GoogleAuthUtil.invalidateToken(logInActivity, token);
                     handleAccessTokenInBackendless(acct.getIdToken(), token);
                 } catch (UserRecoverableAuthException e) {
                     Log.e(TAG, e.toString());

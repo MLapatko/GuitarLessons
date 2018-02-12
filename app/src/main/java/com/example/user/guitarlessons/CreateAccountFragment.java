@@ -81,7 +81,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "success");
                 viewSwitcher.setDisplayedChild(0);
-                goToUserProfile();
+                goToMainActivity();
             }
 
             @Override
@@ -95,7 +95,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     }
 
-    private void goToUserProfile() {
-        UserProfileActivity.start(this.getActivity());
+    private void goToMainActivity() {
+        MainActivity.start(this.getActivity());
     }
 }

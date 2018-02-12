@@ -1,9 +1,13 @@
 package com.example.user.guitarlessons;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,66 +19,40 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.local.UserTokenStorageFactory;
 
 /**
  * Created by user on 05.02.2018.
  */
 
-public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
-    EditText email;
-    EditText password;
-    Button logInButton;
-    final static String TAG="mylog";
-    ViewSwitcher viewSwitcher;
+public class LogInActivity extends BaseActivity {
+    public static void start(Context context) {
+        Intent starter = new Intent(context, LogInActivity.class);
+        starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(starter);
+    }
+    final String TAG="mylog";
+    final int LOGIN_FRAGMENT=1;
+    final int CREATE_USER_FRAGMENT=2;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        Backendless.setUrl(Defaults.SERVER_URL);
+        Backendless.initApp(getApplicationContext(), Defaults.APPLICATION_ID, Defaults.API_KEY);
 
-        email=(EditText) findViewById(R.id.email);
-        password=(EditText) findViewById(R.id.password);
 
-        logInButton=(Button)findViewById(R.id.login_button);
-        logInButton.setOnClickListener(this);
-
-        viewSwitcher=(ViewSwitcher) findViewById(R.id.viewSwitcher);
-        viewSwitcher.setDisplayedChild(1);
+        putFragments(LOGIN_FRAGMENT,R.id.content_main);
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.login_button:
-                if (!email.getText().toString().isEmpty() && !password.getText().toString().isEmpty())
-                    logIn(email.getText().toString(),password.getText().toString());
-                break;
-
-        }
+    protected int getToolBarId() {
+        return R.id.tool_bar;
     }
 
-    private void logIn(final String userEmail, String userPassword) {
-        Backendless.UserService.login(userEmail,userPassword, new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser user) {
-                Log.d(TAG,"user email"+user.getEmail());
-                Toast.makeText(LogInActivity.this,"log in "+user.getEmail(),
-                        Toast.LENGTH_SHORT).show();
-                viewSwitcher.setDisplayedChild(0);
-                goToUserProfile();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG,"failed log in" + fault.getCode());
-                Toast.makeText(LogInActivity.this,"failed log in",
-                        Toast.LENGTH_SHORT).show();
-            }
-        },true);
+    @Override
+    protected int getLayoutId() {
+        return R.layout.login_activity;
     }
-    public void goToUserProfile(){
 
-        Intent i =new Intent(LogInActivity.this,UserProfileActivity.class);
-        startActivity(i);
-        finish();
-    }
 }
