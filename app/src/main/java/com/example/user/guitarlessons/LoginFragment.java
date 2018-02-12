@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,7 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -54,37 +53,37 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
     final int CREATE_USER_FRAGMENT=2;
 
-    TextView createAccTextView;
-    EditText email;
-    EditText password;
-    Button logInButton;
+    TextView mCreateAccTextView;
+    EditText mEmail;
+    EditText mPassword;
+    Button mLogInButton;
     final static String TAG = "mylog";
-    ViewSwitcher viewSwitcher;
-    GoogleSignInOptions gSignInOptions;
-    GoogleApiClient gApiClient;
+    ViewSwitcher mViewSwitcher;
+    GoogleSignInOptions mgSignInOptions;
+    GoogleApiClient mgApiClient;
     final static int SIGN_IN = 1;
     final static int REQUEST_AUTHORIZATION = 2;
-    SignInButton signInButton;
+    SignInButton mSignInButton;
     final String SERVER_CLIENT_ID="964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-        email = rootView.findViewById(R.id.email);
-        password = rootView.findViewById(R.id.password);
+        mEmail = rootView.findViewById(R.id.email);
+        mPassword = rootView.findViewById(R.id.password);
 
-        logInButton = rootView.findViewById(R.id.login_button);
-        logInButton.setOnClickListener(this);
+        mLogInButton = rootView.findViewById(R.id.login_button);
+        mLogInButton.setOnClickListener(this);
 
-        viewSwitcher = rootView.findViewById(R.id.viewSwitcher);
-        viewSwitcher.setDisplayedChild(1);
+        mViewSwitcher = rootView.findViewById(R.id.viewSwitcher);
+        mViewSwitcher.setDisplayedChild(1);
 
-        createAccTextView = rootView.findViewById(R.id.create_account);
-        createAccTextView.setOnClickListener(this);
+        mCreateAccTextView = rootView.findViewById(R.id.create_account);
+        mCreateAccTextView.setOnClickListener(this);
 
-        signInButton = rootView.findViewById(R.id.sign_in_google);
-        signInButton.setOnClickListener(this);
+        mSignInButton = rootView.findViewById(R.id.sign_in_google);
+        mSignInButton.setOnClickListener(this);
 
         return rootView;
     }
@@ -96,34 +95,29 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
         FragmentActivity fragmentActivity = (FragmentActivity)this.getActivity();
 
-        gSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
+        mgSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
                 .requestEmail().requestProfile().requestId()
                 .requestIdToken(SERVER_CLIENT_ID)
                 .build();
 
 
         GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder( fragmentActivity );
-        gApiClient = apiCliBuilder
+        mgApiClient = apiCliBuilder
                 .enableAutoManage( fragmentActivity, this )
-                .addApi( Auth.GOOGLE_SIGN_IN_API, gSignInOptions ).build();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((LogInActivity)getActivity()).setBackButtonStatus(false);
+                .addApi( Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!email.getText().toString().isEmpty() && !password.getText().toString().isEmpty())
-                    logIn(email.getText().toString(), password.getText().toString());
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                    logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 break;
             case R.id.create_account:
-                ((LogInActivity)getActivity()).putFragments(CREATE_USER_FRAGMENT,R.id.content_main);
-                ((LogInActivity)getActivity()).setBackButtonStatus(true);
+                if(getActivity() instanceof FragmentsInterface) {
+                    ((FragmentsInterface) getActivity()).putFragments(CREATE_USER_FRAGMENT);
+                }
                 break;
             case R.id.sign_in_google:
                 googleLogIn();
@@ -136,7 +130,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             @Override
             public void handleResponse(BackendlessUser user) {
                 Log.d(TAG, "user email" + user.getEmail());
-                viewSwitcher.setDisplayedChild(0);
+                mViewSwitcher.setDisplayedChild(0);
                 goToMainActivity();
             }
 
@@ -150,7 +144,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     public void goToMainActivity() {
-        MainActivity.start(this.getActivity());
+        MainActivity.start(getContext());
     }
 
     @Override
@@ -159,7 +153,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     private void googleLogIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(gApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mgApiClient);
         this.startActivityForResult(signInIntent, SIGN_IN);
     }
 
