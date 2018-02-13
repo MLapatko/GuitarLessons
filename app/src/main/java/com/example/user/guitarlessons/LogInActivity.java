@@ -76,4 +76,10 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface{
         ft.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setBackButtonStatus(false);
+        setToolbarTitle(getResources().getString(R.string.log_in));
+    }
 }

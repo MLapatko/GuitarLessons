@@ -40,6 +40,7 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
         Backendless.Data.mapTableToClass("Lessons", Lesson.class);
         Backendless.Data.mapTableToClass("BackendlessUser", User.class);
         Log.d(TAG,"MainActivity oncreate");
+        setBackButtonStatus(false);
         //getLessons();
         //updateUserLessons();
     }
