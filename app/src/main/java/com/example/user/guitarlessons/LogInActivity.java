@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,15 +26,16 @@ import com.backendless.persistence.local.UserTokenStorageFactory;
  * Created by user on 05.02.2018.
  */
 
-public class LogInActivity extends BaseActivity implements FragmentsInterface{
+public class LogInActivity extends BaseActivity implements FragmentsInterface {
     public static void start(Context context) {
         Intent starter = new Intent(context, LogInActivity.class);
-        starter.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(starter);
     }
-    final String TAG="mylog";
-    final int LOGIN_FRAGMENT=1;
-    final int CREATE_USER_FRAGMENT=2;
+
+    final String TAG = "mylog";
+    final int LOGIN_FRAGMENT = 1;
+    final int CREATE_USER_FRAGMENT = 2;
+    int mCurrentType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +57,19 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface{
 
     @Override
     public void putFragments(int type) {
+        mCurrentType = type;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations( android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        Fragment fragment;
+        ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         switch (type) {
             case LOGIN_FRAGMENT:
-                fragment = LoginFragment.newInstance();
-                ft.replace(R.id.content_main, fragment);
+                mCurrentType = LOGIN_FRAGMENT;
+                ft.replace(R.id.content_main, LoginFragment.newInstance());
                 setBackButtonStatus(false);
                 setToolbarTitle(getResources().getString(R.string.log_in));
                 break;
             case CREATE_USER_FRAGMENT:
-                fragment = CreateAccountFragment.newInstance();
-                ft.replace(R.id.content_main, fragment);
+                mCurrentType = CREATE_USER_FRAGMENT;
+                ft.replace(R.id.content_main, CreateAccountFragment.newInstance());
                 ft.addToBackStack(CreateAccountFragment.class.getSimpleName());
                 setBackButtonStatus(true);
                 setToolbarTitle(getResources().getString(R.string.create_account));
@@ -79,7 +81,26 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        setBackButtonStatus(false);
-        setToolbarTitle(getResources().getString(R.string.log_in));
+        switch (mCurrentType) {
+            case CREATE_USER_FRAGMENT:
+                mCurrentType = LOGIN_FRAGMENT;
+                setBackButtonStatus(false);
+                setToolbarTitle(getResources().getString(R.string.log_in));
+                break;
+            default:
+                super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
