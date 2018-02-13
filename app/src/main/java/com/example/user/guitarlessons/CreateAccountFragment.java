@@ -96,6 +96,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     }
 
     private void goToMainActivity() {
-        MainActivity.start(this.getActivity());
+        MainActivity.start(getContext());
     }
 }

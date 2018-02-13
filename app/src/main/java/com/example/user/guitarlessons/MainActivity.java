@@ -26,7 +26,6 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements  View.OnClickListener{
     public static void start(Context context) {
         Intent starter = new Intent(context, MainActivity.class);
-        starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(starter);
     }
     Button logOutButton;
@@ -40,6 +39,7 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
 
         Backendless.Data.mapTableToClass("Lessons", Lesson.class);
         Backendless.Data.mapTableToClass("BackendlessUser", User.class);
+        Log.d(TAG,"MainActivity oncreate");
         //getLessons();
         //updateUserLessons();
     }
@@ -122,5 +122,6 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
 
     private void goToLoginActivity() {
         LogInActivity.start(this);
+        finish();
     }
 }

@@ -25,10 +25,10 @@ import com.backendless.persistence.local.UserTokenStorageFactory;
  * Created by user on 05.02.2018.
  */
 
-public class LogInActivity extends BaseActivity {
+public class LogInActivity extends BaseActivity implements FragmentsInterface{
     public static void start(Context context) {
         Intent starter = new Intent(context, LogInActivity.class);
-        starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        starter.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(starter);
     }
     final String TAG="mylog";
@@ -38,12 +38,10 @@ public class LogInActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Backendless.setUrl(Defaults.SERVER_URL);
-        Backendless.initApp(getApplicationContext(), Defaults.APPLICATION_ID, Defaults.API_KEY);
 
-
-        putFragments(LOGIN_FRAGMENT,R.id.content_main);
+        putFragments(LOGIN_FRAGMENT);
     }
+
 
     @Override
     protected int getToolBarId() {
@@ -53,6 +51,29 @@ public class LogInActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.login_activity;
+    }
+
+    @Override
+    public void putFragments(int type) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations( android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        Fragment fragment;
+        switch (type) {
+            case LOGIN_FRAGMENT:
+                fragment = LoginFragment.newInstance();
+                ft.replace(R.id.content_main, fragment);
+                setBackButtonStatus(false);
+                setToolbarTitle(getResources().getString(R.string.log_in));
+                break;
+            case CREATE_USER_FRAGMENT:
+                fragment = CreateAccountFragment.newInstance();
+                ft.replace(R.id.content_main, fragment);
+                ft.addToBackStack(CreateAccountFragment.class.getSimpleName());
+                setBackButtonStatus(true);
+                setToolbarTitle(getResources().getString(R.string.create_account));
+                break;
+        }
+        ft.commit();
     }
 
 }

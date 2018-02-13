@@ -26,16 +26,19 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG,"onCreate splashActivity");
         isUserLogIn();
 
-        if (login)
+        if (login) {
             MainActivity.start(this);
-        else LogInActivity.start(this);
+        }
+        else {
+            LogInActivity.start(this);
+        }
 
     }
 
     private void isUserLogIn() {
-        super.onStart();
         String userToken = UserTokenStorageFactory.instance().getStorage().get();
-        if (userToken != null && !userToken.equals(""))
-            login=true;
+        if (userToken != null && !userToken.equals("")) {
+            login = true;
+        }
     }
 }

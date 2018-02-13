@@ -1,6 +1,5 @@
 package com.example.user.guitarlessons;
 
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,10 +14,11 @@ import android.view.MenuItem;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    final int LOGIN_FRAGMENT = 1;
-    final int CREATE_USER_FRAGMENT = 2;
+    Toolbar mToolbar;
 
+    protected abstract int getToolBarId();
+
+    protected abstract int getLayoutId();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,9 +30,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void initToolBar() {
-        toolbar = findViewById(getToolBarId());
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mToolbar = findViewById(getToolBarId());
+        if (mToolbar!=null) {
+            setSupportActionBar(mToolbar);
+        }
     }
 
 
@@ -41,35 +42,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                break;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
-
-    protected void putFragments(int idFragment, int id) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment fragment;
-        switch (idFragment) {
-            case LOGIN_FRAGMENT:
-                fragment = LoginFragment.newInstance();
-                ft.replace(id, fragment);
-                break;
-            case CREATE_USER_FRAGMENT:
-                fragment = CreateAccountFragment.newInstance();
-                ft.replace(id, fragment);
-                ft.addToBackStack(CreateAccountFragment.class.getSimpleName());
-        }
-        ft.commit();
-    }
 
     protected void setBackButtonStatus(boolean status) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(status);
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(status);
+            getSupportActionBar().setDisplayShowHomeEnabled(status);
+        }
     }
-
-    protected abstract int getToolBarId();
-
-    protected abstract int getLayoutId();
+    protected void setToolbarTitle(String title){
+        if (mToolbar!=null) {
+            mToolbar.setTitle(title);
+        }
+    }
 }
