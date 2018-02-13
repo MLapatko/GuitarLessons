@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,7 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -52,38 +51,39 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         fragment.setArguments(args);
         return fragment;
     }
+    final int CREATE_USER_FRAGMENT=2;
 
-    TextView createAccTextView;
-    EditText email;
-    EditText password;
-    Button logInButton;
+    TextView mCreateAccTextView;
+    EditText mEmail;
+    EditText mPassword;
+    Button mLogInButton;
     final static String TAG = "mylog";
-    ViewSwitcher viewSwitcher;
-    GoogleSignInOptions gSignInOptions;
-    GoogleApiClient gApiClient;
+    ViewSwitcher mViewSwitcher;
+    GoogleSignInOptions mgSignInOptions;
+    GoogleApiClient mgApiClient;
     final static int SIGN_IN = 1;
     final static int REQUEST_AUTHORIZATION = 2;
-    SignInButton signInButton;
+    SignInButton mSignInButton;
     final String SERVER_CLIENT_ID="964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-        email = rootView.findViewById(R.id.email);
-        password = rootView.findViewById(R.id.password);
+        mEmail = rootView.findViewById(R.id.email);
+        mPassword = rootView.findViewById(R.id.password);
 
-        logInButton = rootView.findViewById(R.id.login_button);
-        logInButton.setOnClickListener(this);
+        mLogInButton = rootView.findViewById(R.id.login_button);
+        mLogInButton.setOnClickListener(this);
 
-        viewSwitcher = rootView.findViewById(R.id.viewSwitcher);
-        viewSwitcher.setDisplayedChild(1);
+        mViewSwitcher = rootView.findViewById(R.id.viewSwitcher);
+        mViewSwitcher.setDisplayedChild(1);
 
-        createAccTextView = rootView.findViewById(R.id.create_account);
-        createAccTextView.setOnClickListener(this);
+        mCreateAccTextView = rootView.findViewById(R.id.create_account);
+        mCreateAccTextView.setOnClickListener(this);
 
-        signInButton = rootView.findViewById(R.id.sign_in_google);
-        signInButton.setOnClickListener(this);
+        mSignInButton = rootView.findViewById(R.id.sign_in_google);
+        mSignInButton.setOnClickListener(this);
 
         return rootView;
     }
@@ -95,30 +95,29 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
         FragmentActivity fragmentActivity = (FragmentActivity)this.getActivity();
 
-        gSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
+        mgSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
                 .requestEmail().requestProfile().requestId()
                 .requestIdToken(SERVER_CLIENT_ID)
                 .build();
 
 
         GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder( fragmentActivity );
-        gApiClient = apiCliBuilder
+        mgApiClient = apiCliBuilder
                 .enableAutoManage( fragmentActivity, this )
-                .addApi( Auth.GOOGLE_SIGN_IN_API, gSignInOptions ).build();
+                .addApi( Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!email.getText().toString().isEmpty() && !password.getText().toString().isEmpty())
-                    logIn(email.getText().toString(), password.getText().toString());
+                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                    logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 break;
             case R.id.create_account:
-                Fragment fragment = CreateAccountFragment.newInstance();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addToBackStack(CreateAccountFragment.class.getSimpleName());
-                ft.replace(R.id.content_main, fragment, null);
-                ft.commit();
+                if(getActivity() instanceof FragmentsInterface) {
+                    ((FragmentsInterface) getActivity()).putFragments(CREATE_USER_FRAGMENT);
+                }
                 break;
             case R.id.sign_in_google:
                 googleLogIn();
@@ -131,8 +130,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             @Override
             public void handleResponse(BackendlessUser user) {
                 Log.d(TAG, "user email" + user.getEmail());
-                viewSwitcher.setDisplayedChild(0);
-                goToUserProfile();
+                mViewSwitcher.setDisplayedChild(0);
+                goToMainActivity();
             }
 
             @Override
@@ -144,10 +143,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         }, true);
     }
 
-    public void goToUserProfile() {
-        Intent i = new Intent(getActivity(), UserProfileActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().startActivity(i);
+    public void goToMainActivity() {
+        MainActivity.start(getContext());
     }
 
     @Override
@@ -156,7 +153,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     private void googleLogIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(gApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mgApiClient);
         this.startActivityForResult(signInIntent, SIGN_IN);
     }
 
@@ -168,7 +165,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             Log.d(TAG, "google result" + result.isSuccess());
             if (result.isSuccess()) {
                 loginInBackendless(result.getSignInAccount());
-                goToUserProfile();
+                goToMainActivity();
             }
 
         }
@@ -176,7 +173,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
     private void loginInBackendless(final GoogleSignInAccount acct) {
         Log.d(TAG, "handleSignInResult: try login to backendless");
-        final MainActivity mainActivity = (MainActivity) this.getActivity();
+        final LogInActivity logInActivity = (LogInActivity) this.getActivity();
         final String accountName = acct.getEmail();
         final String scopes = "oauth2:" + Scopes.PLUS_LOGIN + " " +
                 Scopes.PLUS_ME + " " + Scopes.PROFILE + " " +
@@ -187,8 +184,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             protected String doInBackground(Void... params) {
                 String token = null;
                 try {
-                    token = GoogleAuthUtil.getToken(mainActivity, accountName, scopes);
-                    GoogleAuthUtil.invalidateToken(mainActivity, token);
+                    token = GoogleAuthUtil.getToken(logInActivity, accountName, scopes);
+                    GoogleAuthUtil.invalidateToken(logInActivity, token);
                     handleAccessTokenInBackendless(acct.getIdToken(), token);
                 } catch (UserRecoverableAuthException e) {
                     Log.e(TAG, e.toString());

@@ -1,6 +1,5 @@
 package com.example.user.guitarlessons;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -82,9 +81,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "success");
                 viewSwitcher.setDisplayedChild(0);
-                Intent i = new Intent(getActivity(), UserProfileActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
+                goToMainActivity();
             }
 
             @Override
@@ -96,5 +93,9 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         });
 
 
+    }
+
+    private void goToMainActivity() {
+        MainActivity.start(getContext());
     }
 }
