@@ -42,7 +42,7 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
+public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -51,7 +51,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         fragment.setArguments(args);
         return fragment;
     }
-    final int CREATE_USER_FRAGMENT=2;
+
+    final int CREATE_USER_FRAGMENT = 2;
 
     TextView mCreateAccTextView;
     EditText mEmail;
@@ -64,7 +65,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     final static int SIGN_IN = 1;
     final static int REQUEST_AUTHORIZATION = 2;
     SignInButton mSignInButton;
-    final String SERVER_CLIENT_ID="964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
+    final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
 
     @Nullable
     @Override
@@ -89,22 +90,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     @Override
-    public void onCreate( Bundle savedInstanceState )
-    {
-        super.onCreate( savedInstanceState );
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        FragmentActivity fragmentActivity = (FragmentActivity)this.getActivity();
+        FragmentActivity fragmentActivity = this.getActivity();
 
-        mgSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
+        mgSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail().requestProfile().requestId()
                 .requestIdToken(SERVER_CLIENT_ID)
                 .build();
 
 
-        GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder( fragmentActivity );
+        GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder(fragmentActivity);
         mgApiClient = apiCliBuilder
-                .enableAutoManage( fragmentActivity, this )
-                .addApi( Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
+                .enableAutoManage(fragmentActivity, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 break;
             case R.id.create_account:
-                if(getActivity() instanceof FragmentsInterface) {
+                if (getActivity() instanceof FragmentsInterface) {
                     ((FragmentsInterface) getActivity()).putFragments(CREATE_USER_FRAGMENT);
                 }
                 break;
@@ -126,21 +126,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     private void logIn(final String userEmail, String userPassword) {
-        Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
+        UserAuthManager.getInstance().logIn(userEmail, userPassword, new UserAuthManager.AuthListener<BackendlessUser>() {
             @Override
-            public void handleResponse(BackendlessUser user) {
-                Log.d(TAG, "user email" + user.getEmail());
+            public void onSuccess(BackendlessUser user) {
                 mViewSwitcher.setDisplayedChild(0);
                 goToMainActivity();
             }
 
             @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG, "failed log in" + fault.getCode());
+            public void onError(String massage, String code) {
                 Toast.makeText(LoginFragment.this.getActivity(), "failed log in",
                         Toast.LENGTH_SHORT).show();
+
             }
-        }, true);
+        });
     }
 
     public void goToMainActivity() {
@@ -211,24 +210,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         googlePlusFieldsMapping.put("email", "email");
         List<String> permissions = new ArrayList<String>();
 
-        if (idToken != null && accessToken != null)
-            Backendless.UserService.loginWithGooglePlusSdk(idToken,
-                    accessToken,
-                    googlePlusFieldsMapping,
-                    permissions,
-                    new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser backendlessUser) {
-                            Log.i(TAG, "Logged in to backendless, user id is: " + backendlessUser.getObjectId());
-                        }
+        UserAuthManager.getInstance().handleAccessTokenInBackendless(idToken, accessToken,
+                permissions, googlePlusFieldsMapping, new UserAuthManager.AuthListener<BackendlessUser>() {
+                    @Override
+                    public void onSuccess(BackendlessUser user) {
 
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-                            Log.e(TAG, "Could not login to backendless: " +
-                                    backendlessFault.getMessage() +
-                                    " code: " + backendlessFault.getCode());
-                        }
-                    },true);
+                    }
+
+                    @Override
+                    public void onError(String massage, String code) {
+
+                    }
+                });
     }
 
 }

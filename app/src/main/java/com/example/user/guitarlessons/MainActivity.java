@@ -105,9 +105,9 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
     }
 
     private void logOut() {
-        Backendless.UserService.logout(new AsyncCallback<Void>() {
+        UserAuthManager.getInstance().logOut(new UserAuthManager.AuthListener<Void>() {
             @Override
-            public void handleResponse(Void response) {
+            public void onSuccess(Void responce) {
                 Toast.makeText(MainActivity.this,"log out successfully",
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG,"log out successfully");
@@ -115,8 +115,8 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
             }
 
             @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.d(TAG,"log out problems " +fault.getCode());
+            public void onError(String massage, String code) {
+
             }
         });
     }

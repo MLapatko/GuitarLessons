@@ -69,15 +69,11 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     }
 
     private void registrateUser(String userEmail, String userPassword,String userName) {
-        BackendlessUser user = new BackendlessUser();
-        user.setProperty("email", userEmail);
-        user.setProperty("name",userName);
-        user.setPassword(userPassword);
-        Log.d(TAG, "email" + userEmail);
-        Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+        UserAuthManager.getInstance().registrateUser(userEmail, userPassword, userName,
+                new UserAuthManager.AuthListener<BackendlessUser>() {
             @Override
-            public void handleResponse(BackendlessUser response) {
-                Toast.makeText(getActivity(), response.getEmail(),
+            public void onSuccess(BackendlessUser user) {
+                Toast.makeText(getActivity(), user.getEmail(),
                         Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "success");
                 viewSwitcher.setDisplayedChild(0);
@@ -85,10 +81,10 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
             }
 
             @Override
-            public void handleFault(BackendlessFault fault) {
+            public void onError(String massage, String code) {
                 Toast.makeText(getActivity(), "registration failed",
                         Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "registration failed " + fault.getCode());
+
             }
         });
 
