@@ -1,6 +1,7 @@
 package com.example.user.guitarlessons;
 
 
+import android.content.res.Resources;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -20,7 +21,8 @@ public class UserAuthManager {
 
     private static UserAuthManager instance;
 
-    private UserAuthManager() {}
+    private UserAuthManager() {
+    }
 
     public static UserAuthManager getInstance() {
 
@@ -41,9 +43,7 @@ public class UserAuthManager {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                if (listener != null) {
-                    listener.onError(fault.getMessage(), fault.getCode());
-                }
+                listener.onError(returnError(fault.getCode(), listener));
             }
         }, true);
     }
@@ -57,15 +57,12 @@ public class UserAuthManager {
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser response) {
-               logIn(userEmail,userPassword,listener);
-
+                logIn(userEmail, userPassword, listener);
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                if (listener != null) {
-                    listener.onError(fault.getMessage(), fault.getCode());
-                }
+                listener.onError(returnError(fault.getCode(), listener));
             }
         });
 
@@ -80,9 +77,9 @@ public class UserAuthManager {
     }
 
     public void handleAccessTokenInBackendless(String idToken, String accessToken,
-                                               List<String>permissions,
-                                               Map<String,String> googlePlusFieldsMapping,
-                                               final AuthListener listener){
+                                               List<String> permissions,
+                                               Map<String, String> googlePlusFieldsMapping,
+                                               final AuthListener listener) {
 
         if (idToken != null && accessToken != null)
             Backendless.UserService.loginWithGooglePlusSdk(idToken,
@@ -92,44 +89,60 @@ public class UserAuthManager {
                     new AsyncCallback<BackendlessUser>() {
                         @Override
                         public void handleResponse(BackendlessUser backendlessUser) {
-                            if (listener!=null){
+                            if (listener != null) {
                                 listener.onSuccess(backendlessUser);
                             }
                         }
 
                         @Override
                         public void handleFault(BackendlessFault backendlessFault) {
-                            if (listener!=null){
-                                listener.onError(backendlessFault.getMessage(),
-                                        backendlessFault.getCode());
-                            }
+                            listener.onError(returnError(backendlessFault.getCode(), listener));
                         }
                     }, true);
     }
-    public void logOut(final AuthListener listener){
+
+    public void logOut(final AuthListener listener) {
         Backendless.UserService.logout(new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
-                if (listener!=null){
+                if (listener != null) {
                     listener.onSuccess(response);
                 }
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                if (listener!=null){
-                    listener.onError(fault.getMessage(),fault.getCode());
-                }
+                listener.onError(returnError(fault.getCode(), listener));
             }
         });
     }
 
-    public interface AuthListener<T>{
-        void onSuccess(T responce);
-
-        void onError(String massage, String code);
-
+    private String returnError(String errorCode, AuthListener listener) {
+        Resources resources = App.getInstance().getResources();
+        String massage = resources.getString(R.string.unknown_error);
+        if (listener != null) {
+            switch (errorCode) {
+                case "3003":
+                    massage = resources.getString(R.string.error_3003);
+                    break;
+                case "3033":
+                    massage = resources.getString(R.string.error_3033);
+                    break;
+                case "3040":
+                    massage = resources.getString(R.string.error_3040);
+                    break;
+                case "3006":
+                    massage = resources.getString(R.string.error_3006);
+                    break;
+            }
+        }
+        return massage;
     }
 
+    public interface AuthListener<T> {
+        void onSuccess(T response);
 
+        void onError(String massage);
+
+    }
 }

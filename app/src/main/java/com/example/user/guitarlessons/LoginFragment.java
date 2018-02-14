@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
@@ -111,8 +109,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                if (!TextUtils.isEmpty(mEmail.getText()) && !TextUtils.isEmpty(mPassword.getText())) {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_3006),
+                            Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.create_account:
                 if (getActivity() instanceof FragmentsInterface) {
@@ -123,10 +125,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                 googleLogIn();
 
         }
+
     }
 
     private void logIn(final String userEmail, String userPassword) {
-        UserAuthManager.getInstance().logIn(userEmail, userPassword, new UserAuthManager.AuthListener<BackendlessUser>() {
+        UserAuthManager.getInstance().logIn(userEmail, userPassword,
+                new UserAuthManager.AuthListener<BackendlessUser>() {
             @Override
             public void onSuccess(BackendlessUser user) {
                 mViewSwitcher.setDisplayedChild(0);
@@ -134,10 +138,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
             }
 
             @Override
-            public void onError(String massage, String code) {
-                Toast.makeText(LoginFragment.this.getActivity(), "failed log in",
-                        Toast.LENGTH_SHORT).show();
-
+            public void onError(String massage) {
+                Toast.makeText(getActivity(), massage,Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -171,7 +173,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     private void loginInBackendless(final GoogleSignInAccount acct) {
-        Log.d(TAG, "handleSignInResult: try login to backendless");
         final LogInActivity logInActivity = (LogInActivity) this.getActivity();
         final String accountName = acct.getEmail();
         final String scopes = "oauth2:" + Scopes.PLUS_LOGIN + " " +
@@ -201,7 +202,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
 
 
     private void handleAccessTokenInBackendless(String idToken, String accessToken) {
-        Log.d(TAG, "idToken: " + idToken + ", accessToken: " + accessToken);
 
         Map<String, String> googlePlusFieldsMapping = new HashMap<String, String>();
         googlePlusFieldsMapping.put("given_name", "gp_given_name");
@@ -218,8 +218,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                     }
 
                     @Override
-                    public void onError(String massage, String code) {
-
+                    public void onError(String massage) {
+                        Toast.makeText(getActivity(), massage,Toast.LENGTH_SHORT).show();
                     }
                 });
     }
