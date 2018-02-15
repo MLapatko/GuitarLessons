@@ -5,7 +5,7 @@
     <string name="password">Пароль:</string>
     <string name="create_account">Создать аккаунт</string>
     <string name="log_in">Войти</string>
-    <string name="user_name">Логин</string>
+    <string name="user_name">Логин:</string>
     <string name="log_out">Выйти</string>
 
     <string name="error_3003">Неправильный логин или пароль</string>
@@ -13,4 +13,6 @@
     <string name="error_3040">Email введен неверно</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
     <string name="error_3006">Заполните все поля</string>
+    <string name="empty_field">Заполните поле</string>
+    <string name="short_password">Пароль должен быть не менее 7 символов </string>
 </resources>

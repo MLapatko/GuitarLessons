@@ -6,9 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +42,8 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class LoginFragment extends Fragment implements View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener {
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -51,19 +54,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     }
 
     final int CREATE_USER_FRAGMENT = 2;
+    final int REQUEST_AUTHORIZATION = 2;
+    final int SIGN_IN = 1;
+    final String TAG = "mylog";
+    final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
 
     TextView mCreateAccTextView;
     EditText mEmail;
     EditText mPassword;
     Button mLogInButton;
-    final static String TAG = "mylog";
+    SignInButton mSignInButton;
+
     ViewSwitcher mViewSwitcher;
     GoogleSignInOptions mgSignInOptions;
     GoogleApiClient mgApiClient;
-    final static int SIGN_IN = 1;
-    final static int REQUEST_AUTHORIZATION = 2;
-    SignInButton mSignInButton;
-    final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
+
+    TextInputLayout mEmailInputLayout;
+    TextInputLayout mPasswordInputLayout;
 
     @Nullable
     @Override
@@ -84,6 +91,41 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         mSignInButton = rootView.findViewById(R.id.sign_in_google);
         mSignInButton.setOnClickListener(this);
 
+        mEmailInputLayout=rootView.findViewById(R.id.email_input);
+        mPasswordInputLayout=rootView.findViewById(R.id.password_input);
+
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mEmailInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mPasswordInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         return rootView;
     }
 
@@ -109,11 +151,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!TextUtils.isEmpty(mEmail.getText()) && !TextUtils.isEmpty(mPassword.getText())) {
+                if (!AuthValidation.checkEmail(mEmail.getText())){
+                    mEmailInputLayout.setError(getActivity().getResources().getString(R.string.error_3040));
+                    mEmail.requestFocus();
+                }else if (!AuthValidation.checkPasswordLength(mPassword.getText())){
+                    mPasswordInputLayout.setError(getActivity().getResources().getString(R.string.short_password));
+                    mPassword.requestFocus();
+                }
+                else {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
-                } else {
-                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_3006),
-                            Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.create_account:
@@ -223,6 +269,5 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                     }
                 });
     }
-
 }
 

@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.backendless:backendless:4.0.4'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.android.support:design:23.2.+'
     testCompile 'junit:junit:4.12'
 }
 

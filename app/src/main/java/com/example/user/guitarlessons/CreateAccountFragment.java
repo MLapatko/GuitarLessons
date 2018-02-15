@@ -3,8 +3,11 @@ package com.example.user.guitarlessons;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,11 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     final static String TAG = "mylog";
     ViewSwitcher mViewSwitcher;
 
+    TextInputLayout mEmailInputLayout;
+    TextInputLayout mPasswordInputLayout;
+    TextInputLayout mLoginInputLayout;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +57,58 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         mViewSwitcher = rootView.findViewById(R.id.viewSwitcher);
         mViewSwitcher.setDisplayedChild(1);
 
+        mEmailInputLayout=rootView.findViewById(R.id.user_name_input);
+        mPasswordInputLayout=rootView.findViewById(R.id.user_password_input);
+        mLoginInputLayout=rootView.findViewById(R.id.user_name_input);
+
+        mUserName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mLoginInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mEmailInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mPasswordInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         return rootView;
     }
 
@@ -56,13 +116,22 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ok_button:
-                if (!TextUtils.isEmpty(mEmail.getText()) && !TextUtils.isEmpty(mPassword.getText())
-                        && !TextUtils.isEmpty(mUserName.getText())) {
+                if (TextUtils.isEmpty(mUserName.getText())){
+                    mLoginInputLayout.setError(getActivity().getResources().getString(R.string.empty_field));
+                    mUserName.requestFocus();
+                }
+                else if (!AuthValidation.checkEmail(mEmail.getText()))
+                {
+                    mEmailInputLayout.setError(getActivity().getResources().getString(R.string.error_3040));
+                    mEmail.requestFocus();
+                }
+                else if (!AuthValidation.checkPasswordLength(mPassword.getText())){
+                    mPasswordInputLayout.setError(getActivity().getResources().getString(R.string.short_password));
+                    mPassword.requestFocus();
+                }
+                else {
                     registrateUser(mEmail.getText().toString(), mPassword.getText().toString(),
                             mUserName.getText().toString());
-                } else {
-                    Toast.makeText(getActivity(),getActivity().getResources().getString(R.string.error_3006),
-                            Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

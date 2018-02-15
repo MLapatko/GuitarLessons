@@ -43,7 +43,7 @@ public class UserAuthManager {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                listener.onError(returnError(fault.getCode(), listener));
+                returnError(fault.getCode(), listener);
             }
         }, true);
     }
@@ -62,7 +62,7 @@ public class UserAuthManager {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                listener.onError(returnError(fault.getCode(), listener));
+                returnError(fault.getCode(), listener);
             }
         });
 
@@ -96,7 +96,7 @@ public class UserAuthManager {
 
                         @Override
                         public void handleFault(BackendlessFault backendlessFault) {
-                            listener.onError(returnError(backendlessFault.getCode(), listener));
+                            returnError(backendlessFault.getCode(), listener);
                         }
                     }, true);
     }
@@ -112,12 +112,12 @@ public class UserAuthManager {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                listener.onError(returnError(fault.getCode(), listener));
+               returnError(fault.getCode(), listener);
             }
         });
     }
 
-    private String returnError(String errorCode, AuthListener listener) {
+    private void returnError(String errorCode, AuthListener listener) {
         Resources resources = App.getInstance().getResources();
         String massage = resources.getString(R.string.unknown_error);
         if (listener != null) {
@@ -134,9 +134,10 @@ public class UserAuthManager {
                 case "3006":
                     massage = resources.getString(R.string.error_3006);
                     break;
+
             }
+            listener.onError(massage);
         }
-        return massage;
     }
 
     public interface AuthListener<T> {
