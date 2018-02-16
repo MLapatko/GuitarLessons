@@ -32,6 +32,14 @@ public class UserAuthManager {
         return instance;
     }
 
+    public static final String  ERROR_EMPTY_FIELDS="3006";
+    public static final String ERROR_EMAIL="3040";
+    public static final String ERROR_EMAIL_EXISTS ="3033";
+    public static final String ERROR_EMAIL_OR_PASSWORD="3003";
+    public static final String PASSWORD_ERROR="password";
+    public static final String EMAIL_ERROR="email";
+
+
     public void logIn(final String userEmail, String userPassword, final AuthListener listener) {
         Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
             @Override
@@ -48,11 +56,10 @@ public class UserAuthManager {
         }, true);
     }
 
-    public void registrateUser(final String userEmail, final String userPassword, String userName,
+    public void registrateUser(final String userEmail, final String userPassword,
                                final AuthListener listener) {
         BackendlessUser user = new BackendlessUser();
         user.setProperty("email", userEmail);
-        user.setProperty("name", userName);
         user.setPassword(userPassword);
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
             @Override
@@ -120,30 +127,33 @@ public class UserAuthManager {
     private void returnError(String errorCode, AuthListener listener) {
         Resources resources = App.getInstance().getResources();
         String massage = resources.getString(R.string.unknown_error);
+        String errorType="";
         if (listener != null) {
             switch (errorCode) {
-                case "3003":
+                case ERROR_EMAIL_OR_PASSWORD:
                     massage = resources.getString(R.string.error_3003);
                     break;
-                case "3033":
+                case ERROR_EMAIL_EXISTS:
                     massage = resources.getString(R.string.error_3033);
+                    errorType=EMAIL_ERROR;
                     break;
-                case "3040":
+                case ERROR_EMAIL:
                     massage = resources.getString(R.string.error_3040);
+                    errorType=EMAIL_ERROR;
                     break;
-                case "3006":
+                case ERROR_EMPTY_FIELDS:
                     massage = resources.getString(R.string.error_3006);
                     break;
 
             }
-            listener.onError(massage);
+            listener.onError(massage,errorType);
         }
     }
 
     public interface AuthListener<T> {
         void onSuccess(T response);
 
-        void onError(String massage);
+        void onError(String massage,String errorType);
 
     }
 }

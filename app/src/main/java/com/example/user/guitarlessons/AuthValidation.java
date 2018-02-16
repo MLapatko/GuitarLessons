@@ -1,5 +1,7 @@
 package com.example.user.guitarlessons;
 
+import android.text.TextUtils;
+
 /**
  * Created by user on 14.02.2018.
  */
@@ -16,5 +18,8 @@ public class AuthValidation {
             return false;
         }
         return true;
+    }
+    public static boolean comperePassword(CharSequence password, CharSequence confPassword ){
+        return TextUtils.equals(password,confPassword);
     }
 }

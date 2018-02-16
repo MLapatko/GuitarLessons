@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/layout_margin"
     android:orientation="vertical">
 
     <ViewSwitcher
@@ -11,16 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/progress_bar"
-            layout="@layout/progress_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <include layout="@layout/progress_bar_layout" />
 
         <LinearLayout
             android:id="@+id/login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -51,10 +48,9 @@
                     android:ems="10"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="47dp"
                     android:maxLength="15"
-                    />
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="47dp" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -65,17 +61,27 @@
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_google"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/create_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/create_user_margin"
-                android:clickable="true"
-                android:text="@string/create_account" />
+                android:layout_margin="@dimen/layout_margin"
+                app:buttonSize="icon_only" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/create_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/create_user_margin"
+                    android:clickable="true"
+                    android:text="@string/create_account" />
+            </LinearLayout>
 
 
         </LinearLayout>

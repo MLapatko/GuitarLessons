@@ -7,14 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,7 +39,7 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener,
+public class LoginFragment extends BaseFragment implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
     public static LoginFragment newInstance() {
 
@@ -58,6 +55,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
     final int SIGN_IN = 1;
     final String TAG = "mylog";
     final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
+    public static final String PASSWORD_ERROR = "password";
+    public static final String EMAIL_ERROR = "email";
 
     TextView mCreateAccTextView;
     EditText mEmail;
@@ -72,27 +71,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
     TextInputLayout mEmailInputLayout;
     TextInputLayout mPasswordInputLayout;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-        mEmail = rootView.findViewById(R.id.email);
-        mPassword = rootView.findViewById(R.id.password);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        mLogInButton = rootView.findViewById(R.id.login_button);
+        mEmail = view.findViewById(R.id.email);
+        mPassword = view.findViewById(R.id.password);
+
+        mLogInButton = view.findViewById(R.id.login_button);
         mLogInButton.setOnClickListener(this);
 
-        mViewSwitcher = rootView.findViewById(R.id.viewSwitcher);
+        mViewSwitcher = view.findViewById(R.id.viewSwitcher);
         mViewSwitcher.setDisplayedChild(1);
 
-        mCreateAccTextView = rootView.findViewById(R.id.create_account);
+        mCreateAccTextView = view.findViewById(R.id.create_account);
         mCreateAccTextView.setOnClickListener(this);
 
-        mSignInButton = rootView.findViewById(R.id.sign_in_google);
+        mSignInButton = view.findViewById(R.id.sign_in_google);
         mSignInButton.setOnClickListener(this);
 
-        mEmailInputLayout=rootView.findViewById(R.id.email_input);
-        mPasswordInputLayout=rootView.findViewById(R.id.password_input);
+        mEmailInputLayout = view.findViewById(R.id.email_input);
+        mPasswordInputLayout = view.findViewById(R.id.password_input);
 
         mEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -126,13 +125,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
 
             }
         });
-        return rootView;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         FragmentActivity fragmentActivity = this.getActivity();
 
         mgSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -148,17 +145,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
+    protected int getFragmentLayoutId() {
+        return R.layout.login_fragment_layout;
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!AuthValidation.checkEmail(mEmail.getText())){
-                    mEmailInputLayout.setError(getActivity().getResources().getString(R.string.error_3040));
-                    mEmail.requestFocus();
-                }else if (!AuthValidation.checkPasswordLength(mPassword.getText())){
-                    mPasswordInputLayout.setError(getActivity().getResources().getString(R.string.short_password));
-                    mPassword.requestFocus();
-                }
-                else {
+                if (!AuthValidation.checkEmail(mEmail.getText())) {
+                    focusError(getActivity().getResources().getString(R.string.error_3040),EMAIL_ERROR);
+                } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
+                    focusError(getActivity().getResources().getString(R.string.short_password),PASSWORD_ERROR);
+                } else {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 }
                 break;
@@ -175,19 +174,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
     }
 
     private void logIn(final String userEmail, String userPassword) {
+        mViewSwitcher.setDisplayedChild(0);
         UserAuthManager.getInstance().logIn(userEmail, userPassword,
                 new UserAuthManager.AuthListener<BackendlessUser>() {
-            @Override
-            public void onSuccess(BackendlessUser user) {
-                mViewSwitcher.setDisplayedChild(0);
-                goToMainActivity();
-            }
+                    @Override
+                    public void onSuccess(BackendlessUser user) {
+                        goToMainActivity();
+                    }
 
-            @Override
-            public void onError(String massage) {
-                Toast.makeText(getActivity(), massage,Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onError(String massage, String errorCode) {
+                        mViewSwitcher.setDisplayedChild(1);
+                        focusError(massage,errorCode);
+                    }
+                });
     }
 
     public void goToMainActivity() {
@@ -209,7 +209,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "google result" + result.isSuccess());
             if (result.isSuccess()) {
                 loginInBackendless(result.getSignInAccount());
                 goToMainActivity();
@@ -246,9 +245,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
         task.execute();
     }
 
+    private void focusError(String massage, String errorType) {
+        switch (errorType) {
+            case EMAIL_ERROR:
+                mEmailInputLayout.setError(massage);
+                mEmail.requestFocus();
+                break;
+            case PASSWORD_ERROR:
+                mPasswordInputLayout.setError(massage);
+                mPassword.requestFocus();
+                break;
+            default:
+                Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void handleAccessTokenInBackendless(String idToken, String accessToken) {
-
         Map<String, String> googlePlusFieldsMapping = new HashMap<String, String>();
         googlePlusFieldsMapping.put("given_name", "gp_given_name");
         googlePlusFieldsMapping.put("family_name", "gp_family_name");
@@ -264,8 +276,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener,
                     }
 
                     @Override
-                    public void onError(String massage) {
-                        Toast.makeText(getActivity(), massage,Toast.LENGTH_SHORT).show();
+                    public void onError(String massage, String errorCode) {
+                        Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
