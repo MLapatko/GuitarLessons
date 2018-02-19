@@ -40,7 +40,7 @@ import java.util.Map;
  */
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,TextWatcher {
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -93,38 +93,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
         mEmailInputLayout = view.findViewById(R.id.email_input);
         mPasswordInputLayout = view.findViewById(R.id.password_input);
 
-        mEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mEmailInputLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        mPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mPasswordInputLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
+        mEmail.addTextChangedListener(this);
+        mPassword.addTextChangedListener(this);
     }
 
     @Override
@@ -154,9 +124,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
         switch (view.getId()) {
             case R.id.login_button:
                 if (!AuthValidation.checkEmail(mEmail.getText())) {
-                    focusError(getActivity().getResources().getString(R.string.error_3040),EMAIL_ERROR);
+                    focusError(getActivity().getString(R.string.error_3040),EMAIL_ERROR);
                 } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
-                    focusError(getActivity().getResources().getString(R.string.short_password),PASSWORD_ERROR);
+                    focusError(getActivity().getString(R.string.short_password),PASSWORD_ERROR);
                 } else {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 }
@@ -211,7 +181,6 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 loginInBackendless(result.getSignInAccount());
-                goToMainActivity();
             }
 
         }
@@ -260,6 +229,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
         }
     }
 
+
     private void handleAccessTokenInBackendless(String idToken, String accessToken) {
         Map<String, String> googlePlusFieldsMapping = new HashMap<String, String>();
         googlePlusFieldsMapping.put("given_name", "gp_given_name");
@@ -272,7 +242,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                 permissions, googlePlusFieldsMapping, new UserAuthManager.AuthListener<BackendlessUser>() {
                     @Override
                     public void onSuccess(BackendlessUser user) {
-
+                        goToMainActivity();
                     }
 
                     @Override
@@ -280,6 +250,26 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                         Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (mEmail.isFocused()){
+            mEmailInputLayout.setError(null);
+        }
+        else if (mPassword.isFocused()){
+            mPasswordInputLayout.setError(null);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }
 

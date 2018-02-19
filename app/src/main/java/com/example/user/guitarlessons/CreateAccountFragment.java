@@ -18,7 +18,7 @@ import com.backendless.BackendlessUser;
  * Created by user on 07.02.2018.
  */
 
-public class CreateAccountFragment extends BaseFragment implements View.OnClickListener {
+public class CreateAccountFragment extends BaseFragment implements View.OnClickListener, TextWatcher {
     public static CreateAccountFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -60,54 +60,9 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
         mPasswordInputLayout = view.findViewById(R.id.user_password_input);
         mConfPasswordLayout=view.findViewById(R.id.confirm_password_input);
 
-        mEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mEmailInputLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        mPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mPasswordInputLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        mConfPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mConfPasswordLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
+        mEmail.addTextChangedListener(this);
+        mPassword.addTextChangedListener(this);
+        mConfPassword.addTextChangedListener(this);
 
     }
 
@@ -116,11 +71,11 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
         switch (view.getId()) {
             case R.id.ok_button:
                 if (!AuthValidation.checkEmail(mEmail.getText())) {
-                    focusError(getActivity().getResources().getString(R.string.error_3040),EMAIL_ERROR);
+                    focusError(getActivity().getString(R.string.error_3040),EMAIL_ERROR);
                 } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
-                    focusError(getActivity().getResources().getString(R.string.short_password),PASSWORD_ERROR);
+                    focusError(getActivity().getString(R.string.short_password),PASSWORD_ERROR);
                 } else if (!AuthValidation.comperePassword(mPassword.getText(), mConfPassword.getText())) {
-                    focusError(getActivity().getResources().getString(R.string.different_passwords),
+                    focusError(getActivity().getString(R.string.different_passwords),
                             CONF_PASSWORD);
                 } else {
                     registrateUser(mEmail.getText().toString(), mPassword.getText().toString());
@@ -171,5 +126,28 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
     @Override
     protected int getFragmentLayoutId() {
         return R.layout.create_account_fragment;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (mEmail.isFocused()){
+            mEmailInputLayout.setError(null);
+        }
+        else if(mPassword.isFocused()){
+            mPasswordInputLayout.setError(null);
+        }
+        else if (mConfPassword.isFocused()){
+            mConfPasswordLayout.setError(null);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }

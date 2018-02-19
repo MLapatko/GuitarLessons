@@ -1,14 +1,15 @@
 package com.example.user.guitarlessons;
 
 
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.local.UserTokenStorageFactory;
 import com.example.user.guitarlessons.application.App;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,31 @@ public class UserAuthManager {
     public static final String ERROR_EMAIL_OR_PASSWORD="3003";
     public static final String PASSWORD_ERROR="password";
     public static final String EMAIL_ERROR="email";
+    public static final String CUR_USER="user";
+    public static final String PREFERENCES="preferences";
 
+
+    private void saveUser(BackendlessUser user){
+        SharedPreferences sharedPreferences=App.getInstance().getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        prefsEditor.putString(CUR_USER, json);
+        prefsEditor.commit();
+    }
+    public BackendlessUser getCurrentUser(){
+        SharedPreferences sharedPreferences=App.getInstance().getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(CUR_USER, "");
+        return gson.fromJson(json, BackendlessUser.class);
+    }
 
     public void logIn(final String userEmail, String userPassword, final AuthListener listener) {
         Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser user) {
                 if (listener != null) {
+                    saveUser(user);
                     listener.onSuccess(user);
                 }
             }
@@ -76,8 +95,8 @@ public class UserAuthManager {
     }
 
     public boolean checkUserLogIn() {
-        String userToken = UserTokenStorageFactory.instance().getStorage().get();
-        if (userToken != null && !userToken.equals("")) {
+        //String userToken = UserTokenStorageFactory.instance().getStorage().get();
+        if (getCurrentUser()!=null) {
             return true;
         }
         return false;
@@ -97,6 +116,7 @@ public class UserAuthManager {
                         @Override
                         public void handleResponse(BackendlessUser backendlessUser) {
                             if (listener != null) {
+                                saveUser(backendlessUser);
                                 listener.onSuccess(backendlessUser);
                             }
                         }
@@ -113,6 +133,7 @@ public class UserAuthManager {
             @Override
             public void handleResponse(Void response) {
                 if (listener != null) {
+                    saveUser(null);
                     listener.onSuccess(response);
                 }
             }
@@ -125,24 +146,24 @@ public class UserAuthManager {
     }
 
     private void returnError(String errorCode, AuthListener listener) {
-        Resources resources = App.getInstance().getResources();
-        String massage = resources.getString(R.string.unknown_error);
+        App myApp = App.getInstance();
+        String massage = myApp.getString(R.string.unknown_error);
         String errorType="";
         if (listener != null) {
             switch (errorCode) {
                 case ERROR_EMAIL_OR_PASSWORD:
-                    massage = resources.getString(R.string.error_3003);
+                    massage = myApp.getString(R.string.error_3003);
                     break;
                 case ERROR_EMAIL_EXISTS:
-                    massage = resources.getString(R.string.error_3033);
+                    massage = myApp.getString(R.string.error_3033);
                     errorType=EMAIL_ERROR;
                     break;
                 case ERROR_EMAIL:
-                    massage = resources.getString(R.string.error_3040);
+                    massage = myApp.getString(R.string.error_3040);
                     errorType=EMAIL_ERROR;
                     break;
                 case ERROR_EMPTY_FIELDS:
-                    massage = resources.getString(R.string.error_3006);
+                    massage = myApp.getString(R.string.error_3006);
                     break;
 
             }
