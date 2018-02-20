@@ -6,15 +6,24 @@
 
     <include layout="@layout/tool_bar_layout" />
 
-    <LinearLayout
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
+        android:layout_margin="@dimen/layout_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/log_out"
+        <include layout="@layout/progress_bar_layout"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/log_out" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/log_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/log_out" />
+        </LinearLayout>
+    </ViewSwitcher>
 </LinearLayout>

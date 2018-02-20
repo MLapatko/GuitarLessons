@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="create_user_margin">25px</dimen>
+    <dimen name="create_user_margin">10dp</dimen>
+    <dimen name="layout_margin">16dp</dimen>
 </resources>

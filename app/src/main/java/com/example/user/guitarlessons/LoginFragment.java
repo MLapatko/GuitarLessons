@@ -6,22 +6,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
@@ -42,7 +39,8 @@ import java.util.Map;
  * Created by user on 07.02.2018.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
+public class LoginFragment extends BaseFragment implements View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener,TextWatcher {
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -51,71 +49,91 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         fragment.setArguments(args);
         return fragment;
     }
-    final int CREATE_USER_FRAGMENT=2;
+
+    final int CREATE_USER_FRAGMENT = 2;
+    final int REQUEST_AUTHORIZATION = 2;
+    final int SIGN_IN = 1;
+    final String TAG = "mylog";
+    final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
+    public static final String PASSWORD_ERROR = "password";
+    public static final String EMAIL_ERROR = "email";
 
     TextView mCreateAccTextView;
     EditText mEmail;
     EditText mPassword;
     Button mLogInButton;
-    final static String TAG = "mylog";
+    SignInButton mSignInButton;
+
     ViewSwitcher mViewSwitcher;
     GoogleSignInOptions mgSignInOptions;
     GoogleApiClient mgApiClient;
-    final static int SIGN_IN = 1;
-    final static int REQUEST_AUTHORIZATION = 2;
-    SignInButton mSignInButton;
-    final String SERVER_CLIENT_ID="964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
 
-    @Nullable
+    TextInputLayout mEmailInputLayout;
+    TextInputLayout mPasswordInputLayout;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-        mEmail = rootView.findViewById(R.id.email);
-        mPassword = rootView.findViewById(R.id.password);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        mLogInButton = rootView.findViewById(R.id.login_button);
+        mEmail = view.findViewById(R.id.email);
+        mEmail.requestFocus();
+        mPassword = view.findViewById(R.id.password);
+
+        mLogInButton = view.findViewById(R.id.login_button);
         mLogInButton.setOnClickListener(this);
 
-        mViewSwitcher = rootView.findViewById(R.id.viewSwitcher);
+        mViewSwitcher = view.findViewById(R.id.viewSwitcher);
         mViewSwitcher.setDisplayedChild(1);
 
-        mCreateAccTextView = rootView.findViewById(R.id.create_account);
+        mCreateAccTextView = view.findViewById(R.id.create_account);
         mCreateAccTextView.setOnClickListener(this);
 
-        mSignInButton = rootView.findViewById(R.id.sign_in_google);
+        mSignInButton = view.findViewById(R.id.sign_in_google);
         mSignInButton.setOnClickListener(this);
 
-        return rootView;
+        mEmailInputLayout = view.findViewById(R.id.email_input);
+        mPasswordInputLayout = view.findViewById(R.id.password_input);
+
+        mEmail.addTextChangedListener(this);
+        mPassword.addTextChangedListener(this);
     }
 
     @Override
-    public void onCreate( Bundle savedInstanceState )
-    {
-        super.onCreate( savedInstanceState );
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FragmentActivity fragmentActivity = this.getActivity();
 
-        FragmentActivity fragmentActivity = (FragmentActivity)this.getActivity();
-
-        mgSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
+        mgSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail().requestProfile().requestId()
                 .requestIdToken(SERVER_CLIENT_ID)
                 .build();
 
 
-        GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder( fragmentActivity );
+        GoogleApiClient.Builder apiCliBuilder = new GoogleApiClient.Builder(fragmentActivity);
         mgApiClient = apiCliBuilder
-                .enableAutoManage( fragmentActivity, this )
-                .addApi( Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
+                .enableAutoManage(fragmentActivity, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, mgSignInOptions).build();
+    }
+
+    @Override
+    protected int getFragmentLayoutId() {
+        return R.layout.login_fragment_layout;
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty())
+                if (!AuthValidation.checkEmail(mEmail.getText())) {
+                    focusError(getActivity().getString(R.string.error_3040),EMAIL_ERROR);
+                } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
+                    focusError(getActivity().getString(R.string.short_password),PASSWORD_ERROR);
+                } else {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
+                }
                 break;
             case R.id.create_account:
-                if(getActivity() instanceof FragmentsInterface) {
+                if (getActivity() instanceof FragmentsInterface) {
                     ((FragmentsInterface) getActivity()).putFragments(CREATE_USER_FRAGMENT);
                 }
                 break;
@@ -123,24 +141,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
                 googleLogIn();
 
         }
+
     }
 
     private void logIn(final String userEmail, String userPassword) {
-        Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser user) {
-                Log.d(TAG, "user email" + user.getEmail());
-                mViewSwitcher.setDisplayedChild(0);
-                goToMainActivity();
-            }
+        mViewSwitcher.setDisplayedChild(0);
+        UserAuthManager.getInstance().logIn(userEmail, userPassword,
+                new UserAuthManager.AuthListener<BackendlessUser>() {
+                    @Override
+                    public void onSuccess(BackendlessUser user) {
+                        goToMainActivity();
+                    }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG, "failed log in" + fault.getCode());
-                Toast.makeText(LoginFragment.this.getActivity(), "failed log in",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }, true);
+                    @Override
+                    public void onError(String massage, String errorCode) {
+                        mViewSwitcher.setDisplayedChild(1);
+                        focusError(massage,errorCode);
+                    }
+                });
     }
 
     public void goToMainActivity() {
@@ -162,17 +180,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "google result" + result.isSuccess());
             if (result.isSuccess()) {
                 loginInBackendless(result.getSignInAccount());
-                goToMainActivity();
             }
 
         }
     }
 
     private void loginInBackendless(final GoogleSignInAccount acct) {
-        Log.d(TAG, "handleSignInResult: try login to backendless");
         final LogInActivity logInActivity = (LogInActivity) this.getActivity();
         final String accountName = acct.getEmail();
         final String scopes = "oauth2:" + Scopes.PLUS_LOGIN + " " +
@@ -200,10 +215,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         task.execute();
     }
 
+    private void focusError(String massage, String errorType) {
+        switch (errorType) {
+            case EMAIL_ERROR:
+                mEmailInputLayout.setError(massage);
+                mEmail.requestFocus();
+                break;
+            case PASSWORD_ERROR:
+                mPasswordInputLayout.setError(massage);
+                mPassword.requestFocus();
+                break;
+            default:
+                Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void handleAccessTokenInBackendless(String idToken, String accessToken) {
-        Log.d(TAG, "idToken: " + idToken + ", accessToken: " + accessToken);
-
         Map<String, String> googlePlusFieldsMapping = new HashMap<String, String>();
         googlePlusFieldsMapping.put("given_name", "gp_given_name");
         googlePlusFieldsMapping.put("family_name", "gp_family_name");
@@ -211,25 +239,38 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Goo
         googlePlusFieldsMapping.put("email", "email");
         List<String> permissions = new ArrayList<String>();
 
-        if (idToken != null && accessToken != null)
-            Backendless.UserService.loginWithGooglePlusSdk(idToken,
-                    accessToken,
-                    googlePlusFieldsMapping,
-                    permissions,
-                    new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser backendlessUser) {
-                            Log.i(TAG, "Logged in to backendless, user id is: " + backendlessUser.getObjectId());
-                        }
+        UserAuthManager.getInstance().handleAccessTokenInBackendless(idToken, accessToken,
+                permissions, googlePlusFieldsMapping, new UserAuthManager.AuthListener<BackendlessUser>() {
+                    @Override
+                    public void onSuccess(BackendlessUser user) {
+                        goToMainActivity();
+                    }
 
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-                            Log.e(TAG, "Could not login to backendless: " +
-                                    backendlessFault.getMessage() +
-                                    " code: " + backendlessFault.getCode());
-                        }
-                    },true);
+                    @Override
+                    public void onError(String massage, String errorCode) {
+                        Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (mEmail.isFocused()){
+            mEmailInputLayout.setError(null);
+        }
+        else if (mPassword.isFocused()){
+            mPasswordInputLayout.setError(null);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
 }
 

@@ -4,45 +4,117 @@ package com.example.user.guitarlessons;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
-import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.DataQueryBuilder;
-import com.backendless.persistence.local.UserTokenStorageFactory;
+import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Lesson;
-import com.example.user.guitarlessons.model.User;
+import com.example.user.guitarlessons.model.Song;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements  View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener {
+
     public static void start(Context context) {
         Intent starter = new Intent(context, MainActivity.class);
         context.startActivity(starter);
     }
+
     Button logOutButton;
-    final static String TAG="mylog";
+    final static String TAG = "mylog";
+    ViewSwitcher mViewSwitcher;
+    public static final String COLUMN_FAVORITE = "favorite";
+    public static final String COLUMN_ISVIEW = "isView";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        logOutButton=findViewById(R.id.log_out);
+        logOutButton = findViewById(R.id.log_out);
         logOutButton.setOnClickListener(this);
 
-        Backendless.Data.mapTableToClass("Lessons", Lesson.class);
-        Backendless.Data.mapTableToClass("BackendlessUser", User.class);
-        Log.d(TAG,"MainActivity oncreate");
+        mViewSwitcher = findViewById(R.id.viewSwitcher);
+        mViewSwitcher.setDisplayedChild(1);
+
         setBackButtonStatus(false);
-        //getLessons();
-        //updateUserLessons();
+
+        Log.d(TAG, "currentUser" + DbManager.getInstance().getUsersLessons(COLUMN_ISVIEW));
+        getSongs();
+        getCourses();
+    }
+
+    private void getSongs(){
+        DbManager.getInstance().getSongs(new DbManager.DbListener<List<Song>>() {
+            @Override
+            public void onSuccess(List<Song> response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void onError(BackendlessFault fault) {
+                Log.d(TAG,fault.getMessage());
+            }
+        });
+    }
+
+    private void getCourses(){
+        DbManager.getInstance().getAllCourses(new DbManager.DbListener<List<Course>>() {
+            @Override
+            public void onSuccess(List<Course> response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void onError(BackendlessFault fault) {
+                Log.d(TAG,fault.getMessage());
+            }
+        });
+    }
+    private void deleteFromUsersLessons(Lesson lesson, String columnName) {
+        DbManager.getInstance().deleteFromUsersLessons(lesson, columnName,
+                new DbManager.DbListener<Integer>() {
+                    @Override
+                    public void onSuccess(Integer response) {
+                    }
+
+                    @Override
+                    public void onError(BackendlessFault fault) {
+
+                    }
+                });
+    }
+
+    private void addToUsersLessons(Lesson lesson, String columnName) {
+        DbManager.getInstance().addToUsersLessons(lesson, columnName,
+                new DbManager.DbListener<Integer>() {
+                    @Override
+                    public void onSuccess(Integer response) {
+                        Log.d(TAG, "Added successfully");
+                    }
+
+                    @Override
+                    public void onError(BackendlessFault fault) {
+
+                    }
+                });
+    }
+
+    private void getAllLessons(String courseId) {
+        DbManager.getInstance().getAllLessons(courseId,new DbManager.DbListener<List<Lesson>>() {
+            @Override
+            public void onSuccess(List<Lesson> response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void onError(BackendlessFault fault) {
+                Log.d(TAG,fault.getMessage());
+            }
+        });
     }
 
     @Override
@@ -55,49 +127,10 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
         return R.layout.activity_main;
     }
 
-    private void updateUserLessons() {
-
-        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
-        queryBuilder.setWhereClause("email='www@tut.by'");
-        Backendless.Data.of(User.class).find(queryBuilder, new AsyncCallback<List<User>>() {
-            @Override
-            public void handleResponse(List<User> response) {
-                for (User user:response
-                        ) {
-                    Log.d(TAG,"view lessons"+user.getViewLessons().toString());
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
-
-    }
-
-
-    private void getLessons() {
-        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
-        queryBuilder.setWhereClause("objectId in (Users[email='www@tut.by'].favorite.objectId)");
-        Backendless.Data.of(Lesson.class).find(queryBuilder, new AsyncCallback<List<Lesson>>() {
-            @Override
-            public void handleResponse(List<Lesson> response) {
-                Log.d(TAG,"result query"+response.toString());
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.d(TAG,"error while getting data "+ fault.getCode());
-            }
-        });
-        DataQueryBuilder queryBuilderUsers=DataQueryBuilder.create();
-        Backendless.Data.of(User.class);
-    }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.log_out:
                 logOut();
                 break;
@@ -105,18 +138,16 @@ public class MainActivity extends BaseActivity implements  View.OnClickListener{
     }
 
     private void logOut() {
-        Backendless.UserService.logout(new AsyncCallback<Void>() {
+        mViewSwitcher.setDisplayedChild(0);
+        UserAuthManager.getInstance().logOut(new UserAuthManager.AuthListener<Void>() {
             @Override
-            public void handleResponse(Void response) {
-                Toast.makeText(MainActivity.this,"log out successfully",
-                        Toast.LENGTH_SHORT).show();
-                Log.d(TAG,"log out successfully");
+            public void onSuccess(Void response) {
                 goToLoginActivity();
             }
 
             @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.d(TAG,"log out problems " +fault.getCode());
+            public void onError(String massage, String errorCode) {
+                Toast.makeText(MainActivity.this, massage, Toast.LENGTH_LONG).show();
             }
         });
     }

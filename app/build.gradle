@@ -25,8 +25,10 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:27.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.backendless:backendless:4.0.4'
+    compile 'com.backendless:backendless:4.4.0'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.android.support:design:27.0.2'
+    compile 'com.google.code.gson:gson:2.7'
     testCompile 'junit:junit:4.12'
 }
 

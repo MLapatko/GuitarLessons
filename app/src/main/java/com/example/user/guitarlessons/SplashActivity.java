@@ -20,12 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
 
-        Backendless.setUrl(Defaults.SERVER_URL);
-        Backendless.initApp(getApplicationContext(), Defaults.APPLICATION_ID, Defaults.API_KEY);
-
-        Log.d(TAG,"onCreate splashActivity");
-        isUserLogIn();
-
+        login=UserAuthManager.getInstance().checkUserLogIn();
         if (login) {
             MainActivity.start(this);
         }
@@ -33,12 +28,5 @@ public class SplashActivity extends AppCompatActivity {
             LogInActivity.start(this);
         }
 
-    }
-
-    private void isUserLogIn() {
-        String userToken = UserTokenStorageFactory.instance().getStorage().get();
-        if (userToken != null && !userToken.equals("")) {
-            login = true;
-        }
     }
 }
