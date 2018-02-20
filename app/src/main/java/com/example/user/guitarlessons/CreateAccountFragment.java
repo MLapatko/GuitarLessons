@@ -48,6 +48,7 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
         super.onViewCreated(view, savedInstanceState);
 
         mEmail = view.findViewById(R.id.user_email);
+        mEmail.requestFocus();
         mPassword = view.findViewById(R.id.user_password);
         mConfPassword=view.findViewById(R.id.confirm_password);
         mConfirmButton = view.findViewById(R.id.ok_button);

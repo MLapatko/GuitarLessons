@@ -11,7 +11,9 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.backendless.exceptions.BackendlessFault;
+import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Lesson;
+import com.example.user.guitarlessons.model.Song;
 
 import java.util.List;
 
@@ -41,8 +43,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setBackButtonStatus(false);
 
         Log.d(TAG, "currentUser" + DbManager.getInstance().getUsersLessons(COLUMN_ISVIEW));
+        getSongs();
+        getCourses();
     }
 
+    private void getSongs(){
+        DbManager.getInstance().getSongs(new DbManager.DbListener<List<Song>>() {
+            @Override
+            public void onSuccess(List<Song> response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void onError(BackendlessFault fault) {
+                Log.d(TAG,fault.getMessage());
+            }
+        });
+    }
+
+    private void getCourses(){
+        DbManager.getInstance().getAllCourses(new DbManager.DbListener<List<Course>>() {
+            @Override
+            public void onSuccess(List<Course> response) {
+                Log.d(TAG,response.toString());
+            }
+
+            @Override
+            public void onError(BackendlessFault fault) {
+                Log.d(TAG,fault.getMessage());
+            }
+        });
+    }
     private void deleteFromUsersLessons(Lesson lesson, String columnName) {
         DbManager.getInstance().deleteFromUsersLessons(lesson, columnName,
                 new DbManager.DbListener<Integer>() {
@@ -72,15 +103,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 });
     }
 
-    private void getAllLessons() {
-        DbManager.getInstance().getAllLessons(new DbManager.DbListener<List<Lesson>>() {
+    private void getAllLessons(String courseId) {
+        DbManager.getInstance().getAllLessons(courseId,new DbManager.DbListener<List<Lesson>>() {
             @Override
             public void onSuccess(List<Lesson> response) {
+                Log.d(TAG,response.toString());
             }
 
             @Override
             public void onError(BackendlessFault fault) {
-
+                Log.d(TAG,fault.getMessage());
             }
         });
     }

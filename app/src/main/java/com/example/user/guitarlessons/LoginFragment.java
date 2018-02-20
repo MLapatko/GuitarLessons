@@ -76,6 +76,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
         super.onViewCreated(view, savedInstanceState);
 
         mEmail = view.findViewById(R.id.email);
+        mEmail.requestFocus();
         mPassword = view.findViewById(R.id.password);
 
         mLogInButton = view.findViewById(R.id.login_button);
