@@ -15,6 +15,16 @@ public class Song {
     private String author;
     @MapToProperty(property = "body")
     private String body;
+    @MapToProperty(property = "genreId")
+    private String genreId;
+
+    public String getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(String genreId) {
+        this.genreId = genreId;
+    }
 
     public String getObjectId() {
         return objectId;
@@ -55,6 +65,7 @@ public class Song {
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", body='" + body + '\'' +
+                ", genreId='" + genreId + '\'' +
                 '}';
     }
 }

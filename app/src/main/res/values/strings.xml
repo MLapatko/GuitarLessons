@@ -17,4 +17,13 @@
     <string name="short_password">Пароль должен быть не менее 7 символов </string>
     <string name="different_passwords">Пароли не совпадают</string>
     <string name="confirm_password">Повторите пароль:</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="courses">Курсы</string>
+    <string name="songs">Песни</string>
+    <string name="favorite">Избранное</string>
+    <string name="lessons">Уроки</string>
+    <string name="tools">Инструменты</string>
+    <string name="metronome">Метроном</string>
 </resources>
