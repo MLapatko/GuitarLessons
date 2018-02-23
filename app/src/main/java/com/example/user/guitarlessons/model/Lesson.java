@@ -19,6 +19,16 @@ public class Lesson {
     private String body;
     @MapToProperty(property = "rate")
     private int rate;
+    @MapToProperty(property = "courseId")
+    private String courseId;
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
 
     public Lesson() {
     }
@@ -41,6 +51,7 @@ public class Lesson {
                 ", videoUrl='" + videoUrl + '\'' +
                 ", body='" + body + '\'' +
                 ", rate=" + rate +
+                ", courseId=" + courseId +
                 '}';
     }
 
