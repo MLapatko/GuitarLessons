@@ -6,19 +6,16 @@ import weborb.service.MapToProperty;
  * Created by user on 20.02.2018.
  */
 
-public class Genre {
-    @MapToProperty(property = "objectId")
-    private String objectId;
+public class Genre extends BaseModel{
+
     @MapToProperty(property = "name")
     private String title;
 
-    public String getObjectId() {
-        return objectId;
+    @Override
+    public int getType() {
+        return GENRE_TYPE;
     }
 
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
 
     public String getTitle() {
         return title;

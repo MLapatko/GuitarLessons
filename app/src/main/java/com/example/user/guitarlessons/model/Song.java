@@ -6,9 +6,8 @@ import weborb.service.MapToProperty;
  * Created by user on 20.02.2018.
  */
 
-public class Song {
-    @MapToProperty(property = "objectId")
-    private String objectId;
+public class Song extends BaseModel{
+
     @MapToProperty(property = "title")
     private String title;
     @MapToProperty(property = "author")
@@ -26,12 +25,9 @@ public class Song {
         this.genreId = genreId;
     }
 
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
+    @Override
+    public int getType() {
+        return SONG_TYPE;
     }
 
     public String getTitle() {
