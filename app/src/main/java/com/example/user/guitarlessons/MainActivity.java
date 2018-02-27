@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void getGenres() {
-        DbManager.getInstance().getGenres(new DbManager.DbListener<List<Genre>>() {
+        ApiManager.getInstance().getGenres(new ApiManager.DbListener<List<Genre>>() {
             @Override
             public void onSuccess(List<Genre> response) {
                 Log.d(TAG, response.toString());
@@ -83,8 +83,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private <T> void deleteFromUsersLessons(T lesson, String columnName) {
-        DbManager.getInstance().deleteFromUsersLessons(lesson, columnName,
-                new DbManager.DbListener<Integer>() {
+        ApiManager.getInstance().deleteFromUsersLessons(lesson, columnName,
+                new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
                         Log.d(TAG, "delete successfully");
@@ -98,8 +98,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private <T> void addToUsersLessons(T lesson, String columnName) {
-        DbManager.getInstance().addToUsersLessons(lesson, columnName,
-                new DbManager.DbListener<Integer>() {
+        ApiManager.getInstance().addToUsersLessons(lesson, columnName,
+                new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
                         Log.d(TAG, "Added successfully");
@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
 
     private void getSongs(String genreId) {
-        DbManager.getInstance().getSongsInGenre(genreId, new DbManager.DbListener<List<Song>>() {
+        ApiManager.getInstance().getSongsInGenre(genreId, new ApiManager.DbListener<List<Song>>() {
             @Override
             public void onSuccess(List<Song> response) {
                 Log.d(TAG, response.toString());

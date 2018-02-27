@@ -19,17 +19,18 @@ import java.util.List;
  * Created by user on 16.02.2018.
  */
 
-public class DbManager {
-    private static DbManager instance;
+public class ApiManager {
+    private static ApiManager instance;
 
-    public static DbManager getInstance() {
+    public static ApiManager getInstance() {
         if (instance == null) {
-            return instance = new DbManager();
+            return instance = new ApiManager();
         }
+
         return instance;
     }
 
-    private DbManager() {
+    private ApiManager() {
         Backendless.Data.mapTableToClass(LESSONS, Lesson.class);
         Backendless.Data.mapTableToClass(COURSES_TABLE, Course.class);
         Backendless.Data.mapTableToClass(SONGS_TABLE, Song.class);
@@ -136,22 +137,8 @@ public class DbManager {
         return songs;
     }
 
-    public void getCourses(final DbListener<List<Course>> listener) {
-        Backendless.Persistence.of(Course.class).find(DataQueryBuilder.create(), new AsyncCallback<List<Course>>() {
-            @Override
-            public void handleResponse(List<Course> response) {
-                if (listener != null) {
-                    listener.onSuccess(response);
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                if (listener != null) {
-                    listener.onError(fault);
-                }
-            }
-        });
+    public List<Course> getCourses() {
+        return Backendless.Persistence.of(Course.class).find(DataQueryBuilder.create());
 
     }
 
@@ -174,9 +161,14 @@ public class DbManager {
 
     }
 
-    public void getLessonsInCourse(String courseId, final DbListener<List<Lesson>> listener) {
+    public List<Lesson> getLessonsInCourse(String courseId) {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_COURSE_ID + "='" + courseId + "'");
+        return Backendless.Data.of(Lesson.class).find(queryBuilder);
+    }
+
+    public void getLessons(final DbListener<List<Lesson>> listener) {
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         Backendless.Data.of(Lesson.class).find(queryBuilder,
                 new AsyncCallback<List<Lesson>>() {
                     @Override
