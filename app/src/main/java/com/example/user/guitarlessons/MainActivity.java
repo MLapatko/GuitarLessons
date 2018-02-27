@@ -18,9 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.backendless.exceptions.BackendlessFault;
-import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
-import com.example.user.guitarlessons.model.Lesson;
 import com.example.user.guitarlessons.model.Song;
 
 import java.util.List;
@@ -66,20 +64,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
         setBackButtonStatus(false);
 
-    }
-
-    private void getCourses() {
-        DbManager.getInstance().getCourses(new DbManager.DbListener<List<Course>>() {
-            @Override
-            public void onSuccess(List<Course> response) {
-                Log.d(TAG, response.toString());
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
     }
 
     private void getGenres() {
@@ -128,19 +112,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 });
     }
 
-    private void getLessons(String courseId) {
-        DbManager.getInstance().getLessonsInCourse(courseId, new DbManager.DbListener<List<Lesson>>() {
-            @Override
-            public void onSuccess(List<Lesson> response) {
-                Log.d(TAG, response.toString());
-            }
 
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
-    }
 
     private void getSongs(String genreId) {
         DbManager.getInstance().getSongsInGenre(genreId, new DbManager.DbListener<List<Song>>() {
