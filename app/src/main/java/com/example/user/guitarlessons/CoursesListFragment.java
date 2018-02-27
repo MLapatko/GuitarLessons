@@ -34,7 +34,7 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
     private RecyclerView mRecyclerView;
     private List<Course> mCourses = new ArrayList<>();
     private CoursesAdapter mCoursesAdapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -43,10 +43,12 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mSwipeRefreshLayout =view.findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setRefreshing(true);
+
         loadCourses();
     }
 
@@ -57,12 +59,12 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
                 mCourses = courses;
                 mCoursesAdapter = new CoursesAdapter(mCourses);
                 mRecyclerView.setAdapter(mCoursesAdapter);
-                mSwipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(Throwable e) {
-                mSwipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -78,7 +80,7 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         ContentManager.getInstance().stopProcess();
     }
 
-    @Override
+   @Override
     public void onRefresh() {
         loadCourses();
     }
