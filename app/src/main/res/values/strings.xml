@@ -26,4 +26,5 @@
     <string name="lessons">Уроки</string>
     <string name="tools">Инструменты</string>
     <string name="metronome">Метроном</string>
+    <string name="no_data">Нет данных</string>
 </resources>

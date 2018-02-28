@@ -18,10 +18,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.backendless.exceptions.BackendlessFault;
-import com.example.user.guitarlessons.model.Genre;
-import com.example.user.guitarlessons.model.Song;
-
-import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener,
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
@@ -66,22 +62,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
-    private void getGenres() {
-        ApiManager.getInstance().getGenres(new ApiManager.DbListener<List<Genre>>() {
-            @Override
-            public void onSuccess(List<Genre> response) {
-                Log.d(TAG, response.toString());
-                getSongs(response.get(0).getObjectId());
-
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-
-            }
-        });
-    }
-
     private <T> void deleteFromUsersLessons(T lesson, String columnName) {
         ApiManager.getInstance().deleteFromUsersLessons(lesson, columnName,
                 new ApiManager.DbListener<Integer>() {
@@ -111,24 +91,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     }
                 });
     }
-
-
-
-    private void getSongs(String genreId) {
-        ApiManager.getInstance().getSongsInGenre(genreId, new ApiManager.DbListener<List<Song>>() {
-            @Override
-            public void onSuccess(List<Song> response) {
-                Log.d(TAG, response.toString());
-                addToUsersLessons(response.get(0), COLUMN_FAVORITE_SONGS);
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
-    }
-
 
     @Override
     protected int getToolBarId() {

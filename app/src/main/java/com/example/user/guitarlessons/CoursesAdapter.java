@@ -3,6 +3,7 @@ package com.example.user.guitarlessons;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.guitarlessons.model.Lesson;
@@ -17,7 +18,8 @@ import java.util.List;
  * Created by user on 26.02.2018.
  */
 
-public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter.CourseViewHolder, CoursesAdapter.LessonViewHolder> {
+public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter.CourseViewHolder,
+        CoursesAdapter.LessonViewHolder> {
 
 
     public CoursesAdapter(List<? extends ExpandableGroup> groups) {
@@ -51,14 +53,26 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
 
     public class CourseViewHolder extends GroupViewHolder {
         TextView courseTitle;
+        ImageView imageView;
 
         public CourseViewHolder(View itemView) {
             super(itemView);
             courseTitle = itemView.findViewById(R.id.course_title);
+            imageView = itemView.findViewById(R.id.action_image);
         }
 
         public void setCourseTitle(ExpandableGroup group) {
             courseTitle.setText(group.getTitle());
+        }
+
+        @Override
+        public void expand() {
+            imageView.animate().rotation(180).start();
+        }
+
+        @Override
+        public void collapse() {
+            imageView.animate().rotation(0).start();
         }
     }
 

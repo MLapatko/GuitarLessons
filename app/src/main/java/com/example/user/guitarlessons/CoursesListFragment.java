@@ -7,11 +7,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ViewSwitcher;
 
 import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Course;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,9 +32,14 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
     }
 
     private RecyclerView mRecyclerView;
-    private List<Course> mCourses = new ArrayList<>();
     private CoursesAdapter mCoursesAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ViewSwitcher mViewSwitcher;
+
+    @Override
+    protected int getFragmentLayoutId() {
+        return R.layout.courses_list_fragment;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -43,21 +48,26 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
+        mViewSwitcher = view.findViewById(R.id.viewSwitcher);
+        mViewSwitcher.setDisplayedChild(0);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setRefreshing(true);
 
-        loadCourses();
+        if (!checkData()) {
+            onRefresh();
+        }
     }
 
     private void loadCourses() {
+
+        mViewSwitcher.setDisplayedChild(0);
         ContentManager.getInstance().loadCourses(new ContentManager.ContentListener<List<Course>>() {
             @Override
             public void onSuccess(List<Course> courses) {
-                mCourses = courses;
-                mCoursesAdapter = new CoursesAdapter(mCourses);
+                mCoursesAdapter = new CoursesAdapter(courses);
                 mRecyclerView.setAdapter(mCoursesAdapter);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -65,13 +75,20 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
             @Override
             public void onError(Throwable e) {
                 swipeRefreshLayout.setRefreshing(false);
+                if (!checkData()){
+                    mViewSwitcher.setDisplayedChild(1);
+                }
             }
         });
     }
 
-    @Override
-    protected int getFragmentLayoutId() {
-        return R.layout.courses_list_fragment;
+    public boolean checkData() {
+        if (!ApiManager.getInstance().getCoursesList().isEmpty()) {
+            mCoursesAdapter = new CoursesAdapter(ApiManager.getInstance().getCoursesList());
+            mRecyclerView.setAdapter(mCoursesAdapter);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -80,8 +97,9 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         ContentManager.getInstance().stopProcess();
     }
 
-   @Override
+    @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         loadCourses();
     }
 }

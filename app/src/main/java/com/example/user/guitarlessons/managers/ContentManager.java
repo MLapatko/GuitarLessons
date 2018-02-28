@@ -2,7 +2,9 @@ package com.example.user.guitarlessons.managers;
 
 import com.example.user.guitarlessons.ApiManager;
 import com.example.user.guitarlessons.model.Course;
+import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
+import com.example.user.guitarlessons.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,80 @@ public class ContentManager {
                     @Override
                     public void onSuccess(List<Course> courses) {
                         if (listener != null) {
+                            ApiManager.getInstance().setCourses(courses);
                             listener.onSuccess(courses);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (listener != null) {
+                            listener.onError(e);
+                        }
+                    }
+                });
+    }
+
+    public void loadGenres(final ContentListener<List<Genre>> listener) {
+
+        Single<List<Genre>> genreSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
+            @Override
+            public void subscribe(final SingleEmitter<List<Genre>> emitter) throws Exception {
+
+                final List<Genre> genres = ApiManager.getInstance().getGenres();
+
+                Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
+                    @Override
+                    public void subscribe(SingleEmitter<List<Genre>> e) throws Exception {
+                        e.onSuccess(new ArrayList<Genre>());
+                    }
+                });
+
+                for (final Genre genre : genres) {
+                    Single<Genre> songSingle = Single.create(new SingleOnSubscribe<Genre>() {
+                        @Override
+                        public void subscribe(SingleEmitter<Genre> e) throws Exception {
+                            List<Song> songs = ApiManager.getInstance().getSongsInGenre(genre.getObjectId());
+                            genre.setSongs(songs);
+                            e.onSuccess(genre);
+                        }
+                    });
+
+                    genreListSingle = genreListSingle
+                            .zipWith(songSingle, new BiFunction<List<Genre>, Genre, List<Genre>>() {
+                                @Override
+                                public List<Genre> apply(List<Genre> genreList, Genre genre1) throws Exception {
+                                    genreList.add(genre1);
+                                    return genreList;
+                                }
+                            });
+                }
+
+                genreListSingle
+                        .subscribeWith(new DisposableSingleObserver<List<Genre>>() {
+                            @Override
+                            public void onSuccess(List<Genre> genres) {
+                                emitter.onSuccess(genres);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                emitter.onSuccess(genres);
+                            }
+                        });
+            }
+        });
+
+        stopProcess();
+        mDisposable = genreSingle
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<Genre>>() {
+                    @Override
+                    public void onSuccess(List<Genre> genres) {
+                        if (listener != null) {
+                            listener.onSuccess(genres);
+                            ApiManager.getInstance().setGenres(genres);
                         }
                     }
 

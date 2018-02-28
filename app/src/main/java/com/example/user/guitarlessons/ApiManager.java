@@ -46,6 +46,28 @@ public class ApiManager {
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
 
     private BackendlessUser mCurrentUser = UserAuthManager.getInstance().getCurrentUser();
+    private List<Course> courses=new ArrayList<>();
+    private List<Genre> genres=new ArrayList<>();
+
+    public void setCourses(List<Course> courses) {
+        if (courses!=null) {
+            this.courses.clear();
+            this.courses.addAll(courses);
+        }
+    }
+
+    public void setGenres(List<Genre> genres) {
+        if (genres!=null){
+            this.genres.clear();
+            this.genres.addAll(genres);
+        }
+    }
+    public List<Genre> getGenresList(){
+        return this.genres;
+    }
+    public List<Course> getCoursesList(){
+        return this.courses;
+    }
 
     public BackendlessUser getmCurrentUser() {
         return mCurrentUser;
@@ -142,23 +164,8 @@ public class ApiManager {
 
     }
 
-    public void getGenres(final DbListener<List<Genre>> listener) {
-        Backendless.Persistence.of(Genre.class).find(DataQueryBuilder.create(), new AsyncCallback<List<Genre>>() {
-            @Override
-            public void handleResponse(List<Genre> response) {
-                if (listener != null) {
-                    listener.onSuccess(response);
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                if (listener != null) {
-                    listener.onError(fault);
-                }
-            }
-        });
-
+    public List<Genre> getGenres() {
+        return Backendless.Persistence.of(Genre.class).find(DataQueryBuilder.create());
     }
 
     public List<Lesson> getLessonsInCourse(String courseId) {
@@ -187,25 +194,10 @@ public class ApiManager {
                 });
     }
 
-    public void getSongsInGenre(String genreId, final DbListener<List<Song>> listener) {
+    public List<Song> getSongsInGenre(String genreId) {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_GENRE_ID + "='" + genreId + "'");
-        Backendless.Data.of(Song.class).find(queryBuilder,
-                new AsyncCallback<List<Song>>() {
-                    @Override
-                    public void handleResponse(List<Song> response) {
-                        if (listener != null) {
-                            listener.onSuccess(response);
-                        }
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        if (listener != null) {
-                            listener.onError(fault);
-                        }
-                    }
-                });
+        return Backendless.Data.of(Song.class).find(queryBuilder);
     }
 
 

@@ -3,4 +3,7 @@
     <dimen name="create_user_margin">10dp</dimen>
     <dimen name="layout_margin">16dp</dimen>
     <dimen name="nav_header_height">100dp</dimen>
+    <dimen name="cardView_margin">2dp</dimen>
+    <dimen name="textview_margin">10dp</dimen>
+    <dimen name="sub_list_margin">13dp</dimen>
 </resources>
