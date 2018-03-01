@@ -27,4 +27,7 @@
     <string name="tools">Инструменты</string>
     <string name="metronome">Метроном</string>
     <string name="no_data">Нет данных</string>
+    <string name="tab">tabs</string>
+    <string name="chords">chords</string>
+    <string name="notes">notes</string>
 </resources>

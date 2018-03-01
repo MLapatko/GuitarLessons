@@ -41,7 +41,6 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -64,8 +63,13 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
         ContentManager.getInstance().loadGenres(new ContentManager.ContentListener<List<Genre>>() {
             @Override
             public void onSuccess(List<Genre> genres) {
-                mGenresAdapter = new GenresAdapter(genres);
-                mRecyclerView.setAdapter(mGenresAdapter);
+                if (mGenresAdapter != null) {
+                    mGenresAdapter.setList(genres);
+                } else {
+                    mGenresAdapter = new GenresAdapter(genres);
+                    mRecyclerView.setAdapter(mGenresAdapter);
+                }
+
                 swipeRefreshLayout.setRefreshing(false);
             }
 

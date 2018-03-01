@@ -160,7 +160,9 @@ public class ApiManager {
     }
 
     public List<Course> getCourses() {
-        return Backendless.Persistence.of(Course.class).find(DataQueryBuilder.create());
+        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.addSortBy("created DESC");
+        return Backendless.Persistence.of(Course.class).find(queryBuilder);
 
     }
 

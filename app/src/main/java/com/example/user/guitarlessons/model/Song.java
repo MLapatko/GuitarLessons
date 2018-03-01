@@ -15,25 +15,39 @@ public class Song extends BaseModel implements Parcelable {
     private String title;
     @MapToProperty(property = "author")
     private String author;
-    @MapToProperty(property = "body")
-    private String body;
     @MapToProperty(property = "genreId")
     private String genreId;
+    @MapToProperty(property = "videoUrl")
+    private String videoUrl;
+    @MapToProperty(property = "chords")
+    private String chords;
+    @MapToProperty(property = "notes")
+    private String notes;
+    @MapToProperty(property = "tabs")
+    private String tabs;
 
-    public Song(){}
+    public Song() {
+    }
+
     protected Song(Parcel in) {
         title = in.readString();
         author = in.readString();
-        body = in.readString();
         genreId = in.readString();
+        videoUrl = in.readString();
+        chords = in.readString();
+        notes = in.readString();
+        tabs = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(author);
-        dest.writeString(body);
         dest.writeString(genreId);
+        dest.writeString(videoUrl);
+        dest.writeString(chords);
+        dest.writeString(notes);
+        dest.writeString(tabs);
     }
 
     @Override
@@ -53,17 +67,33 @@ public class Song extends BaseModel implements Parcelable {
         }
     };
 
-    public String getGenreId() {
-        return genreId;
-    }
-
-    public void setGenreId(String genreId) {
-        this.genreId = genreId;
-    }
-
     @Override
     public int getType() {
         return SONG_TYPE;
+    }
+
+    public String getTabs() {
+        return tabs;
+    }
+
+    public String getChords() {
+        return chords;
+    }
+
+    public void setChords(String chords) {
+        this.chords = chords;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getGenreId() {
+        return genreId;
     }
 
     public String getTitle() {
@@ -82,12 +112,12 @@ public class Song extends BaseModel implements Parcelable {
         this.author = author;
     }
 
-    public String getBody() {
-        return body;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     @Override
@@ -96,7 +126,6 @@ public class Song extends BaseModel implements Parcelable {
                 "objectId='" + objectId + '\'' +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", body='" + body + '\'' +
                 ", genreId='" + genreId + '\'' +
                 '}';
     }

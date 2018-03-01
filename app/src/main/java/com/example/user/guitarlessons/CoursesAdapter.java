@@ -1,5 +1,6 @@
 package com.example.user.guitarlessons;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.guitarlessons.model.Lesson;
+import com.thoughtbot.expandablerecyclerview.ExpandCollapseController;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -24,6 +26,22 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
 
     public CoursesAdapter(List<? extends ExpandableGroup> groups) {
         super(groups);
+    }
+
+    public void setList(List<? extends ExpandableGroup> groups) {
+        if (groups != null) {
+            expandableList.groups = groups;
+            int size = Math.abs(groups.size() - expandableList.expandedGroupIndexes.length);
+            boolean index[] = new boolean[groups.size()];
+            for (int i = groups.size() - 1; i >= size; i--) {
+                index[i] = expandableList.expandedGroupIndexes[i - groups.size() + expandableList.expandedGroupIndexes.length];
+            }
+
+            expandableList.expandedGroupIndexes = index;
+            ExpandCollapseController expandCollapseController=new ExpandCollapseController(expandableList, this);
+            notifyDataSetChanged();
+
+        }
     }
 
     @Override
@@ -78,14 +96,21 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
 
     public class LessonViewHolder extends ChildViewHolder {
         TextView lessonTitle;
+        ImageView contentType;
 
         public LessonViewHolder(View itemView) {
             super(itemView);
             lessonTitle = itemView.findViewById(R.id.lesson_title);
+            contentType = itemView.findViewById(R.id.content_type);
         }
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
+            if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+                contentType.setImageResource(R.drawable.ic_file);
+            } else {
+                contentType.setImageResource(R.drawable.ic_youtube_play_button);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.user.guitarlessons;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,15 @@ import java.util.List;
 
 class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreViewHolder, GenresAdapter.SongViewHolder> {
 
-
     public GenresAdapter(List<? extends ExpandableGroup> groups) {
         super(groups);
+    }
+
+    public void setList(List<? extends ExpandableGroup> groups) {
+        if (groups != null) {
+            expandableList.groups = groups;
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -76,15 +83,42 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
     }
 
     public class SongViewHolder extends ChildViewHolder {
+
         TextView songTitle;
+        TextView author;
+        ImageView contentType;
+        TextView tabsTextView;
+        TextView chordsTextView;
+        TextView notesTextView;
 
         public SongViewHolder(View itemView) {
             super(itemView);
             songTitle = itemView.findViewById(R.id.song_title);
+            contentType = itemView.findViewById(R.id.content_type);
+            author = itemView.findViewById(R.id.author_name);
+            chordsTextView = itemView.findViewById(R.id.chords);
+            notesTextView = itemView.findViewById(R.id.notes);
+            tabsTextView = itemView.findViewById(R.id.tabs);
         }
 
         public void onBind(Song song) {
             songTitle.setText(song.getTitle());
+            author.setText(song.getAuthor());
+
+            if (TextUtils.isEmpty(song.getVideoUrl())) {
+                contentType.setImageResource(R.drawable.ic_music_player);
+            } else {
+                contentType.setImageResource(R.drawable.ic_students_cap);
+            }
+            if (!TextUtils.isEmpty(song.getChords())) {
+                chordsTextView.setVisibility(View.VISIBLE);
+            }
+            if (!TextUtils.isEmpty(song.getNotes())) {
+                notesTextView.setVisibility(View.VISIBLE);
+            }
+            if (!TextUtils.isEmpty(song.getTabs())) {
+                tabsTextView.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

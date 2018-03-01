@@ -67,15 +67,19 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         ContentManager.getInstance().loadCourses(new ContentManager.ContentListener<List<Course>>() {
             @Override
             public void onSuccess(List<Course> courses) {
-                mCoursesAdapter = new CoursesAdapter(courses);
-                mRecyclerView.setAdapter(mCoursesAdapter);
+                if (mCoursesAdapter != null) {
+                    mCoursesAdapter.setList(courses);
+                } else {
+                    mCoursesAdapter = new CoursesAdapter(courses);
+                    mRecyclerView.setAdapter(mCoursesAdapter);
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(Throwable e) {
                 swipeRefreshLayout.setRefreshing(false);
-                if (!checkData()){
+                if (!checkData()) {
                     mViewSwitcher.setDisplayedChild(1);
                 }
             }

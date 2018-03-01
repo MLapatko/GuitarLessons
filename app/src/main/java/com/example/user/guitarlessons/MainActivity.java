@@ -36,6 +36,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     public static final String COLUMN_ISVIEW = "isView";
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
     ActionBarDrawerToggle mDrawerToggle;
+    int mPreviousItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,12 +161,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         }
 
         putFragment(item);
-
+        mPreviousItem = item.getItemId();
         return true;
     }
 
     private void putFragment(MenuItem item) {
-
+        if (item.getItemId() == mPreviousItem) {
+            return;
+        }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
