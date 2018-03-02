@@ -8,6 +8,7 @@ import com.backendless.persistence.DataQueryBuilder;
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
+import com.example.user.guitarlessons.model.LessonDetails;
 import com.example.user.guitarlessons.model.Song;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,6 +32,7 @@ public class ApiManager {
     }
 
     private ApiManager() {
+        Backendless.Data.mapTableToClass(LESSONS_DETAILS, LessonDetails.class);
         Backendless.Data.mapTableToClass(LESSONS, Lesson.class);
         Backendless.Data.mapTableToClass(COURSES_TABLE, Course.class);
         Backendless.Data.mapTableToClass(SONGS_TABLE, Song.class);
@@ -38,6 +40,7 @@ public class ApiManager {
     }
 
     public static final String LESSONS = "Lessons";
+    public static final String LESSONS_DETAILS="Lessons_details";
     public static final String COURSES_TABLE = "Courses";
     public static final String GENRES_TABLE = "Genres";
     public static final String SONGS_TABLE = "Songs";
@@ -45,6 +48,7 @@ public class ApiManager {
     public static final String COLUMN_GENRE_ID = "genreId";
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
     public static final String COLUMN_FAVORITE="favorite";
+    public static final String COLUMN_LESSON_ID="lesson_id";
 
     private BackendlessUser mCurrentUser = UserAuthManager.getInstance().getCurrentUser();
     private List<Course> courses=new ArrayList<>();
@@ -196,11 +200,21 @@ public class ApiManager {
                     }
                 });
     }
+    public List<LessonDetails> getLessonsDetails(String idLesson){
+        final List<LessonDetails>details = null;
+        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.setWhereClause(COLUMN_LESSON_ID+"='"+idLesson+"'");
+       return Backendless.Persistence.of(LessonDetails.class).find(queryBuilder);
+    }
 
     public List<Song> getSongsInGenre(String genreId) {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_GENRE_ID + "='" + genreId + "'");
         return Backendless.Data.of(Song.class).find(queryBuilder);
+    }
+
+    public Lesson getLessonById(String idLesson) {
+        return Backendless.Persistence.of(Lesson.class).findById(idLesson);
     }
 
 

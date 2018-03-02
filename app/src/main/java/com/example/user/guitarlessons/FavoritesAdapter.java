@@ -98,11 +98,11 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
-            if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+           /* if (TextUtils.isEmpty(lesson.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_file);
             } else {
                 contentType.setImageResource(R.drawable.ic_youtube_play_button);
-            }
+            }*/
         }
     }
 }

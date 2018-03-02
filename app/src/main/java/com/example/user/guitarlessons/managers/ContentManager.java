@@ -4,6 +4,7 @@ import com.example.user.guitarlessons.ApiManager;
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
+import com.example.user.guitarlessons.model.LessonDetails;
 import com.example.user.guitarlessons.model.Song;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -46,7 +48,7 @@ public class ContentManager {
                 try {
                     courses = ApiManager.getInstance().getCourses();
                 } catch (Exception e) {
-
+                    listener.onError(e);
                 }
                 Single<List<Course>> courseListSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
                     @Override
@@ -123,7 +125,7 @@ public class ContentManager {
                 try {
                     genres = ApiManager.getInstance().getGenres();
                 } catch (Exception e) {
-
+                    listener.onError(e);
                 }
 
                 Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
@@ -189,6 +191,47 @@ public class ContentManager {
                         }
                     }
                 });
+    }
+
+    public void getLesson(final String idLesson, final ContentListener<Lesson> listener) {
+        Single<Lesson> lessonSingle = Single.create(new SingleOnSubscribe<Lesson>() {
+            @Override
+            public void subscribe(SingleEmitter<Lesson> e) throws Exception {
+                Lesson lesson=ApiManager.getInstance().getLessonById(idLesson);
+                e.onSuccess(lesson);
+            }
+        });
+      lessonSingle=lessonSingle.flatMap(new Function<Lesson, Single<Lesson>>() {
+            @Override
+            public Single<Lesson> apply(final Lesson lesson) throws Exception {
+                return Single.create(new SingleOnSubscribe<Lesson>() {
+                    @Override
+                    public void subscribe(SingleEmitter<Lesson> e) throws Exception {
+                        LessonDetails details=ApiManager.getInstance().getLessonsDetails(lesson.getObjectId()).get(0);
+                        lesson.setDetails(details);
+                        e.onSuccess(lesson);
+
+                    }
+                });
+            }
+        });
+      lessonSingle.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableSingleObserver<Lesson>() {
+          @Override
+          public void onSuccess(Lesson lesson) {
+              if (listener!=null){
+                  listener.onSuccess(lesson);
+              }
+          }
+
+          @Override
+          public void onError(Throwable e) {
+                if (listener!=null){
+                    listener.onError(e);
+                }
+          }
+      });
+
     }
 
     public void stopProcess() {

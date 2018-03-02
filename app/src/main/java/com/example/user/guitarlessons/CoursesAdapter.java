@@ -1,6 +1,5 @@
 package com.example.user.guitarlessons;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,12 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
     public void onBindChildViewHolder(LessonViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
         final Lesson lesson = (Lesson) group.getItems().get(childIndex);
         holder.onBind(lesson);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LessonContentActivity.start(view.getContext(),lesson.getObjectId());
+            }
+        });
     }
 
     @Override
@@ -106,11 +111,11 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
-            if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+          /*  if (TextUtils.isEmpty(lesson.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_file);
             } else {
                 contentType.setImageResource(R.drawable.ic_youtube_play_button);
-            }
+            }*/
         }
     }
 }

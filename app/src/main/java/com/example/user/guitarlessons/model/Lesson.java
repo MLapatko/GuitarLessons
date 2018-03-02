@@ -16,26 +16,14 @@ public class Lesson implements Parcelable, ModelType {
     String objectId;
     @MapToProperty(property = "title")
     private String title;
-    @MapToProperty(property = "description")
-    private String description;
-    @MapToProperty(property = "videoUrl")
-    private String videoUrl;
-    @MapToProperty(property = "body")
-    private String body;
-    @MapToProperty(property = "rate")
-    private int rate;
     @MapToProperty(property = "courseId")
     private String courseId;
-
+    LessonDetails details;
 
 
     protected Lesson(Parcel in) {
         objectId=in.readString();
         title = in.readString();
-        description = in.readString();
-        videoUrl = in.readString();
-        body = in.readString();
-        rate = in.readInt();
         courseId = in.readString();
     }
 
@@ -51,6 +39,14 @@ public class Lesson implements Parcelable, ModelType {
         }
     };
 
+    public LessonDetails getDetails() {
+        return details;
+    }
+
+    public void setDetails(LessonDetails details) {
+        this.details = details;
+    }
+
     public String getCourseId() {
         return courseId;
     }
@@ -64,10 +60,6 @@ public class Lesson implements Parcelable, ModelType {
     public Lesson(String objectId, String title, String description, String videoUrl, String body, int rate) {
         this.objectId = objectId;
         this.title = title;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.body = body;
-        this.rate = rate;
     }
 
     @Override
@@ -75,17 +67,18 @@ public class Lesson implements Parcelable, ModelType {
         return "Lesson{" +
                 "objectId='" + objectId + '\'' +
                 ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", videoUrl='" + videoUrl + '\'' +
-                ", body='" + body + '\'' +
-                ", rate=" + rate +
-                ", courseId=" + courseId +
+                ", courseId='" + courseId + '\'' +
+                ", details=" + details +
                 '}';
     }
 
     @Override
     public int getType() {
         return LESSON_TYPE;
+    }
+
+    public String getObjectId() {
+        return objectId;
     }
 
     public String getTitle() {
@@ -96,38 +89,6 @@ public class Lesson implements Parcelable, ModelType {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public int getRate() {
-        return rate;
-    }
-
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -136,10 +97,7 @@ public class Lesson implements Parcelable, ModelType {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(objectId);
-        parcel.writeString(description);
-        parcel.writeString(videoUrl);
-        parcel.writeString(body);
-        parcel.writeInt(rate);
+        parcel.writeString(title);
         parcel.writeString(courseId);
 
     }
