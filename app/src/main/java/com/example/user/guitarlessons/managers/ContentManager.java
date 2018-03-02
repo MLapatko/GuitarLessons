@@ -7,6 +7,7 @@ import com.example.user.guitarlessons.model.Lesson;
 import com.example.user.guitarlessons.model.Song;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -41,9 +42,12 @@ public class ContentManager {
         Single<List<Course>> courseSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
             @Override
             public void subscribe(final SingleEmitter<List<Course>> emitter) throws Exception {
+                List<Course> courses = Collections.emptyList();
+                try {
+                    courses = ApiManager.getInstance().getCourses();
+                } catch (Exception e) {
 
-                final List<Course> courses = ApiManager.getInstance().getCourses();
-
+                }
                 Single<List<Course>> courseListSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Course>> e) throws Exception {
@@ -71,6 +75,7 @@ public class ContentManager {
                             });
                 }
 
+                final List<Course> finalCourses = courses;
                 courseListSingle
                         .subscribeWith(new DisposableSingleObserver<List<Course>>() {
                             @Override
@@ -80,7 +85,7 @@ public class ContentManager {
 
                             @Override
                             public void onError(Throwable e) {
-                                emitter.onSuccess(courses);
+                                emitter.onSuccess(finalCourses);
                             }
                         });
             }
@@ -114,7 +119,12 @@ public class ContentManager {
             @Override
             public void subscribe(final SingleEmitter<List<Genre>> emitter) throws Exception {
 
-                final List<Genre> genres = ApiManager.getInstance().getGenres();
+                List<Genre> genres = Collections.emptyList();
+                try {
+                    genres = ApiManager.getInstance().getGenres();
+                } catch (Exception e) {
+
+                }
 
                 Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
                     @Override
@@ -143,6 +153,7 @@ public class ContentManager {
                             });
                 }
 
+                final List<Genre> finalGenres = genres;
                 genreListSingle
                         .subscribeWith(new DisposableSingleObserver<List<Genre>>() {
                             @Override
@@ -152,7 +163,7 @@ public class ContentManager {
 
                             @Override
                             public void onError(Throwable e) {
-                                emitter.onSuccess(genres);
+                                emitter.onSuccess(finalGenres);
                             }
                         });
             }
