@@ -106,11 +106,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        /*switch (view.getId()) {
-            case R.id.log_out:
+        switch (view.getId()) {
+        /*    case R.id.log_out:
                 logOut();
-                break;
-        }*/
+                break;*/
+        }
     }
 
     private void logOut() {

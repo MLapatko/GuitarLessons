@@ -3,8 +3,6 @@ package com.example.user.guitarlessons;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.example.user.guitarlessons.model.BaseModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,7 @@ import java.util.List;
  * Created by user on 25.02.2018.
  */
 
-abstract class BaseRecyclerViewAdapter<T extends BaseModel, VH extends RecyclerView.ViewHolder>
+abstract class BaseRecyclerViewAdapter<T extends ModelType, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
 
     List<T> mList = new ArrayList<>();

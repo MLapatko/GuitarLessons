@@ -44,6 +44,7 @@ public class ApiManager {
     public static final String COLUMN_COURSE_ID = "courseId";
     public static final String COLUMN_GENRE_ID = "genreId";
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
+    public static final String COLUMN_FAVORITE="favorite";
 
     private BackendlessUser mCurrentUser = UserAuthManager.getInstance().getCurrentUser();
     private List<Course> courses=new ArrayList<>();
