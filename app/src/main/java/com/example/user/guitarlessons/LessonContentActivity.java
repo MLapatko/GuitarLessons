@@ -53,11 +53,12 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
 
         onRefresh();
     }
-    private void getLesson(String lessonId){
+
+    private void getLesson(String lessonId) {
         ContentManager.getInstance().getLesson(lessonId, new ContentManager.ContentListener<Lesson>() {
             @Override
             public void onSuccess(Lesson response) {
-                mLesson=response;
+                mLesson = response;
                 mViewFlipper.setDisplayedChild(1);
                 mLessonTitle.setText(response.getTitle());
                 mWebView.loadData(response.getDetails().getBody(), "text/html", "UTF-8");
@@ -69,6 +70,7 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_tool_bar_menu, menu);
@@ -83,19 +85,30 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
                 return true;
             case R.id.add_favorite:
                 if (mLesson != null) {
-                    if (item.isChecked()) {
-                            item.setChecked(false);
-                            deleteFromUsersLessons(mLesson,ApiManager.COLUMN_FAVORITE);
-                        Toast.makeText(this,"Добавлено в избранное",Toast.LENGTH_SHORT).show();
+                    if (ApiManager.getInstance().isFavoriteLesson(lessonId)) {
+                        item.setIcon(R.drawable.ic_favorite_gray);
+                        deleteFromUsersLessons(mLesson, ApiManager.COLUMN_FAVORITE);
+                        Toast.makeText(this, "Удалено из избранного", Toast.LENGTH_SHORT).show();
                     } else {
-                        item.setChecked(true);
+                        item.setIcon(R.drawable.ic_favorite_white);
                         addToUsersLessons(mLesson, ApiManager.COLUMN_FAVORITE);
-                        Toast.makeText(this,"Удаалено из избранного",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Добавлено в избранное", Toast.LENGTH_SHORT).show();
                     }
                 }
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.add_favorite);
+        if (ApiManager.getInstance().isFavoriteLesson(lessonId)) {
+            item.setIcon(R.drawable.ic_favorite_white);
+        } else {
+            item.setIcon(R.drawable.ic_favorite_gray);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     private <T> void addToUsersLessons(T lesson, String columnName) {

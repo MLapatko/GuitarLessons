@@ -1,5 +1,7 @@
 package com.example.user.guitarlessons;
 
+import android.text.TextUtils;
+
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -215,6 +217,14 @@ public class ApiManager {
 
     public Lesson getLessonById(String idLesson) {
         return Backendless.Persistence.of(Lesson.class).findById(idLesson);
+    }
+    public boolean isFavoriteLesson(String lessonId){
+        for (Lesson lesson:getUsersLessons(COLUMN_FAVORITE)) {
+            if (TextUtils.equals(lesson.getObjectId(),lessonId)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
