@@ -15,7 +15,6 @@ import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.managers.ApiManager;
-import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Lesson;
 
 /**
@@ -32,7 +31,6 @@ public class LessonContentActivity extends BaseActivity {
 
     public static final String LESSON_ID = "lesson id";
     public static final String COURSE_TITLE = "course title";
-    public static final String TAG = "mylog";
     private TextView mLessonTitle;
     private String lessonId;
     private WebView mWebView;
@@ -59,17 +57,17 @@ public class LessonContentActivity extends BaseActivity {
     }
 
     private void getLesson(String lessonId) {
-        ContentManager.getInstance().getLesson(lessonId, new ContentManager.ContentListener<Lesson>() {
+        ApiManager.getInstance().getLessonById(lessonId, new ApiManager.DbListener<Lesson>() {
             @Override
             public void onSuccess(Lesson response) {
                 mLesson = response;
                 mViewFlipper.setDisplayedChild(1);
                 mLessonTitle.setText(response.getTitle());
-                mWebView.loadData(response.getDetails().getBody(), "text/html", "UTF-8");
+                mWebView.loadData(response.getBody(), "text/html", "UTF-8");
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(BackendlessFault e) {
                 mViewFlipper.setDisplayedChild(2);
             }
         });
@@ -123,6 +121,8 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
+                        Toast.makeText(LessonContentActivity.this,
+                                getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -139,7 +139,8 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
-
+                        Toast.makeText(LessonContentActivity.this,
+                                getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

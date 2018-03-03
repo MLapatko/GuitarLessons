@@ -18,13 +18,24 @@ public class Lesson implements Parcelable, ModelType {
     private String title;
     @MapToProperty(property = "courseId")
     private String courseId;
-    LessonDetails details;
+    @MapToProperty(property = "description")
+    private String description;
+    @MapToProperty(property = "videoUrl")
+    private String videoUrl;
+    @MapToProperty(property = "body")
+    private String body;
+    @MapToProperty(property = "rate")
+    private int rate;
 
 
     protected Lesson(Parcel in) {
-        objectId=in.readString();
+        objectId = in.readString();
         title = in.readString();
         courseId = in.readString();
+        description = in.readString();
+        videoUrl = in.readString();
+        body = in.readString();
+        rate = in.readInt();
     }
 
     public static final Creator<Lesson> CREATOR = new Creator<Lesson>() {
@@ -39,20 +50,8 @@ public class Lesson implements Parcelable, ModelType {
         }
     };
 
-    public LessonDetails getDetails() {
-        return details;
-    }
-
-    public void setDetails(LessonDetails details) {
-        this.details = details;
-    }
-
     public String getCourseId() {
         return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
     }
 
     public Lesson() {}
@@ -68,7 +67,6 @@ public class Lesson implements Parcelable, ModelType {
                 "objectId='" + objectId + '\'' +
                 ", title='" + title + '\'' +
                 ", courseId='" + courseId + '\'' +
-                ", details=" + details +
                 '}';
     }
 
@@ -89,6 +87,22 @@ public class Lesson implements Parcelable, ModelType {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,9 +110,13 @@ public class Lesson implements Parcelable, ModelType {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+
         parcel.writeString(objectId);
         parcel.writeString(title);
         parcel.writeString(courseId);
-
+        parcel.writeString(description);
+        parcel.writeString(videoUrl);
+        parcel.writeString(body);
+        parcel.writeInt(rate);
     }
 }

@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
-                    android:textSize="24sp"/>
+                    android:textSize="20sp"/>
 
                 <WebView
                     android:id="@+id/web_view"

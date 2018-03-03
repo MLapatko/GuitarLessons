@@ -10,7 +10,6 @@ import com.backendless.persistence.DataQueryBuilder;
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
-import com.example.user.guitarlessons.model.LessonDetails;
 import com.example.user.guitarlessons.model.Song;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,7 +33,6 @@ public class ApiManager {
     }
 
     private ApiManager() {
-        Backendless.Data.mapTableToClass(LESSONS_DETAILS, LessonDetails.class);
         Backendless.Data.mapTableToClass(LESSONS, Lesson.class);
         Backendless.Data.mapTableToClass(COURSES_TABLE, Course.class);
         Backendless.Data.mapTableToClass(SONGS_TABLE, Song.class);
@@ -42,7 +40,6 @@ public class ApiManager {
     }
 
     public static final String LESSONS = "Lessons";
-    public static final String LESSONS_DETAILS = "Lessons_details";
     public static final String COURSES_TABLE = "Courses";
     public static final String GENRES_TABLE = "Genres";
     public static final String SONGS_TABLE = "Songs";
@@ -182,33 +179,8 @@ public class ApiManager {
     public List<Lesson> getLessonsInCourse(String courseId) {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_COURSE_ID + "='" + courseId + "'");
+        queryBuilder.setProperties("objectId", "title", "videoUrl");
         return Backendless.Data.of(Lesson.class).find(queryBuilder);
-    }
-
-    public void getLessons(final DbListener<List<Lesson>> listener) {
-        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-        Backendless.Data.of(Lesson.class).find(queryBuilder,
-                new AsyncCallback<List<Lesson>>() {
-                    @Override
-                    public void handleResponse(List<Lesson> response) {
-                        if (listener != null) {
-                            listener.onSuccess(response);
-                        }
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        if (listener != null) {
-                            listener.onError(fault);
-                        }
-                    }
-                });
-    }
-
-    public List<LessonDetails> getLessonsDetails(String idLesson) {
-        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-        queryBuilder.setWhereClause(COLUMN_LESSON_ID + "='" + idLesson + "'");
-        return Backendless.Persistence.of(LessonDetails.class).find(queryBuilder);
     }
 
     public List<Song> getSongsInGenre(String genreId) {
@@ -218,8 +190,20 @@ public class ApiManager {
         return Backendless.Data.of(Song.class).find(queryBuilder);
     }
 
-    public Lesson getLessonById(String idLesson) {
-        return Backendless.Persistence.of(Lesson.class).findById(idLesson);
+    public void getLessonById(String idLesson, final DbListener<Lesson> listener) {
+        Backendless.Persistence.of(Lesson.class).findById(idLesson, new AsyncCallback<Lesson>() {
+            @Override
+            public void handleResponse(Lesson response) {
+                if (listener != null) {
+                    listener.onSuccess(response);
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                listener.onError(fault);
+            }
+        });
     }
 
     public void getSongById(String songId, final DbListener<Song> listener) {

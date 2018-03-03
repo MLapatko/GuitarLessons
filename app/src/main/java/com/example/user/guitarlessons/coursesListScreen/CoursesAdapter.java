@@ -1,13 +1,14 @@
 package com.example.user.guitarlessons.coursesListScreen;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.user.guitarlessons.lessonContentScreen.LessonContentActivity;
 import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.lessonContentScreen.LessonContentActivity;
 import com.example.user.guitarlessons.model.Lesson;
 import com.thoughtbot.expandablerecyclerview.ExpandCollapseController;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
@@ -113,11 +114,11 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
-          /*  if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+            if (TextUtils.isEmpty(lesson.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_file);
             } else {
                 contentType.setImageResource(R.drawable.ic_youtube_play_button);
-            }*/
+            }
         }
     }
 }

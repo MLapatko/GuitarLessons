@@ -3,7 +3,6 @@ package com.example.user.guitarlessons.managers;
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
-import com.example.user.guitarlessons.model.LessonDetails;
 import com.example.user.guitarlessons.model.Song;
 
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -192,7 +190,7 @@ public class ContentManager {
                 });
     }
 
-    public void getLesson(final String idLesson, final ContentListener<Lesson> listener) {
+   /* public void getLesson(final String idLesson, final ContentListener<Lesson> listener) {
         Single<Lesson> lessonSingle = Single.create(new SingleOnSubscribe<Lesson>() {
             @Override
             public void subscribe(SingleEmitter<Lesson> e) throws Exception {
@@ -231,7 +229,7 @@ public class ContentManager {
           }
       });
 
-    }
+    }*/
 
     public void stopProcess() {
         if (mDisposable != null) {
