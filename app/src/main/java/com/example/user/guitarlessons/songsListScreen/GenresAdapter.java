@@ -49,13 +49,13 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
     }
 
     @Override
-    public void onBindChildViewHolder(SongViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
+    public void onBindChildViewHolder(SongViewHolder holder, int flatPosition, final ExpandableGroup group, int childIndex) {
         final Song song = (Song) group.getItems().get(childIndex);
         holder.onBind(song);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SongContentActivity.start(view.getContext(),song.getObjectId());
+                SongContentActivity.start(view.getContext(),song.getObjectId(),group.getTitle());
             }
         });
     }

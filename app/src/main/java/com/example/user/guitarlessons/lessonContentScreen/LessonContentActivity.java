@@ -23,13 +23,15 @@ import com.example.user.guitarlessons.model.Lesson;
  */
 
 public class LessonContentActivity extends BaseActivity {
-    public static void start(Context context, String idLesson) {
+    public static void start(Context context, String idLesson,String courseTitle) {
         Intent starter = new Intent(context, LessonContentActivity.class);
         starter.putExtra(LESSON_ID, idLesson);
+        starter.putExtra(COURSE_TITLE, courseTitle);
         context.startActivity(starter);
     }
 
     public static final String LESSON_ID = "lesson id";
+    public static final String COURSE_TITLE = "course title";
     public static final String TAG = "mylog";
     private TextView mLessonTitle;
     private String lessonId;
@@ -47,6 +49,7 @@ public class LessonContentActivity extends BaseActivity {
         mViewFlipper.setDisplayedChild(0);
 
         lessonId = getIntent().getStringExtra(LESSON_ID);
+        setToolbarTitle(getIntent().getStringExtra(COURSE_TITLE));
 
         mLessonTitle = findViewById(R.id.lesson_title);
 

@@ -22,13 +22,16 @@ import com.example.user.guitarlessons.model.Song;
  */
 
 public class SongContentActivity extends BaseActivity {
-    public static void start(Context context, String songId) {
+
+    public static void start(Context context, String songId, String genreTitle) {
         Intent starter = new Intent(context, SongContentActivity.class);
         starter.putExtra(SONG_ID, songId);
+        starter.putExtra(GENRE_TITLE, genreTitle);
         context.startActivity(starter);
     }
 
     public static final String SONG_ID = "sing id";
+    public static final String GENRE_TITLE = "genre title";
     private ViewFlipper mViewFlipper;
     private String songId;
     private TextView name;
@@ -41,6 +44,7 @@ public class SongContentActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setBackButtonStatus(true);
+        setToolbarTitle(getIntent().getStringExtra(GENRE_TITLE));
 
         mViewFlipper = findViewById(R.id.viewFlipper);
 

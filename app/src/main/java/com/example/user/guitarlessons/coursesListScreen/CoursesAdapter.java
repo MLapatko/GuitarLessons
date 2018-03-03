@@ -60,13 +60,13 @@ public class CoursesAdapter extends ExpandableRecyclerViewAdapter<CoursesAdapter
     }
 
     @Override
-    public void onBindChildViewHolder(LessonViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
+    public void onBindChildViewHolder(LessonViewHolder holder, int flatPosition, final ExpandableGroup group, int childIndex) {
         final Lesson lesson = (Lesson) group.getItems().get(childIndex);
         holder.onBind(lesson);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LessonContentActivity.start(view.getContext(),lesson.getObjectId());
+                LessonContentActivity.start(view.getContext(),lesson.getObjectId(),group.getTitle());
             }
         });
     }
