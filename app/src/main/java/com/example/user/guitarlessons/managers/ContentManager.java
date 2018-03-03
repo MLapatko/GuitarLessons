@@ -1,6 +1,5 @@
 package com.example.user.guitarlessons.managers;
 
-import com.example.user.guitarlessons.ApiManager;
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;

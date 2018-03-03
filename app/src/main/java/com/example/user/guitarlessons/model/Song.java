@@ -19,12 +19,12 @@ public class Song extends BaseModel implements Parcelable {
     private String genreId;
     @MapToProperty(property = "videoUrl")
     private String videoUrl;
+    @MapToProperty(property = "body")
+    private String body;
     @MapToProperty(property = "chords")
-    private String chords;
-    @MapToProperty(property = "notes")
-    private String notes;
+    private boolean chords;
     @MapToProperty(property = "tabs")
-    private String tabs;
+    private boolean tabs;
 
     public Song() {
     }
@@ -34,9 +34,8 @@ public class Song extends BaseModel implements Parcelable {
         author = in.readString();
         genreId = in.readString();
         videoUrl = in.readString();
-        chords = in.readString();
-        notes = in.readString();
-        tabs = in.readString();
+        chords = in.readByte() != 0;
+        tabs = in.readByte() != 0;
     }
 
     @Override
@@ -45,9 +44,8 @@ public class Song extends BaseModel implements Parcelable {
         dest.writeString(author);
         dest.writeString(genreId);
         dest.writeString(videoUrl);
-        dest.writeString(chords);
-        dest.writeString(notes);
-        dest.writeString(tabs);
+        dest.writeByte((byte) (chords ? 1 : 0));
+        dest.writeByte((byte) (tabs ? 1 : 0));
     }
 
     @Override
@@ -72,24 +70,24 @@ public class Song extends BaseModel implements Parcelable {
         return SONG_TYPE;
     }
 
-    public String getTabs() {
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public boolean getTabs() {
         return tabs;
     }
 
-    public String getChords() {
+    public boolean getChords() {
         return chords;
     }
 
-    public void setChords(String chords) {
+    public void setChords(boolean chords) {
         this.chords = chords;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 
     public String getGenreId() {

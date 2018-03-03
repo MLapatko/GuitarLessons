@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.managers;
 
 import android.text.TextUtils;
 
@@ -42,37 +42,39 @@ public class ApiManager {
     }
 
     public static final String LESSONS = "Lessons";
-    public static final String LESSONS_DETAILS="Lessons_details";
+    public static final String LESSONS_DETAILS = "Lessons_details";
     public static final String COURSES_TABLE = "Courses";
     public static final String GENRES_TABLE = "Genres";
     public static final String SONGS_TABLE = "Songs";
     public static final String COLUMN_COURSE_ID = "courseId";
     public static final String COLUMN_GENRE_ID = "genreId";
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
-    public static final String COLUMN_FAVORITE="favorite";
-    public static final String COLUMN_LESSON_ID="lesson_id";
+    public static final String COLUMN_FAVORITE = "favorite";
+    public static final String COLUMN_LESSON_ID = "lesson_id";
 
     private BackendlessUser mCurrentUser = UserAuthManager.getInstance().getCurrentUser();
-    private List<Course> courses=new ArrayList<>();
-    private List<Genre> genres=new ArrayList<>();
+    private List<Course> courses = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
 
     public void setCourses(List<Course> courses) {
-        if (courses!=null) {
+        if (courses != null) {
             this.courses.clear();
             this.courses.addAll(courses);
         }
     }
 
     public void setGenres(List<Genre> genres) {
-        if (genres!=null){
+        if (genres != null) {
             this.genres.clear();
             this.genres.addAll(genres);
         }
     }
-    public List<Genre> getGenresList(){
+
+    public List<Genre> getGenresList() {
         return this.genres;
     }
-    public List<Course> getCoursesList(){
+
+    public List<Course> getCoursesList() {
         return this.courses;
     }
 
@@ -167,7 +169,7 @@ public class ApiManager {
     }
 
     public List<Course> getCourses() {
-        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.addSortBy("created DESC");
         return Backendless.Persistence.of(Course.class).find(queryBuilder);
 
@@ -202,15 +204,16 @@ public class ApiManager {
                     }
                 });
     }
-    public List<LessonDetails> getLessonsDetails(String idLesson){
-        final List<LessonDetails>details = null;
-        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
-        queryBuilder.setWhereClause(COLUMN_LESSON_ID+"='"+idLesson+"'");
-       return Backendless.Persistence.of(LessonDetails.class).find(queryBuilder);
+
+    public List<LessonDetails> getLessonsDetails(String idLesson) {
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause(COLUMN_LESSON_ID + "='" + idLesson + "'");
+        return Backendless.Persistence.of(LessonDetails.class).find(queryBuilder);
     }
 
     public List<Song> getSongsInGenre(String genreId) {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setProperties("objectId", "title", "author", "videoUrl", "chords", "tabs");
         queryBuilder.setWhereClause(COLUMN_GENRE_ID + "='" + genreId + "'");
         return Backendless.Data.of(Song.class).find(queryBuilder);
     }
@@ -218,9 +221,37 @@ public class ApiManager {
     public Lesson getLessonById(String idLesson) {
         return Backendless.Persistence.of(Lesson.class).findById(idLesson);
     }
-    public boolean isFavoriteLesson(String lessonId){
-        for (Lesson lesson:getUsersLessons(COLUMN_FAVORITE)) {
-            if (TextUtils.equals(lesson.getObjectId(),lessonId)){
+
+    public void getSongById(String songId, final DbListener<Song> listener) {
+        Backendless.Persistence.of(Song.class).findById(songId, new AsyncCallback<Song>() {
+            @Override
+            public void handleResponse(Song response) {
+                if (listener != null) {
+                    listener.onSuccess(response);
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                if (listener != null) {
+                    listener.onError(fault);
+                }
+            }
+        });
+    }
+
+    public boolean isFavoriteLesson(String lessonId) {
+        for (Lesson lesson : getUsersLessons(COLUMN_FAVORITE)) {
+            if (TextUtils.equals(lesson.getObjectId(), lessonId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isFavoriteSong(String songId) {
+        for (Song song : getFavoriteSongs()) {
+            if (TextUtils.equals(song.getObjectId(), songId)) {
                 return true;
             }
         }

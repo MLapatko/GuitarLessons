@@ -10,10 +10,10 @@ import java.util.List;
  * Created by user on 25.02.2018.
  */
 
-abstract class BaseRecyclerViewAdapter<T extends ModelType, VH extends RecyclerView.ViewHolder>
+public abstract class BaseRecyclerViewAdapter<T extends ModelType, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
 
-    List<T> mList = new ArrayList<>();
+    protected List<T> mList = new ArrayList<>();
 
     public void setList(List<T> list) {
         if (this.mList != null) {

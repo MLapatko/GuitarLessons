@@ -3,7 +3,7 @@ package com.example.user.guitarlessons.application;
 import android.app.Application;
 
 import com.backendless.Backendless;
-import com.example.user.guitarlessons.Defaults;
+import com.example.user.guitarlessons.managers.Defaults;
 
 /**
  * Created by User on 12.02.2018.

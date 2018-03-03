@@ -18,6 +18,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.backendless.exceptions.BackendlessFault;
+import com.example.user.guitarlessons.auth.LogInActivity;
+import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
+import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
+import com.example.user.guitarlessons.managers.ApiManager;
+import com.example.user.guitarlessons.managers.UserAuthManager;
+import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
+import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener,
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {

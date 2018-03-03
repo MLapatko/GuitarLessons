@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.favoriteListScreen;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ViewSwitcher;
+
+import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.managers.ApiManager;
 
 import java.util.ArrayList;
 import java.util.List;

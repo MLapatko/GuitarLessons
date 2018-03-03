@@ -1,11 +1,9 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.lessonContentScreen;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -14,6 +12,9 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.backendless.exceptions.BackendlessFault;
+import com.example.user.guitarlessons.BaseActivity;
+import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Lesson;
 
@@ -21,7 +22,7 @@ import com.example.user.guitarlessons.model.Lesson;
  * Created by user on 02.03.2018.
  */
 
-public class LessonContentActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class LessonContentActivity extends BaseActivity {
     public static void start(Context context, String idLesson) {
         Intent starter = new Intent(context, LessonContentActivity.class);
         starter.putExtra(LESSON_ID, idLesson);
@@ -50,8 +51,8 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
         mLessonTitle = findViewById(R.id.lesson_title);
 
         mWebView = findViewById(R.id.web_view);
+        getLesson(lessonId);
 
-        onRefresh();
     }
 
     private void getLesson(String lessonId) {
@@ -86,13 +87,9 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
             case R.id.add_favorite:
                 if (mLesson != null) {
                     if (ApiManager.getInstance().isFavoriteLesson(lessonId)) {
-                        item.setIcon(R.drawable.ic_favorite_gray);
-                        deleteFromUsersLessons(mLesson, ApiManager.COLUMN_FAVORITE);
-                        Toast.makeText(this, "Удалено из избранного", Toast.LENGTH_SHORT).show();
+                        deleteFromUsersLessons(mLesson, item);
                     } else {
-                        item.setIcon(R.drawable.ic_favorite_white);
-                        addToUsersLessons(mLesson, ApiManager.COLUMN_FAVORITE);
-                        Toast.makeText(this, "Добавлено в избранное", Toast.LENGTH_SHORT).show();
+                        addToUsersLessons(mLesson, item);
                     }
                 }
             default:
@@ -111,27 +108,30 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private <T> void addToUsersLessons(T lesson, String columnName) {
-        ApiManager.getInstance().addToUsersLessons(lesson, columnName,
+    private <T> void addToUsersLessons(T lesson, final MenuItem item) {
+        ApiManager.getInstance().addToUsersLessons(lesson, ApiManager.COLUMN_FAVORITE,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
-                        Log.d(TAG, "Added successfully");
+                        Toast.makeText(LessonContentActivity.this,
+                                getString(R.string.add_favorite), Toast.LENGTH_SHORT).show();
+                        item.setIcon(R.drawable.ic_favorite_white);
                     }
 
                     @Override
                     public void onError(BackendlessFault fault) {
-                        Log.d(TAG, fault.getMessage());
                     }
                 });
     }
 
-    private <T> void deleteFromUsersLessons(T lesson, String columnName) {
-        ApiManager.getInstance().deleteFromUsersLessons(lesson, columnName,
+    private <T> void deleteFromUsersLessons(T lesson, final MenuItem item) {
+        ApiManager.getInstance().deleteFromUsersLessons(lesson, ApiManager.COLUMN_FAVORITE,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
-                        Log.d(TAG, "delete successfully");
+                        Toast.makeText(LessonContentActivity.this,
+                                getString(R.string.delete_favorite), Toast.LENGTH_SHORT).show();
+                        item.setIcon(R.drawable.ic_favorite_gray);
                     }
 
                     @Override
@@ -151,8 +151,4 @@ public class LessonContentActivity extends BaseActivity implements SwipeRefreshL
         return R.layout.lesson_content;
     }
 
-    @Override
-    public void onRefresh() {
-        getLesson(lessonId);
-    }
 }

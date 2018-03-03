@@ -78,14 +78,6 @@
                 android:text="@string/chords"
                 android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/notes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/text_types_margin"
-                android:background="@drawable/oval_shape"
-                android:text="@string/notes"
-                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

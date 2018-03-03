@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.songsListScreen;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.model.Song;
+import com.example.user.guitarlessons.songContentScreen.SongContentActivity;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -50,6 +52,12 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
     public void onBindChildViewHolder(SongViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
         final Song song = (Song) group.getItems().get(childIndex);
         holder.onBind(song);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SongContentActivity.start(view.getContext(),song.getObjectId());
+            }
+        });
     }
 
     @Override
@@ -89,7 +97,6 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
         ImageView contentType;
         TextView tabsTextView;
         TextView chordsTextView;
-        TextView notesTextView;
 
         public SongViewHolder(View itemView) {
             super(itemView);
@@ -97,7 +104,6 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
             contentType = itemView.findViewById(R.id.content_type);
             author = itemView.findViewById(R.id.author_name);
             chordsTextView = itemView.findViewById(R.id.chords);
-            notesTextView = itemView.findViewById(R.id.notes);
             tabsTextView = itemView.findViewById(R.id.tabs);
         }
 
@@ -110,13 +116,10 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
             } else {
                 contentType.setImageResource(R.drawable.ic_students_cap);
             }
-            if (!TextUtils.isEmpty(song.getChords())) {
+            if (song.getChords()) {
                 chordsTextView.setVisibility(View.VISIBLE);
             }
-            if (!TextUtils.isEmpty(song.getNotes())) {
-                notesTextView.setVisibility(View.VISIBLE);
-            }
-            if (!TextUtils.isEmpty(song.getTabs())) {
+            if (song.getTabs()) {
                 tabsTextView.setVisibility(View.VISIBLE);
             }
         }

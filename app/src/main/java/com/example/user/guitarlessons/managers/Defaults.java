@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.managers;
 
 /**
  * Created by user on 05.02.2018.

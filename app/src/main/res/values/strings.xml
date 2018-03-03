@@ -30,4 +30,6 @@
     <string name="tab">tabs</string>
     <string name="chords">chords</string>
     <string name="notes">notes</string>
+    <string name="delete_favorite">Удалено из избранного</string>
+    <string name="add_favorite">Добавлено в избранное</string>
 </resources>

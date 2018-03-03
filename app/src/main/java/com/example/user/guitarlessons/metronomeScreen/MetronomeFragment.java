@@ -1,6 +1,9 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.metronomeScreen;
 
 import android.os.Bundle;
+
+import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.R;
 
 /**
  * Created by user on 22.02.2018.

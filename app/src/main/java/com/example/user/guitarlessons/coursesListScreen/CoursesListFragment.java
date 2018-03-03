@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.coursesListScreen;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
+import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
-import com.example.user.guitarlessons.model.Genre;
+import com.example.user.guitarlessons.model.Course;
 
 import java.util.List;
 
@@ -18,29 +21,33 @@ import java.util.List;
  * Created by user on 21.02.2018.
  */
 
-public class SongsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
-    public static SongsListFragment newInstance() {
+public class CoursesListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String TAG = "mylog";
+
+    public static CoursesListFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        SongsListFragment fragment = new SongsListFragment();
+        CoursesListFragment fragment = new CoursesListFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     private RecyclerView mRecyclerView;
-    private GenresAdapter mGenresAdapter;
+    private CoursesAdapter mCoursesAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewSwitcher mViewSwitcher;
 
     @Override
     protected int getFragmentLayoutId() {
-        return R.layout.songs_list_fragment;
+        return R.layout.courses_list_fragment;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -57,19 +64,18 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
         }
     }
 
-    private void loadGenres() {
+    private void loadCourses() {
 
         mViewSwitcher.setDisplayedChild(0);
-        ContentManager.getInstance().loadGenres(new ContentManager.ContentListener<List<Genre>>() {
+        ContentManager.getInstance().loadCourses(new ContentManager.ContentListener<List<Course>>() {
             @Override
-            public void onSuccess(List<Genre> genres) {
-                if (mGenresAdapter != null) {
-                    mGenresAdapter.setList(genres);
+            public void onSuccess(List<Course> courses) {
+                if (mCoursesAdapter != null) {
+                    mCoursesAdapter.setList(courses);
                 } else {
-                    mGenresAdapter = new GenresAdapter(genres);
-                    mRecyclerView.setAdapter(mGenresAdapter);
+                    mCoursesAdapter = new CoursesAdapter(courses);
+                    mRecyclerView.setAdapter(mCoursesAdapter);
                 }
-
                 swipeRefreshLayout.setRefreshing(false);
             }
 
@@ -84,9 +90,9 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     public boolean checkData() {
-        if (!ApiManager.getInstance().getGenresList().isEmpty()) {
-            mGenresAdapter = new GenresAdapter(ApiManager.getInstance().getGenresList());
-            mRecyclerView.setAdapter(mGenresAdapter);
+        if (!ApiManager.getInstance().getCoursesList().isEmpty()) {
+            mCoursesAdapter = new CoursesAdapter(ApiManager.getInstance().getCoursesList());
+            mRecyclerView.setAdapter(mCoursesAdapter);
             return true;
         }
         return false;
@@ -101,7 +107,6 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        loadGenres();
+        loadCourses();
     }
-
 }

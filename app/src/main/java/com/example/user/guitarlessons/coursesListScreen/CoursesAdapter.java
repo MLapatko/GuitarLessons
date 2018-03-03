@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.coursesListScreen;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.guitarlessons.lessonContentScreen.LessonContentActivity;
+import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.model.Lesson;
 import com.thoughtbot.expandablerecyclerview.ExpandCollapseController;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;

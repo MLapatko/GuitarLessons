@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.favoriteListScreen;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.guitarlessons.BaseRecyclerViewAdapter;
+import com.example.user.guitarlessons.ModelType;
+import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.model.Lesson;
 import com.example.user.guitarlessons.model.Song;
 
@@ -52,7 +55,6 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
         ImageView contentType;
         TextView tabsTextView;
         TextView chordsTextView;
-        TextView notesTextView;
 
         public SongsViewHolder(View itemView) {
             super(itemView);
@@ -60,7 +62,6 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
             contentType = itemView.findViewById(R.id.content_type);
             author = itemView.findViewById(R.id.author_name);
             chordsTextView = itemView.findViewById(R.id.chords);
-            notesTextView = itemView.findViewById(R.id.notes);
             tabsTextView = itemView.findViewById(R.id.tabs);
         }
 
@@ -73,13 +74,10 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
             } else {
                 contentType.setImageResource(R.drawable.ic_students_cap);
             }
-            if (!TextUtils.isEmpty(song.getChords())) {
+            if (!song.getChords()) {
                 chordsTextView.setVisibility(View.VISIBLE);
             }
-            if (!TextUtils.isEmpty(song.getNotes())) {
-                notesTextView.setVisibility(View.VISIBLE);
-            }
-            if (!TextUtils.isEmpty(song.getTabs())) {
+            if (song.getTabs()) {
                 tabsTextView.setVisibility(View.VISIBLE);
             }
         }
