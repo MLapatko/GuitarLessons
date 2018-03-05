@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.example.user.guitarlessons.BaseRecyclerViewAdapter;
 import com.example.user.guitarlessons.ModelType;
 import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.lessonContentScreen.LessonContentActivity;
 import com.example.user.guitarlessons.model.Lesson;
 import com.example.user.guitarlessons.model.Song;
+import com.example.user.guitarlessons.songContentScreen.SongContentActivity;
 
 /**
  * Created by user on 01.03.2018.
@@ -35,16 +37,28 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         super.onBindViewHolder(holder, position);
         switch (getItemViewType(position)) {
             case ModelType.LESSON_TYPE:
                 holder = (LessonsViewHolder) holder;
                 ((LessonsViewHolder) holder).onBind((Lesson) mList.get(position));
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LessonContentActivity.start(view.getContext(),((Lesson) mList.get(position)).getObjectId(),"");
+                    }
+                });
                 break;
             case ModelType.SONG_TYPE:
                 holder = (SongsViewHolder) holder;
                 ((SongsViewHolder) holder).onBind((Song) mList.get(position));
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SongContentActivity.start(view.getContext(),((Song) mList.get(position)).getObjectId(),"");
+                    }
+                });
                 break;
         }
     }

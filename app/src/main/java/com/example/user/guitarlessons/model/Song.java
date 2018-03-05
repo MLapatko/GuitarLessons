@@ -3,14 +3,17 @@ package com.example.user.guitarlessons.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.user.guitarlessons.ModelType;
+
 import weborb.service.MapToProperty;
 
 /**
  * Created by user on 20.02.2018.
  */
 
-public class Song extends BaseModel implements Parcelable {
-
+public class Song implements Parcelable,ModelType {
+    @MapToProperty(property = "objectId")
+    private String objectId;
     @MapToProperty(property = "title")
     private String title;
     @MapToProperty(property = "author")
@@ -116,6 +119,12 @@ public class Song extends BaseModel implements Parcelable {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+    public String getObjectId() {
+        return objectId;
+    }
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     @Override

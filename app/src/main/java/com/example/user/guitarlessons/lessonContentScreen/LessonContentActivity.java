@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -87,7 +88,7 @@ public class LessonContentActivity extends BaseActivity {
                 return true;
             case R.id.add_favorite:
                 if (mLesson != null) {
-                    if (ApiManager.getInstance().isFavoriteLesson(lessonId)) {
+                    if (ApiManager.getInstance().isFavorite(mLesson.getObjectId())!=-1) {
                         deleteFromUsersLessons(mLesson, item);
                     } else {
                         addToUsersLessons(mLesson, item);
@@ -101,7 +102,7 @@ public class LessonContentActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_favorite);
-        if (ApiManager.getInstance().isFavoriteLesson(lessonId)) {
+        if (ApiManager.getInstance().isFavorite(lessonId)!=-1) {
             item.setIcon(R.drawable.ic_favorite_white);
         } else {
             item.setIcon(R.drawable.ic_favorite_gray);
@@ -110,7 +111,7 @@ public class LessonContentActivity extends BaseActivity {
     }
 
     private <T> void addToUsersLessons(T lesson, final MenuItem item) {
-        ApiManager.getInstance().addToUsersLessons(lesson, ApiManager.COLUMN_FAVORITE,
+        ApiManager.getInstance().addToUsersLessons(lesson, ApiManager.COLUMN_FAVORITE_LESSONS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
@@ -121,6 +122,7 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
+                        Log.e("mylog",fault.getMessage());
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }
@@ -128,7 +130,7 @@ public class LessonContentActivity extends BaseActivity {
     }
 
     private <T> void deleteFromUsersLessons(T lesson, final MenuItem item) {
-        ApiManager.getInstance().deleteFromUsersLessons(lesson, ApiManager.COLUMN_FAVORITE,
+        ApiManager.getInstance().deleteFromUsersLessons(lesson, ApiManager.COLUMN_FAVORITE_LESSONS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
@@ -139,6 +141,7 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
+                        Log.e("mylog",fault.getMessage());
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }

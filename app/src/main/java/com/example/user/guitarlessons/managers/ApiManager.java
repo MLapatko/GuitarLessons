@@ -11,8 +11,7 @@ import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
 import com.example.user.guitarlessons.model.Song;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.user.guitarlessons.model.UsersLessons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.List;
  */
 
 public class ApiManager {
+
     private static ApiManager instance;
 
     public static ApiManager getInstance() {
@@ -37,26 +37,60 @@ public class ApiManager {
         Backendless.Data.mapTableToClass(COURSES_TABLE, Course.class);
         Backendless.Data.mapTableToClass(SONGS_TABLE, Song.class);
         Backendless.Data.mapTableToClass(GENRES_TABLE, Genre.class);
+        Backendless.Data.mapTableToClass(USERS_LESSON_TABLE, UsersLessons.class);
     }
 
     public static final String LESSONS = "Lessons";
     public static final String COURSES_TABLE = "Courses";
     public static final String GENRES_TABLE = "Genres";
     public static final String SONGS_TABLE = "Songs";
+    public static final String USERS_LESSON_TABLE="Users_lessons";
     public static final String COLUMN_COURSE_ID = "courseId";
     public static final String COLUMN_GENRE_ID = "genreId";
     public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
     public static final String COLUMN_FAVORITE = "favorite";
     public static final String COLUMN_LESSON_ID = "lesson_id";
+    private static final String USER_ID ="userId" ;
+    public static final String  COLUMN_FAVORITE_LESSONS="favoriteLessons";
 
     private BackendlessUser mCurrentUser = UserAuthManager.getInstance().getCurrentUser();
     private List<Course> courses = new ArrayList<>();
     private List<Genre> genres = new ArrayList<>();
 
+    List<Object> favorite=new ArrayList<>();
+
+    public List<Object> getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(List<Object> favorite) {
+        this.favorite = favorite;
+    }
+
+
+    private List<String> favoriteIdList=new ArrayList<>();
+
+
     public void setCourses(List<Course> courses) {
         if (courses != null) {
             this.courses.clear();
             this.courses.addAll(courses);
+        }
+    }
+    public void setFavoriteList(List<String> favoriteList) {
+        if ( favoriteList!= null) {
+            this.favoriteIdList.clear();
+            this.favoriteIdList.addAll(favoriteList);
+        }
+    }
+    public void addToFavoriteList(String id){
+        if (id!=null){
+            favoriteIdList.add(id);
+        }
+    }
+    public void deleteFromFavoriteList(String id){
+        if (id!=null){
+            favoriteIdList.remove(id);
         }
     }
 
@@ -99,70 +133,99 @@ public class ApiManager {
                 });
     }
 
-    public <T> void deleteFromUsersLessons(T lesson, String columnName,
+    public <T> void deleteFromUsersLessons(final T lesson, final String columnName,
                                            final DbListener<Integer> listener) {
-        List<T> lessons = new ArrayList<>();
+        final List<T> lessons = new ArrayList<>();
         lessons.add(lesson);
-        Backendless.Persistence.of(BackendlessUser.class).deleteRelation(mCurrentUser,
-                columnName, lessons, new AsyncCallback<Integer>() {
+        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.setProperties(COLUMN_FAVORITE_LESSONS,COLUMN_FAVORITE_SONGS);
+        queryBuilder.setWhereClause(USER_ID+ "='" +mCurrentUser.getObjectId()+ "'");
+        Backendless.Persistence.of(UsersLessons.class).find(queryBuilder, new AsyncCallback<List<UsersLessons>>() {
+            @Override
+            public void handleResponse(List<UsersLessons> response) {
+                Backendless.Persistence.of(UsersLessons.class).deleteRelation(response.get(0), columnName, lessons,
+                        new AsyncCallback<Integer>() {
                     @Override
                     public void handleResponse(Integer response) {
-                        if (listener != null) {
-                            updateCurrentUser(listener, response);
+                        if (lesson instanceof Lesson) {
+                            favorite.remove(isFavorite(((Lesson) lesson).getObjectId()));
+                        }else if (lesson instanceof Song){
+                            favorite.remove(isFavorite(((Song) lesson).getObjectId()));
                         }
+                        if (listener!=null){
+                            listener.onSuccess(response);
+                        }
+
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        if (listener != null) {
+                        if (listener!=null){
                             listener.onError(fault);
                         }
                     }
                 });
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                if (listener!=null){
+                    listener.onError(fault);
+                }
+            }
+        });
     }
 
-    public <T> void addToUsersLessons(T lesson, String columnName,
+    public <T> void addToUsersLessons(final T lesson, final String columnName,
                                       final DbListener<Integer> listener) {
-        List<T> lessons = new ArrayList<>();
+        final List<T> lessons = new ArrayList<>();
         lessons.add(lesson);
-        Backendless.Persistence.of(BackendlessUser.class).addRelation(mCurrentUser, columnName,
-                lessons, new AsyncCallback<Integer>() {
-                    @Override
-                    public void handleResponse(Integer response) {
-                        if (listener != null) {
-                            updateCurrentUser(listener, response);
-                        }
-                    }
+        DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.setProperties(COLUMN_FAVORITE_LESSONS,COLUMN_FAVORITE_SONGS);
+        queryBuilder.setWhereClause(USER_ID+ "='" +mCurrentUser.getObjectId()+ "'");
+        Backendless.Persistence.of(UsersLessons.class).find(queryBuilder, new AsyncCallback<List<UsersLessons>>() {
+            @Override
+            public void handleResponse(List<UsersLessons> response) {
+                Backendless.Persistence.of(UsersLessons.class).addRelation(response.get(0), columnName, lessons,
+                        new AsyncCallback<Integer>() {
+                            @Override
+                            public void handleResponse(Integer response) {
+                                favorite.add(lesson);
+                                if (listener!=null){
+                                    listener.onSuccess(response);
+                                }
+                            }
 
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        if (listener != null) {
-                            listener.onError(fault);
-                        }
-                    }
-                });
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                if (listener!=null){
+                                    listener.onError(fault);
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                if (listener!=null){
+                    listener.onError(fault);
+                }
+            }
+        });
 
     }
-
-    public List<Lesson> getUsersLessons(String columnName) {
-
-        Gson gson = new Gson();
-        String json = gson.toJson(mCurrentUser.getProperty(columnName));
-        ArrayList<Lesson> lessons = gson.fromJson(json,
-                new TypeToken<ArrayList<Lesson>>() {
-                }.getType());
-
-        return lessons;
+  public List<Song> getFavoriteSongs(){
+       final DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.setProperties("objectId","title","author");
+        queryBuilder.setWhereClause(USERS_LESSON_TABLE+"["+COLUMN_FAVORITE_SONGS+ "]."+USER_ID+"='" +mCurrentUser.getObjectId()+ "'");
+        return Backendless.Persistence.of(Song.class).find(queryBuilder);
     }
 
-    public List<Song> getFavoriteSongs() {
-        Gson gson = new Gson();
-        String json = gson.toJson(mCurrentUser.getProperty(COLUMN_FAVORITE_SONGS));
-        ArrayList<Song> songs = gson.fromJson(json,
-                new TypeToken<ArrayList<Song>>() {
-                }.getType());
-
-        return songs;
+    public List<Lesson> getFavoriteLessons(){
+        final DataQueryBuilder queryBuilder=DataQueryBuilder.create();
+        queryBuilder.setProperties("objectId","title");
+        queryBuilder.setWhereClause(USERS_LESSON_TABLE+"["+COLUMN_FAVORITE_LESSONS+ "]."+USER_ID+"='" +mCurrentUser.getObjectId()+ "'");
+        return Backendless.Persistence.of(Lesson.class).find(queryBuilder);
     }
 
     public List<Course> getCourses() {
@@ -224,24 +287,22 @@ public class ApiManager {
         });
     }
 
-    public boolean isFavoriteLesson(String lessonId) {
-        for (Lesson lesson : getUsersLessons(COLUMN_FAVORITE)) {
-            if (TextUtils.equals(lesson.getObjectId(), lessonId)) {
-                return true;
+    public int isFavorite(String id) {
+        for (int i = 0; i <favorite.size() ; i++) {
+            Object object=favorite.get(i);
+            if (object instanceof Lesson){
+                if (TextUtils.equals(((Lesson) object).getObjectId(),id))
+                {
+                    return i;
+                }
+            }else if (object instanceof Song){
+                if (TextUtils.equals(((Song) object).getObjectId(),id)){
+                    return i;
+                }
             }
         }
-        return false;
+        return -1;
     }
-
-    public boolean isFavoriteSong(String songId) {
-        for (Song song : getFavoriteSongs()) {
-            if (TextUtils.equals(song.getObjectId(), songId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public interface DbListener<T> {
         void onSuccess(T response);

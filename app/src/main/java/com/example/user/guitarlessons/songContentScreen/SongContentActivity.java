@@ -89,7 +89,7 @@ public class SongContentActivity extends BaseActivity {
                 return true;
             case R.id.add_favorite:
                 if (mSong != null) {
-                    if (ApiManager.getInstance().isFavoriteSong(songId)) {
+                    if (ApiManager.getInstance().isFavorite(songId)!=-1) {
                         deleteFromUsersLessons(mSong, item);
                     } else {
                         addToUsersLessons(mSong, item);
@@ -103,7 +103,7 @@ public class SongContentActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_favorite);
-        if (ApiManager.getInstance().isFavoriteSong(songId)) {
+        if (ApiManager.getInstance().isFavorite(songId)!=-1) {
             item.setIcon(R.drawable.ic_favorite_white);
         } else {
             item.setIcon(R.drawable.ic_favorite_gray);
