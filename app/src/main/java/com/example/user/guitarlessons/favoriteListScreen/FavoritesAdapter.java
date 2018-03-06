@@ -88,7 +88,7 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
             } else {
                 contentType.setImageResource(R.drawable.ic_students_cap);
             }
-            if (!song.getChords()) {
+            if (song.getChords()) {
                 chordsTextView.setVisibility(View.VISIBLE);
             }
             if (song.getTabs()) {
@@ -110,11 +110,11 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
-           /* if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+           if (TextUtils.isEmpty(lesson.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_file);
             } else {
                 contentType.setImageResource(R.drawable.ic_youtube_play_button);
-            }*/
+            }
         }
     }
 }

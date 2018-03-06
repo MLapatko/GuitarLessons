@@ -5,14 +5,13 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/tool_bar_layout" />
+    <include layout="@layout/tool_bar_with_progress" />
 
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/layout_margin">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"

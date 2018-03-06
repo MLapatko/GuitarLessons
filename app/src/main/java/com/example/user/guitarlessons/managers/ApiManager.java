@@ -64,33 +64,18 @@ public class ApiManager {
     }
 
     public void setFavorite(List<Object> favorite) {
-        this.favorite = favorite;
+
+        if (favorite != null) {
+            this.favorite.clear();
+            this.favorite.addAll(favorite);
+        }
     }
-
-
-    private List<String> favoriteIdList=new ArrayList<>();
 
 
     public void setCourses(List<Course> courses) {
         if (courses != null) {
             this.courses.clear();
             this.courses.addAll(courses);
-        }
-    }
-    public void setFavoriteList(List<String> favoriteList) {
-        if ( favoriteList!= null) {
-            this.favoriteIdList.clear();
-            this.favoriteIdList.addAll(favoriteList);
-        }
-    }
-    public void addToFavoriteList(String id){
-        if (id!=null){
-            favoriteIdList.add(id);
-        }
-    }
-    public void deleteFromFavoriteList(String id){
-        if (id!=null){
-            favoriteIdList.remove(id);
         }
     }
 
@@ -216,14 +201,14 @@ public class ApiManager {
     }
   public List<Song> getFavoriteSongs(){
        final DataQueryBuilder queryBuilder=DataQueryBuilder.create();
-        queryBuilder.setProperties("objectId","title","author");
+        queryBuilder.setProperties("objectId","title","author","chords","tabs");
         queryBuilder.setWhereClause(USERS_LESSON_TABLE+"["+COLUMN_FAVORITE_SONGS+ "]."+USER_ID+"='" +mCurrentUser.getObjectId()+ "'");
         return Backendless.Persistence.of(Song.class).find(queryBuilder);
     }
 
     public List<Lesson> getFavoriteLessons(){
         final DataQueryBuilder queryBuilder=DataQueryBuilder.create();
-        queryBuilder.setProperties("objectId","title");
+        queryBuilder.setProperties("objectId","title","videoUrl");
         queryBuilder.setWhereClause(USERS_LESSON_TABLE+"["+COLUMN_FAVORITE_LESSONS+ "]."+USER_ID+"='" +mCurrentUser.getObjectId()+ "'");
         return Backendless.Persistence.of(Lesson.class).find(queryBuilder);
     }

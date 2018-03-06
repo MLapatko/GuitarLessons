@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -16,14 +18,17 @@ import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.managers.ApiManager;
+import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Lesson;
+
+import java.util.List;
 
 /**
  * Created by user on 02.03.2018.
  */
 
 public class LessonContentActivity extends BaseActivity {
-    public static void start(Context context, String idLesson,String courseTitle) {
+    public static void start(Context context, String idLesson, String courseTitle) {
         Intent starter = new Intent(context, LessonContentActivity.class);
         starter.putExtra(LESSON_ID, idLesson);
         starter.putExtra(COURSE_TITLE, courseTitle);
@@ -37,6 +42,7 @@ public class LessonContentActivity extends BaseActivity {
     private WebView mWebView;
     private ViewFlipper mViewFlipper;
     private Lesson mLesson;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +53,8 @@ public class LessonContentActivity extends BaseActivity {
         mViewFlipper = findViewById(R.id.viewFlipper);
         mViewFlipper.setDisplayedChild(0);
 
+        mProgressBar = findViewById(R.id.toolbar_progress_bar);
+
         lessonId = getIntent().getStringExtra(LESSON_ID);
         setToolbarTitle(getIntent().getStringExtra(COURSE_TITLE));
 
@@ -55,12 +63,15 @@ public class LessonContentActivity extends BaseActivity {
         mWebView = findViewById(R.id.web_view);
         getLesson(lessonId);
 
+        checkData();
+
     }
 
     private void getLesson(String lessonId) {
         ApiManager.getInstance().getLessonById(lessonId, new ApiManager.DbListener<Lesson>() {
             @Override
             public void onSuccess(Lesson response) {
+                mProgressBar.setVisibility(View.GONE);
                 mLesson = response;
                 mViewFlipper.setDisplayedChild(1);
                 mLessonTitle.setText(response.getTitle());
@@ -69,6 +80,8 @@ public class LessonContentActivity extends BaseActivity {
 
             @Override
             public void onError(BackendlessFault e) {
+
+                mProgressBar.setVisibility(View.GONE);
                 mViewFlipper.setDisplayedChild(2);
             }
         });
@@ -88,12 +101,14 @@ public class LessonContentActivity extends BaseActivity {
                 return true;
             case R.id.add_favorite:
                 if (mLesson != null) {
-                    if (ApiManager.getInstance().isFavorite(mLesson.getObjectId())!=-1) {
+                    item.setEnabled(false);
+                    if (ApiManager.getInstance().isFavorite(mLesson.getObjectId()) != -1) {
                         deleteFromUsersLessons(mLesson, item);
                     } else {
                         addToUsersLessons(mLesson, item);
                     }
                 }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -102,7 +117,7 @@ public class LessonContentActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_favorite);
-        if (ApiManager.getInstance().isFavorite(lessonId)!=-1) {
+        if (ApiManager.getInstance().isFavorite(lessonId) != -1) {
             item.setIcon(R.drawable.ic_favorite_white);
         } else {
             item.setIcon(R.drawable.ic_favorite_gray);
@@ -111,10 +126,14 @@ public class LessonContentActivity extends BaseActivity {
     }
 
     private <T> void addToUsersLessons(T lesson, final MenuItem item) {
+        mProgressBar.setVisibility(View.VISIBLE);
         ApiManager.getInstance().addToUsersLessons(lesson, ApiManager.COLUMN_FAVORITE_LESSONS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
+
+                        mProgressBar.setVisibility(View.GONE);
+                        item.setEnabled(true);
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.add_favorite), Toast.LENGTH_SHORT).show();
                         item.setIcon(R.drawable.ic_favorite_white);
@@ -122,7 +141,10 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
-                        Log.e("mylog",fault.getMessage());
+                        Log.e("mylog", fault.getMessage());
+
+                        mProgressBar.setVisibility(View.GONE);
+                        item.setEnabled(true);
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }
@@ -130,10 +152,14 @@ public class LessonContentActivity extends BaseActivity {
     }
 
     private <T> void deleteFromUsersLessons(T lesson, final MenuItem item) {
+        mProgressBar.setVisibility(View.VISIBLE);
         ApiManager.getInstance().deleteFromUsersLessons(lesson, ApiManager.COLUMN_FAVORITE_LESSONS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
+
+                        mProgressBar.setVisibility(View.GONE);
+                        item.setEnabled(true);
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.delete_favorite), Toast.LENGTH_SHORT).show();
                         item.setIcon(R.drawable.ic_favorite_gray);
@@ -141,11 +167,29 @@ public class LessonContentActivity extends BaseActivity {
 
                     @Override
                     public void onError(BackendlessFault fault) {
-                        Log.e("mylog",fault.getMessage());
+                        Log.e("mylog", fault.getMessage());
+
+                        mProgressBar.setVisibility(View.GONE);
+                        item.setEnabled(true);
                         Toast.makeText(LessonContentActivity.this,
                                 getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    public void checkData() {
+        if (ApiManager.getInstance().getFavorite().isEmpty()) {
+            ContentManager.getInstance().getFavorite(new ContentManager.ContentListener<List<Object>>() {
+                @Override
+                public void onSuccess(List<Object> response) {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+            });
+        }
     }
 
     @Override

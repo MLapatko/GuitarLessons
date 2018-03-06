@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -15,7 +17,10 @@ import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.managers.ApiManager;
+import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Song;
+
+import java.util.List;
 
 /**
  * Created by user on 03.03.2018.
@@ -38,6 +43,7 @@ public class SongContentActivity extends BaseActivity {
     private TextView author;
     private Song mSong;
     private WebView mWebView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +53,7 @@ public class SongContentActivity extends BaseActivity {
         setToolbarTitle(getIntent().getStringExtra(GENRE_TITLE));
 
         mViewFlipper = findViewById(R.id.viewFlipper);
+        mProgressBar=findViewById(R.id.toolbar_progress_bar);
 
         name = findViewById(R.id.song_name);
         author = findViewById(R.id.author_name);
@@ -55,12 +62,15 @@ public class SongContentActivity extends BaseActivity {
 
         songId = getIntent().getStringExtra(SONG_ID);
         getSongById(songId);
+
+        checkData();
     }
 
     private void getSongById(String songId) {
         ApiManager.getInstance().getSongById(songId, new ApiManager.DbListener<Song>() {
             @Override
             public void onSuccess(Song response) {
+                mProgressBar.setVisibility(View.GONE);
                 mSong = response;
                 name.setText(response.getTitle());
                 author.setText(response.getAuthor());
@@ -70,6 +80,7 @@ public class SongContentActivity extends BaseActivity {
 
             @Override
             public void onError(BackendlessFault fault) {
+                mProgressBar.setVisibility(View.GONE);
                 mViewFlipper.setDisplayedChild(2);
             }
         });
@@ -89,12 +100,14 @@ public class SongContentActivity extends BaseActivity {
                 return true;
             case R.id.add_favorite:
                 if (mSong != null) {
+                    item.setEnabled(false);
                     if (ApiManager.getInstance().isFavorite(songId)!=-1) {
                         deleteFromUsersLessons(mSong, item);
                     } else {
                         addToUsersLessons(mSong, item);
                     }
                 }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -112,39 +125,60 @@ public class SongContentActivity extends BaseActivity {
     }
 
     private <T> void addToUsersLessons(T song, final MenuItem item) {
+        mProgressBar.setVisibility(View.VISIBLE);
         ApiManager.getInstance().addToUsersLessons(song, ApiManager.COLUMN_FAVORITE_SONGS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SongContentActivity.this,
                                 getString(R.string.add_favorite), Toast.LENGTH_SHORT).show();
                         item.setIcon(R.drawable.ic_favorite_white);
+                        item.setEnabled(true);
                     }
 
                     @Override
                     public void onError(BackendlessFault fault) {
-
+                        item.setEnabled(true);
                     }
                 });
     }
 
     private <T> void deleteFromUsersLessons(T song, final MenuItem item) {
+        mProgressBar.setVisibility(View.VISIBLE);
         ApiManager.getInstance().deleteFromUsersLessons(song, ApiManager.COLUMN_FAVORITE_SONGS,
                 new ApiManager.DbListener<Integer>() {
                     @Override
                     public void onSuccess(Integer response) {
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SongContentActivity.this,
                                 getString(R.string.delete_favorite), Toast.LENGTH_SHORT).show();
                         item.setIcon(R.drawable.ic_favorite_gray);
+                        item.setEnabled(true);
                     }
 
                     @Override
                     public void onError(BackendlessFault fault) {
-
+                        mProgressBar.setVisibility(View.GONE);
+                        item.setEnabled(true);
                     }
                 });
     }
+    public void checkData() {
+        if (ApiManager.getInstance().getFavorite().isEmpty()) {
+            ContentManager.getInstance().getFavorite(new ContentManager.ContentListener<List<Object>>() {
+                @Override
+                public void onSuccess(List<Object> response) {
 
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+            });
+        }
+    }
     @Override
     protected int getToolBarId() {
         return R.id.tool_bar;
