@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
 import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.FilterLayout;
 import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
@@ -35,6 +35,7 @@ public class FavoriteFragment extends BaseFragment implements SwipeRefreshLayout
     private ViewSwitcher mViewSwitcher;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FavoritesAdapter mAdapter;
+    private FilterLayout mFilterLayout;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -50,43 +51,53 @@ public class FavoriteFragment extends BaseFragment implements SwipeRefreshLayout
         mViewSwitcher = view.findViewById(R.id.viewSwitcher);
         mAdapter = new FavoritesAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        if (!checkData()) {
-            onRefresh();
-        }
+        mFilterLayout = view.findViewById(R.id.filterLayout);
+        mFilterLayout.setListener(new FilterLayout.FilterListener() {
+            @Override
+            public void onAllClicked() {
+                if (!ApiManager.getInstance().getFavorite().isEmpty()) {
+                    mAdapter.setList(ApiManager.getInstance().getFavorite());
+                    mAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                }else {
+                    onRefresh();
+                }
+            }
+
+            @Override
+            public void onChordsClicked() {
+                mAdapter.setList(ApiManager.getInstance().getFavoriteChordsSongs());
+                mAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onTabsClicked() {
+                mAdapter.setList(ApiManager.getInstance().getFavoriteTabsSongs());
+                mAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!checkData()) {
-            onRefresh();
-        }
-    }
-
-    public boolean checkData() {
-        if (!ApiManager.getInstance().getFavorite().isEmpty()) {
-            mAdapter.setList(ApiManager.getInstance().getFavorite());
-            mAdapter.notifyDataSetChanged();
-            Log.d("mylog","dats");
-            return true;
-        }
-        return false;
+        mFilterLayout.refreshData();
     }
 
     private void getFavorite() {
         ContentManager.getInstance().getFavorite(new ContentManager.ContentListener<List<Object>>() {
             @Override
             public void onSuccess(List<Object> response) {
-
-                mViewSwitcher.setDisplayedChild(0);
                 if (!response.isEmpty()) {
-                    mAdapter.setList(response);
-                    mAdapter.notifyDataSetChanged();
+                    mFilterLayout.refreshData();
+                    mViewSwitcher.setDisplayedChild(0);
                 } else {
                     mViewSwitcher.setDisplayedChild(1);
                 }
-                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override

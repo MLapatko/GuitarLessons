@@ -65,8 +65,10 @@ public class Genre extends ExpandableGroup<Song> implements ModelType {
 
     public void setSongs(List<Song>songs) {
         if (songs != null) {
+            this.songs.clear();
             this.songs.addAll(songs);
             if (getItems() != null) {
+                getItems().clear();
                 getItems().addAll(songs);
             }
         }

@@ -82,7 +82,8 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
         public void onBind(Song song) {
             songTitle.setText(song.getTitle());
             author.setText(song.getAuthor());
-
+            chordsTextView.setVisibility(View.GONE);
+            tabsTextView.setVisibility(View.GONE);
             if (TextUtils.isEmpty(song.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_music_player);
             } else {

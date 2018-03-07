@@ -1,7 +1,5 @@
 package com.example.user.guitarlessons.managers;
 
-import android.util.Log;
-
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
@@ -178,8 +176,8 @@ public class ContentManager {
                     @Override
                     public void onSuccess(List<Genre> genres) {
                         if (listener != null) {
-                            listener.onSuccess(genres);
                             ApiManager.getInstance().setGenres(genres);
+                            listener.onSuccess(genres);
                         }
                     }
 
@@ -249,7 +247,7 @@ public class ContentManager {
                             List<Lesson> favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
                             em.onSuccess(favoriteLessons);
                         } catch (Exception e) {
-
+                           listener.onError(e);
                         }
 
 
@@ -262,7 +260,7 @@ public class ContentManager {
                             List<Song> favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
                             e.onSuccess(favoriteSongs);
                         } catch (Exception ex) {
-
+                           listener.onError(ex);
                         }
 
                     }
@@ -284,12 +282,17 @@ public class ContentManager {
                 favoriteListSingle.subscribeWith(new DisposableSingleObserver<List<Object>>() {
                     @Override
                     public void onSuccess(List<Object> objects) {
-                        emitter.onSuccess(objects);
+                        if (listener != null) {
+                            ApiManager.getInstance().updateFavoriteSongs(objects);
+                            emitter.onSuccess(objects);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if (listener != null) {
+                            listener.onError(e);
+                        }
                     }
                 });
             }
@@ -300,7 +303,6 @@ public class ContentManager {
                 .subscribeWith(new DisposableSingleObserver<List<Object>>() {
                     @Override
                     public void onSuccess(List<Object> favorites) {
-                        Log.d("mylog", favorites.toString());
                         if (listener != null) {
                             listener.onSuccess(favorites);
                             ApiManager.getInstance().setFavorite(favorites);
