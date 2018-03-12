@@ -22,6 +22,9 @@
                     android:id="@+id/metronome"
                     android:icon="@drawable/ic_guitar_black_shape_gray"
                     android:title="@string/metronome" />
+                <item android:id="@+id/news"
+                    android:icon="@drawable/ic_favorite_gray"
+                    android:title="@string/news"/>
             </group>
         </menu>
     </item>

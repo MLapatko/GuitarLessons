@@ -58,7 +58,6 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setOnRefreshListener(this);
-
         if (!checkData()) {
             onRefresh();
         }

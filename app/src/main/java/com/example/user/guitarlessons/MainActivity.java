@@ -11,19 +11,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.auth.LogInActivity;
 import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
 import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
-import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.UserAuthManager;
 import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
+import com.example.user.guitarlessons.newsScreen.NewsFragment;
 import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener,
@@ -69,37 +67,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         setBackButtonStatus(false);
 
     }
-
-    private <T> void deleteFromUsersLessons(T lesson, String columnName) {
-        ApiManager.getInstance().deleteFromUsersLessons(lesson, columnName,
-                new ApiManager.DbListener<Integer>() {
-                    @Override
-                    public void onSuccess(Integer response) {
-                        Log.d(TAG, "delete successfully");
-                    }
-
-                    @Override
-                    public void onError(BackendlessFault fault) {
-
-                    }
-                });
-    }
-
-    private <T> void addToUsersLessons(T lesson, String columnName) {
-        ApiManager.getInstance().addToUsersLessons(lesson, columnName,
-                new ApiManager.DbListener<Integer>() {
-                    @Override
-                    public void onSuccess(Integer response) {
-                        Log.d(TAG, "Added successfully");
-                    }
-
-                    @Override
-                    public void onError(BackendlessFault fault) {
-                        Log.d(TAG, fault.getMessage());
-                    }
-                });
-    }
-
     @Override
     protected int getToolBarId() {
         return R.id.tool_bar;
@@ -190,6 +157,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 break;
             case R.id.metronome:
                 ft.replace(R.id.content_main, MetronomeFragment.newInstance());
+            case R.id.news:
+                ft.replace(R.id.content_main, NewsFragment.newInstance());
+                break;
         }
         ft.commit();
     }
