@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         setBackButtonStatus(false);
 
     }
+
     @Override
     protected int getToolBarId() {
         return R.id.tool_bar;
@@ -143,22 +146,52 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         if (item.getItemId() == mPreviousItem) {
             return;
         }
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
+        for (Fragment fragment : manager.getFragments()) {
+            if (!fragment.isHidden()) {
+                ft.hide(fragment);
+            }
+        }
         switch (item.getItemId()) {
             case R.id.courses:
-                ft.replace(R.id.content_main, CoursesListFragment.newInstance());
+                if (manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, CoursesListFragment.newInstance(),
+                            CoursesListFragment.class.getSimpleName());
+                }
                 break;
             case R.id.songs:
-                ft.replace(R.id.content_main, SongsListFragment.newInstance());
+                if (manager.findFragmentByTag(SongsListFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(SongsListFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, SongsListFragment.newInstance(),
+                            SongsListFragment.class.getSimpleName());
+                }
                 break;
             case R.id.favorite:
-                ft.replace(R.id.content_main, FavoriteFragment.newInstance());
+                if (manager.findFragmentByTag(FavoriteFragment.class.getSimpleName()) != null) {
+                    ft.show(getSupportFragmentManager().findFragmentByTag(FavoriteFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, FavoriteFragment.newInstance(),
+                            FavoriteFragment.class.getSimpleName());
+                }
                 break;
             case R.id.metronome:
-                ft.replace(R.id.content_main, MetronomeFragment.newInstance());
+                if (manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, MetronomeFragment.newInstance(),
+                            MetronomeFragment.class.getSimpleName());
+                }
             case R.id.news:
-                ft.replace(R.id.content_main, NewsFragment.newInstance());
+                if (manager.findFragmentByTag(NewsFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(NewsFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, NewsFragment.newInstance(),
+                            NewsFragment.class.getSimpleName());
+                }
                 break;
         }
         ft.commit();

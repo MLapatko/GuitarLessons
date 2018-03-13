@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".lessonContentScreen.LessonContentActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize|layoutDirection"/>
         <activity
             android:name=".songContentScreen.SongContentActivity"
             android:screenOrientation="portrait" />

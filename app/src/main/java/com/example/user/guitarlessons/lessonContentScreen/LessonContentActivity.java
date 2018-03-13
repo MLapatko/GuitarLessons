@@ -2,8 +2,11 @@ package com.example.user.guitarlessons.lessonContentScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import android.widget.ViewFlipper;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.VideoInterface;
 import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Lesson;
@@ -27,7 +31,7 @@ import java.util.List;
  * Created by user on 02.03.2018.
  */
 
-public class LessonContentActivity extends BaseActivity {
+public class LessonContentActivity extends BaseActivity implements VideoInterface {
     public static void start(Context context, String idLesson, String courseTitle) {
         Intent starter = new Intent(context, LessonContentActivity.class);
         starter.putExtra(LESSON_ID, idLesson);
@@ -43,6 +47,7 @@ public class LessonContentActivity extends BaseActivity {
     private ViewFlipper mViewFlipper;
     private Lesson mLesson;
     private ProgressBar mProgressBar;
+    private boolean mVideoStatus=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,9 +67,13 @@ public class LessonContentActivity extends BaseActivity {
 
         mWebView = findViewById(R.id.web_view);
         getLesson(lessonId);
-
         checkData();
+    }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void getLesson(String lessonId) {
@@ -76,6 +85,13 @@ public class LessonContentActivity extends BaseActivity {
                 mViewFlipper.setDisplayedChild(1);
                 mLessonTitle.setText(response.getTitle());
                 mWebView.loadData(response.getBody(), "text/html", "UTF-8");
+                if (!TextUtils.isEmpty(response.getVideoUrl())) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.add(R.id.youtube, YoutubeViewFragment.newInstance(response.getVideoUrl()),
+                            YoutubeViewFragment.class.getSimpleName());
+                    ft.commit();
+                }
+
             }
 
             @Override
@@ -111,6 +127,17 @@ public class LessonContentActivity extends BaseActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mVideoStatus){
+         YoutubeViewFragment youtubeViewFragment= (YoutubeViewFragment) getSupportFragmentManager()
+                 .findFragmentByTag(YoutubeViewFragment.class.getSimpleName());
+         youtubeViewFragment.closeVideo();
+        }else {
+            super.onBackPressed();
         }
     }
 
@@ -202,4 +229,8 @@ public class LessonContentActivity extends BaseActivity {
         return R.layout.lesson_content;
     }
 
+    @Override
+    public void isFullScreen(boolean status) {
+        mVideoStatus=status;
+    }
 }
