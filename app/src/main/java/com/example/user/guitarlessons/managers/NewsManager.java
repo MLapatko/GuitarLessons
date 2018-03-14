@@ -1,13 +1,21 @@
 package com.example.user.guitarlessons.managers;
 
-import java.util.List;
+import com.example.user.guitarlessons.model.NewsItem;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import me.toptas.rssconverter.RssConverterFactory;
 import me.toptas.rssconverter.RssFeed;
 import me.toptas.rssconverter.RssItem;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
@@ -26,32 +34,72 @@ public class NewsManager {
 
         return instance;
     }
-    public void getNews(String url, final NewsListener listener){
+
+    private Set<NewsItem> newsSet = new HashSet<>();
+
+    public void setNewsSet(Set<NewsItem> news) {
+        if (news != null) {
+            this.newsSet.clear();
+            this.newsSet.addAll(news);
+        }
+    }
+    public NewsItem findNewsSet(int id){
+        Iterator<NewsItem> iterator=this.newsSet.iterator();
+        while (iterator.hasNext()){
+            NewsItem item=iterator.next();
+            if (item.hashCode()==id){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public Set<NewsItem> getNewsSet() {
+        return newsSet;
+    }
+
+    public void getNews(String url, final NewsListener listener) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://rock-school.by")
+                .baseUrl("http://celebrity.moscow")
                 .addConverterFactory(RssConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         NewsService service = retrofit.create(NewsService.class);
         service.getRss(url)
-                .enqueue(new Callback<RssFeed>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<RssFeed>() {
                     @Override
-                    public void onResponse(Call<RssFeed> call, Response<RssFeed> response) {
-                        listener.onSuccess(response.body().getItems());
+                    public void onSuccess(RssFeed rssFeed) {
+                        List<NewsItem> resultList = new ArrayList<>();
+                        Set<NewsItem> news = new HashSet<>();
+                        for (RssItem item : rssFeed.getItems()) {
+                            news.add(new NewsItem(item));
+                            resultList.add(new NewsItem(item));
+                        }
+                        setNewsSet(news);
+                        if (listener != null) {
+                            listener.onSuccess(resultList);
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<RssFeed> call, Throwable t) {
-                        listener.onError(t);
+                    public void onError(Throwable e) {
+                        if (listener != null) {
+                            listener.onError(e);
+                        }
                     }
                 });
     }
 
-    public interface NewsService{
+    public interface NewsService {
         @GET
-        Call<RssFeed> getRss(@Url String url);
+        Single<RssFeed> getRss(@Url String url);
     }
+
     public interface NewsListener {
-        public void onSuccess(List<RssItem> item);
-        public void onError(Throwable e);
+        void onSuccess(List<NewsItem> item);
+
+        void onError(Throwable e);
     }
 }
