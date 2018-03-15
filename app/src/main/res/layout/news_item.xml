@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/news_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/news_image_height"
             android:layout_gravity="center_vertical"
             android:scaleType="centerCrop" />
 
@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/textview_margin"
             android:layout_marginEnd="@dimen/textview_margin"
             android:layout_marginBottom="@dimen/textview_margin"
-            android:textSize="18sp"
+            android:textSize="@dimen/news_title_size"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -3,10 +3,12 @@ package com.example.user.guitarlessons.newsScreen;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ViewSwitcher;
 
 import com.example.user.guitarlessons.BaseFragment;
 import com.example.user.guitarlessons.R;
@@ -15,13 +17,11 @@ import com.example.user.guitarlessons.model.NewsItem;
 
 import java.util.List;
 
-import me.toptas.rssconverter.RssItem;
-
 /**
  * Created by user on 07.03.2018.
  */
 
-public class NewsFragment extends BaseFragment {
+public class NewsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
     public static NewsFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -32,6 +32,8 @@ public class NewsFragment extends BaseFragment {
     }
     RecyclerView mRecyclerView;
     NewsAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ViewSwitcher mViewSwitcher;
     @Override
     protected int getFragmentLayoutId() {
         return R.layout.news_fragment;
@@ -44,7 +46,12 @@ public class NewsFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter=new NewsAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        getNews();
+        mSwipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mViewSwitcher=view.findViewById(R.id.view_switcher);
+        mViewSwitcher.setDisplayedChild(1);
+        onRefresh();
     }
 
     public void getNews() {
@@ -55,12 +62,22 @@ public class NewsFragment extends BaseFragment {
                     mAdapter.setList(item);
                     mAdapter.notifyDataSetChanged();
                 }
+                mViewSwitcher.setDisplayedChild(1);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d("mylog",e.toString());
+                mSwipeRefreshLayout.setRefreshing(false);
+                mViewSwitcher.setDisplayedChild(0);
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        getNews();
     }
 }

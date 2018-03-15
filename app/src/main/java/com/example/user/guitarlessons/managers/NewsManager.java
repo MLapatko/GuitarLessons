@@ -3,10 +3,19 @@ package com.example.user.guitarlessons.managers;
 import com.example.user.guitarlessons.model.NewsItem;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import io.reactivex.Single;
@@ -52,6 +61,29 @@ public class NewsManager {
             }
         }
         return null;
+    }
+    public static String newsContentHelper(String content,String imageUrl, String newsTitle){
+        Document document= Jsoup.parse(content);
+        Elements imgElements=document.select("[src]");
+        Elements imageTitle=document.select("[src*="+imageUrl+"]");
+        imageTitle.remove();
+        Elements title=document.select("figcaption:containsOwn("+newsTitle+")");
+        title.remove();
+        Elements elSiteLink=document.select("[href=http://celebrity.moscow]");
+        for (Element el:elSiteLink) {
+            el.parent().remove();
+        }
+        for (Element element: imgElements) {
+            element.attr("height","auto");
+            element.attr("width","100%");
+        }
+        return String.valueOf(document);
+    }
+    public static String formatDate(String currentDate)throws ParseException {
+        SimpleDateFormat dateFormat=new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+        Date date=dateFormat.parse(currentDate);
+        SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy");
+        return format.format(date);
     }
 
     public Set<NewsItem> getNewsSet() {

@@ -185,6 +185,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     ft.add(R.id.content_main, MetronomeFragment.newInstance(),
                             MetronomeFragment.class.getSimpleName());
                 }
+                break;
             case R.id.news:
                 if (manager.findFragmentByTag(NewsFragment.class.getSimpleName()) != null) {
                     ft.show(manager.findFragmentByTag(NewsFragment.class.getSimpleName()));
