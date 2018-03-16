@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.managers;
 
 
 import android.content.Context;
@@ -8,6 +8,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.user.guitarlessons.R;
 import com.example.user.guitarlessons.application.App;
 import com.google.gson.Gson;
 
@@ -134,6 +135,7 @@ public class UserAuthManager {
             public void handleResponse(Void response) {
                 if (listener != null) {
                     saveUser(null);
+                    ApiManager.getInstance().clearData();
                     listener.onSuccess(response);
                 }
             }

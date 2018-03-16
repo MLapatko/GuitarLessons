@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.auth;
 
 import android.text.TextUtils;
 

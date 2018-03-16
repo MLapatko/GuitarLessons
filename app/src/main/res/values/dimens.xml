@@ -3,4 +3,13 @@
     <dimen name="create_user_margin">10dp</dimen>
     <dimen name="layout_margin">16dp</dimen>
     <dimen name="nav_header_height">100dp</dimen>
+    <dimen name="cardView_margin">2dp</dimen>
+    <dimen name="textview_margin">10dp</dimen>
+    <dimen name="sub_list_margin">13dp</dimen>
+    <dimen name="text_types_margin">2dp</dimen>
+    <dimen name="radio_button_margin">31dp</dimen>
+    <dimen name="filters_height">40dp</dimen>
+    <dimen name="cardView_filter_radius">20dp</dimen>
+    <dimen name="news_image_height">200dp</dimen>
+    <dimen name="news_title_size">18sp</dimen>
 </resources>

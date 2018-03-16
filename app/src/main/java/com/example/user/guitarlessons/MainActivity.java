@@ -7,25 +7,29 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backendless.exceptions.BackendlessFault;
-import com.example.user.guitarlessons.model.Course;
-import com.example.user.guitarlessons.model.Genre;
-import com.example.user.guitarlessons.model.Lesson;
-import com.example.user.guitarlessons.model.Song;
+import com.example.user.guitarlessons.aboutAppScreen.AboutAppFragment;
+import com.example.user.guitarlessons.auth.LogInActivity;
+import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
+import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
+import com.example.user.guitarlessons.managers.UserAuthManager;
+import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
+import com.example.user.guitarlessons.newsScreen.NewsFragment;
+import com.example.user.guitarlessons.settingsScreen.SettingsFragment;
+import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
 
-import java.util.List;
-
-public class MainActivity extends BaseActivity implements View.OnClickListener,
+public class MainActivity extends BaseActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
 
     public static void start(Context context) {
@@ -33,22 +37,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         context.startActivity(starter);
     }
 
-    //Button logOutButton;
     BottomNavigationView mBottomNavView;
     NavigationView mNavView;
     DrawerLayout mDrawer;
-    final static String TAG = "mylog";
-    public static final String COLUMN_FAVORITE = "favorite";
-    public static final String COLUMN_ISVIEW = "isView";
-    public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
     ActionBarDrawerToggle mDrawerToggle;
+    int mPreviousItem;
+    private TextView mUerEmailTextView;
+    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //logOutButton = findViewById(R.id.log_out);
-        //logOutButton.setOnClickListener(this);
 
         mBottomNavView = findViewById(R.id.bottom_navigation);
         mBottomNavView.setOnNavigationItemSelectedListener(this);
@@ -62,101 +61,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         mNavView = findViewById(R.id.nav_view);
         mNavView.setNavigationItemSelectedListener(this);
 
+        header=mNavView.getHeaderView(0);
+
+        mUerEmailTextView=header.findViewById(R.id.user_email_header);
+        mUerEmailTextView.setText(UserAuthManager.getInstance().getCurrentUser().getEmail());
+
         onNavigationItemSelected(mBottomNavView.getMenu().findItem(R.id.courses));
 
         setBackButtonStatus(false);
-
     }
-
-    private void getCourses() {
-        DbManager.getInstance().getCourses(new DbManager.DbListener<List<Course>>() {
-            @Override
-            public void onSuccess(List<Course> response) {
-                Log.d(TAG, response.toString());
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
-    }
-
-    private void getGenres() {
-        DbManager.getInstance().getGenres(new DbManager.DbListener<List<Genre>>() {
-            @Override
-            public void onSuccess(List<Genre> response) {
-                Log.d(TAG, response.toString());
-                getSongs(response.get(0).getObjectId());
-
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-
-            }
-        });
-    }
-
-    private <T> void deleteFromUsersLessons(T lesson, String columnName) {
-        DbManager.getInstance().deleteFromUsersLessons(lesson, columnName,
-                new DbManager.DbListener<Integer>() {
-                    @Override
-                    public void onSuccess(Integer response) {
-                        Log.d(TAG, "delete successfully");
-                    }
-
-                    @Override
-                    public void onError(BackendlessFault fault) {
-
-                    }
-                });
-    }
-
-    private <T> void addToUsersLessons(T lesson, String columnName) {
-        DbManager.getInstance().addToUsersLessons(lesson, columnName,
-                new DbManager.DbListener<Integer>() {
-                    @Override
-                    public void onSuccess(Integer response) {
-                        Log.d(TAG, "Added successfully");
-                    }
-
-                    @Override
-                    public void onError(BackendlessFault fault) {
-                        Log.d(TAG, fault.getMessage());
-                    }
-                });
-    }
-
-    private void getLessons(String courseId) {
-        DbManager.getInstance().getLessonsInCourse(courseId, new DbManager.DbListener<List<Lesson>>() {
-            @Override
-            public void onSuccess(List<Lesson> response) {
-                Log.d(TAG, response.toString());
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
-    }
-
-    private void getSongs(String genreId) {
-        DbManager.getInstance().getSongsInGenre(genreId, new DbManager.DbListener<List<Song>>() {
-            @Override
-            public void onSuccess(List<Song> response) {
-                Log.d(TAG, response.toString());
-                addToUsersLessons(response.get(0), COLUMN_FAVORITE_SONGS);
-            }
-
-            @Override
-            public void onError(BackendlessFault fault) {
-                Log.d(TAG, fault.getMessage());
-            }
-        });
-    }
-
 
     @Override
     protected int getToolBarId() {
@@ -166,16 +79,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        /*switch (view.getId()) {
-            case R.id.log_out:
-                logOut();
-                break;
-        }*/
     }
 
     private void logOut() {
@@ -226,26 +129,82 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         }
 
         putFragment(item);
-
+        mPreviousItem = item.getItemId();
         return true;
     }
 
     private void putFragment(MenuItem item) {
-
+        if (item.getItemId() == mPreviousItem) {
+            return;
+        }
+        setToolbarTitle(item.getTitle().toString());
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
+        for (Fragment fragment : manager.getFragments()) {
+            if (!fragment.isHidden()) {
+                ft.hide(fragment);
+            }
+        }
         switch (item.getItemId()) {
             case R.id.courses:
-                ft.replace(R.id.content_main, CoursesListFragment.newInstance());
+                if (manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, CoursesListFragment.newInstance(),
+                            CoursesListFragment.class.getSimpleName());
+                }
                 break;
             case R.id.songs:
-                ft.replace(R.id.content_main, SongsListFragment.newInstance());
+                if (manager.findFragmentByTag(SongsListFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(SongsListFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, SongsListFragment.newInstance(),
+                            SongsListFragment.class.getSimpleName());
+                }
                 break;
             case R.id.favorite:
-                ft.replace(R.id.content_main, FavoriteFragment.newInstance());
+                if (manager.findFragmentByTag(FavoriteFragment.class.getSimpleName()) != null) {
+                    ft.show(getSupportFragmentManager().findFragmentByTag(FavoriteFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, FavoriteFragment.newInstance(),
+                            FavoriteFragment.class.getSimpleName());
+                }
                 break;
             case R.id.metronome:
-                ft.replace(R.id.content_main, MetronomeFragment.newInstance());
+                if (manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, MetronomeFragment.newInstance(),
+                            MetronomeFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.news:
+                if (manager.findFragmentByTag(NewsFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(NewsFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, NewsFragment.newInstance(),
+                            NewsFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.about:
+                if (manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, AboutAppFragment.newInstance(),
+                            AboutAppFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.settings:
+                if (manager.findFragmentByTag(SettingsFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(SettingsFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, SettingsFragment.newInstance(),
+                            SettingsFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.exit:
+                logOut();
+                break;
         }
         ft.commit();
     }

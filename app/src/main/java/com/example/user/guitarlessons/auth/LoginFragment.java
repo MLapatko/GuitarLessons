@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.auth;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,6 +19,11 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.backendless.BackendlessUser;
+import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.FragmentsInterface;
+import com.example.user.guitarlessons.MainActivity;
+import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.managers.UserAuthManager;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;

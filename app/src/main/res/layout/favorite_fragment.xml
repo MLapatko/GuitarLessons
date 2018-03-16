@@ -2,11 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/layout_margin"
+    android:layout_marginStart="@dimen/layout_margin"
+    android:layout_marginTop="@dimen/layout_margin"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="favorite" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <ViewSwitcher
+
+            android:id="@+id/viewSwitcher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.example.user.guitarlessons.FilterLayout
+                    android:id="@+id/filterLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="41dp"
+                    android:layout_alignBottom="@+id/recyclerView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/layout_margin" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/no_data" />
+
+        </ViewSwitcher>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

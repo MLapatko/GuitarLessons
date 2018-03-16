@@ -1,10 +1,14 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.auth;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
+
+import com.example.user.guitarlessons.BaseActivity;
+import com.example.user.guitarlessons.FragmentsInterface;
+import com.example.user.guitarlessons.R;
 
 /**
  * Created by user on 05.02.2018.

@@ -1,4 +1,4 @@
-package com.example.user.guitarlessons;
+package com.example.user.guitarlessons.auth;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +13,10 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.backendless.BackendlessUser;
+import com.example.user.guitarlessons.BaseFragment;
+import com.example.user.guitarlessons.MainActivity;
+import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.managers.UserAuthManager;
 
 /**
  * Created by user on 07.02.2018.
