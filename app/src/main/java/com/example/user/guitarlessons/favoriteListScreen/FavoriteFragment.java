@@ -98,6 +98,7 @@ public class FavoriteFragment extends BaseFragment implements SwipeRefreshLayout
                 } else {
                     mViewSwitcher.setDisplayedChild(1);
                 }
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override

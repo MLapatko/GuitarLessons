@@ -36,4 +36,15 @@
     <string name="add_favorite">Добавлено в избранное</string>
     <string name="all">Все</string>
     <string name="news">Новости</string>
+    <string name="exit">Выход</string>
+    <string name="settings">Настройки</string>
+    <string name="language">Язык</string>
+    <string name="languageList">languageList</string>
+    <string name="interface_language">Язык интерфейса</string>
+    <string name="about_app">О приложении</string>
+
+    <string-array name="languageArray">
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
 </resources>

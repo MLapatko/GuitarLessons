@@ -11,12 +11,29 @@ import weborb.service.MapToProperty;
 public class UsersLessons {
     @MapToProperty(property = "objectId")
     private String objectId;
+    @MapToProperty(property = "userId")
+    private String userId;
     @MapToProperty(property = "viewedLessons")
     private List<Lesson> viewedLessons;
     @MapToProperty(property = "favoriteSongs")
     private List<Song> favoriteSongs;
     @MapToProperty(property = "favoriteLessons")
     private List<Lesson> favoriteLessons;
+
+    public UsersLessons(String idUser) {
+        this.userId=idUser;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public UsersLessons() {}
+
 
     public String getObjectId() {
         return objectId;

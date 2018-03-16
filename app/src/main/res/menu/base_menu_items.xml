@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single" android:id="@+id/news_group">
-        <item android:id="@+id/news"
+    <group
+        android:id="@+id/news_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/news"
             android:icon="@drawable/ic_newspaper"
-            android:title="@string/news"/>
+            android:title="@string/news" />
     </group>
-    <group android:checkableBehavior="single" android:id="@+id/base_group">
+    <group
+        android:id="@+id/base_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/courses"
             android:icon="@drawable/ic_guitar_black_shape_gray"
@@ -29,5 +34,19 @@
             </group>
         </menu>
     </item>
+    <group android:id="@+id/settings_menu">
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_information"
+            android:title="@string/about_app" />
+        <item
+            android:id="@+id/exit"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/exit" />
+    </group>
 
 </menu>

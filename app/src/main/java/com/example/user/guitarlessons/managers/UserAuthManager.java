@@ -135,6 +135,7 @@ public class UserAuthManager {
             public void handleResponse(Void response) {
                 if (listener != null) {
                     saveUser(null);
+                    ApiManager.getInstance().clearData();
                     listener.onSuccess(response);
                 }
             }

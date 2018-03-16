@@ -16,17 +16,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.guitarlessons.aboutAppScreen.AboutAppFragment;
 import com.example.user.guitarlessons.auth.LogInActivity;
 import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
 import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
 import com.example.user.guitarlessons.managers.UserAuthManager;
 import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
 import com.example.user.guitarlessons.newsScreen.NewsFragment;
+import com.example.user.guitarlessons.settingsScreen.SettingsFragment;
 import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener,
+public class MainActivity extends BaseActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
 
     public static void start(Context context) {
@@ -34,23 +37,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         context.startActivity(starter);
     }
 
-    //Button logOutButton;
     BottomNavigationView mBottomNavView;
     NavigationView mNavView;
     DrawerLayout mDrawer;
-    final static String TAG = "mylog";
-    public static final String COLUMN_FAVORITE = "favorite";
-    public static final String COLUMN_ISVIEW = "isView";
-    public static final String COLUMN_FAVORITE_SONGS = "favoriteSongs";
     ActionBarDrawerToggle mDrawerToggle;
     int mPreviousItem;
+    private TextView mUerEmailTextView;
+    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //logOutButton = findViewById(R.id.log_out);
-        //logOutButton.setOnClickListener(this);
 
         mBottomNavView = findViewById(R.id.bottom_navigation);
         mBottomNavView.setOnNavigationItemSelectedListener(this);
@@ -64,10 +61,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         mNavView = findViewById(R.id.nav_view);
         mNavView.setNavigationItemSelectedListener(this);
 
+        header=mNavView.getHeaderView(0);
+
+        mUerEmailTextView=header.findViewById(R.id.user_email_header);
+        mUerEmailTextView.setText(UserAuthManager.getInstance().getCurrentUser().getEmail());
+
         onNavigationItemSelected(mBottomNavView.getMenu().findItem(R.id.courses));
 
         setBackButtonStatus(false);
-
     }
 
     @Override
@@ -78,16 +79,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-        /*    case R.id.log_out:
-                logOut();
-                break;*/
-        }
     }
 
     private void logOut() {
@@ -146,6 +137,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         if (item.getItemId() == mPreviousItem) {
             return;
         }
+        setToolbarTitle(item.getTitle().toString());
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         for (Fragment fragment : manager.getFragments()) {
@@ -193,6 +185,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     ft.add(R.id.content_main, NewsFragment.newInstance(),
                             NewsFragment.class.getSimpleName());
                 }
+                break;
+            case R.id.about:
+                if (manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, AboutAppFragment.newInstance(),
+                            AboutAppFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.settings:
+                if (manager.findFragmentByTag(SettingsFragment.class.getSimpleName()) != null) {
+                    ft.show(manager.findFragmentByTag(SettingsFragment.class.getSimpleName()));
+                } else {
+                    ft.add(R.id.content_main, SettingsFragment.newInstance(),
+                            SettingsFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.exit:
+                logOut();
                 break;
         }
         ft.commit();
