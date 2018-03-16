@@ -42,6 +42,11 @@
     <string name="languageList">languageList</string>
     <string name="interface_language">Язык интерфейса</string>
     <string name="about_app">О приложении</string>
+    <string name="send_email">Отправить email</string>
+    <string name="forgot_password"><u>Забыли пароль?</u></string>
+    <string name="restore_password">Восстановление пароля</string>
+    <string name="check_email">Проверьте почту</string>
+    <string name="error_3020">Пользователя с таким email не существует</string>
 
     <string-array name="languageArray">
         <item>Русский</item>

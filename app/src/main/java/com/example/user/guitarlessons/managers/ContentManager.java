@@ -45,7 +45,7 @@ public class ContentManager {
                 try {
                     courses = ApiManager.getInstance().getCourses();
                 } catch (Exception e) {
-                    listener.onError(e);
+                    emitter.onError(e);
                 }
                 Single<List<Course>> courseListSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
                     @Override
@@ -122,7 +122,7 @@ public class ContentManager {
                 try {
                     genres = ApiManager.getInstance().getGenres();
                 } catch (Exception e) {
-                    listener.onError(e);
+                    emitter.onError(e);
                 }
 
                 Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
@@ -247,7 +247,7 @@ public class ContentManager {
                             List<Lesson> favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
                             em.onSuccess(favoriteLessons);
                         } catch (Exception e) {
-                           listener.onError(e);
+                           emitter.onSuccess(new ArrayList<Lesson>());
                         }
 
 
@@ -260,7 +260,7 @@ public class ContentManager {
                             List<Song> favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
                             e.onSuccess(favoriteSongs);
                         } catch (Exception ex) {
-                           listener.onError(ex);
+                            emitter.onSuccess(new ArrayList<Song>());
                         }
 
                     }
@@ -290,9 +290,7 @@ public class ContentManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (listener != null) {
-                            listener.onError(e);
-                        }
+                            emitter.onError(e);
                     }
                 });
             }

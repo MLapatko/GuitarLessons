@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password">Password:</string>
+    <string name="create_account"><u>Create an account</u></string>
+    <string name="log_in">Log in</string>
+    <string name="user_name">User name:</string>
+    <string name="log_out">Log out</string>
+
+    <string name="error_3003">Incorrect login or password</string>
+    <string name="error_3033">User with this email already exists</string>
+    <string name="error_3040">Email entered incorrectly</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="error_3006">Fill all fields</string>
+    <string name="empty_field">Fill the field</string>
+    <string name="short_password">Password must be at least 7 characters long</string>
+    <string name="different_passwords">Passwords do not match</string>
+    <string name="confirm_password">Confirm password:</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="courses">Courses</string>
+    <string name="songs">Songs</string>
+    <string name="favorite">Favorite</string>
+    <string name="lessons">Lessons</string>
+    <string name="tools">Tools</string>
+    <string name="metronome">Metronome</string>
+    <string name="no_data">No data</string>
+    <string name="tab">tabs</string>
+    <string name="chords">chords</string>
+    <string name="notes">notes</string>
+    <string name="filter_chords">Acc</string>
+    <string name="filter_tabs">Tab</string>
+    <string name="delete_favorite">Removed from favorite</string>
+    <string name="add_favorite">Added to favorite</string>
+    <string name="all">All</string>
+    <string name="news">News</string>
+    <string name="exit">Log out</string>
+    <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="languageList">languageList</string>
+    <string name="interface_language">Interface language</string>
+    <string name="about_app">About</string>
+</resources>

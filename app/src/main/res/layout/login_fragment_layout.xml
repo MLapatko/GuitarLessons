@@ -64,8 +64,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/layout_margin"
                 app:buttonSize="icon_only" />
+
+            <TextView
+                android:id="@+id/restore_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/textview_margin"
+                android:clickable="true"
+                android:text="@string/forgot_password" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="@dimen/create_user_margin"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:text="@string/create_account" />
             </LinearLayout>
