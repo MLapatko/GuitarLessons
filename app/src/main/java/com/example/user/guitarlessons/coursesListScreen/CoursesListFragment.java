@@ -81,9 +81,7 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
             @Override
             public void onError(Throwable e) {
                 swipeRefreshLayout.setRefreshing(false);
-                if (!checkData()) {
                     mViewSwitcher.setDisplayedChild(1);
-                }
             }
         });
     }

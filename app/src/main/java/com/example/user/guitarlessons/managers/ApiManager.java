@@ -370,7 +370,7 @@ public class ApiManager {
         return Backendless.Persistence.of(Genre.class).find(DataQueryBuilder.create());
     }
 
-    public List<Lesson> getLessonsInCourse(String courseId) {
+    public List<Lesson> getLessonsInCourse(String courseId){
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_COURSE_ID + "='" + courseId + "'");
         queryBuilder.setProperties("objectId", "title", "videoUrl");
