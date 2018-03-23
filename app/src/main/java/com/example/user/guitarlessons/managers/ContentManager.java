@@ -1,5 +1,7 @@
 package com.example.user.guitarlessons.managers;
 
+import android.util.Log;
+
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
