@@ -10,6 +10,8 @@ import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.FragmentsInterface;
 import com.example.user.guitarlessons.R;
 
+import static com.example.user.guitarlessons.auth.LoginFragment.RESTORE_PASSWORD_FRAGMENT;
+
 /**
  * Created by user on 05.02.2018.
  */
@@ -64,6 +66,13 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface {
                 setBackButtonStatus(true);
                 setToolbarTitle(getString(R.string.create_account));
                 break;
+            case RESTORE_PASSWORD_FRAGMENT:
+                mCurrentType=RESTORE_PASSWORD_FRAGMENT;
+                ft.replace(R.id.content_main,RestorePasswordFragment.newInstance());
+                ft.addToBackStack(RestorePasswordFragment.class.getSimpleName());
+                setBackButtonStatus(true);
+                setToolbarTitle(getString(R.string.restore_password));
+                break;
         }
         ft.commit();
     }
@@ -73,6 +82,11 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface {
         super.onBackPressed();
         switch (mCurrentType) {
             case CREATE_USER_FRAGMENT:
+                mCurrentType = LOGIN_FRAGMENT;
+                setBackButtonStatus(false);
+                setToolbarTitle(getString(R.string.log_in));
+                break;
+            case RESTORE_PASSWORD_FRAGMENT:
                 mCurrentType = LOGIN_FRAGMENT;
                 setBackButtonStatus(false);
                 setToolbarTitle(getString(R.string.log_in));

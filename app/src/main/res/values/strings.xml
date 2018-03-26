@@ -42,9 +42,31 @@
     <string name="languageList">languageList</string>
     <string name="interface_language">Язык интерфейса</string>
     <string name="about_app">О приложении</string>
+    <string name="send_email">Отправить email</string>
+    <string name="forgot_password"><u>Забыли пароль?</u></string>
+    <string name="restore_password">Восстановление пароля</string>
+    <string name="check_email">Проверьте почту</string>
+    <string name="error_3020">Пользователя с таким email не существует</string>
 
     <string-array name="languageArray">
         <item>Русский</item>
         <item>English</item>
+    </string-array>
+
+    <string-array name="beats_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
     </string-array>
 </resources>

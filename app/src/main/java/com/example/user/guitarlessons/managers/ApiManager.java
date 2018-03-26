@@ -144,14 +144,13 @@ public class ApiManager {
 
     public void updateSongs(List<Genre> genres) {
         if (genres != null) {
-            List<Genre> newGenres = new ArrayList<>();
-            newGenres.addAll(genres);
             List<Genre> newChordsSongs = new ArrayList<>();
             List<Genre> newTabsSongs = new ArrayList<>();
 
-            for (Genre genre : newGenres) {
+            for (Genre genre : genres) {
                 ArrayList<Song> chordsSong = new ArrayList<>();
                 List<Song> tabsSong = new ArrayList<>();
+
                 for (Song song : genre.getSongs()) {
                     if (song.getChords()) {
                         chordsSong.add(song);
@@ -161,12 +160,18 @@ public class ApiManager {
                     }
                 }
                 if (!chordsSong.isEmpty()) {
-                    genre.setSongs(chordsSong);
-                    newChordsSongs.add(genre);
+                    Genre newGenre=new Genre();
+                    newGenre.setObjectId(genre.getObjectId());
+                    newGenre.setTitle(genre.getTitle());
+                    newGenre.setSongs(chordsSong);
+                    newChordsSongs.add(newGenre);
                 }
                 if (!tabsSong.isEmpty()) {
-                    genre.setSongs(tabsSong);
-                    newTabsSongs.add(genre);
+                    Genre newGenre=new Genre();
+                    newGenre.setObjectId(genre.getObjectId());
+                    newGenre.setTitle(genre.getTitle());
+                    newGenre.setSongs(tabsSong);
+                    newTabsSongs.add(newGenre);
                 }
             }
             setChordsSongs(newChordsSongs);
@@ -370,7 +375,7 @@ public class ApiManager {
         return Backendless.Persistence.of(Genre.class).find(DataQueryBuilder.create());
     }
 
-    public List<Lesson> getLessonsInCourse(String courseId) {
+    public List<Lesson> getLessonsInCourse(String courseId){
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(COLUMN_COURSE_ID + "='" + courseId + "'");
         queryBuilder.setProperties("objectId", "title", "videoUrl");

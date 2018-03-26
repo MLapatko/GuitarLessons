@@ -34,29 +34,47 @@ public class UserAuthManager {
         return instance;
     }
 
-    public static final String  ERROR_EMPTY_FIELDS="3006";
-    public static final String ERROR_EMAIL="3040";
-    public static final String ERROR_EMAIL_EXISTS ="3033";
-    public static final String ERROR_EMAIL_OR_PASSWORD="3003";
-    public static final String PASSWORD_ERROR="password";
-    public static final String EMAIL_ERROR="email";
-    public static final String CUR_USER="user";
-    public static final String PREFERENCES="preferences";
+    public static final String ERROR_EMPTY_FIELDS = "3006";
+    public static final String ERROR_EMAIL = "3040";
+    public static final String ERROR_EMAIL_EXISTS = "3033";
+    public static final String ERROR_EMAIL_OR_PASSWORD = "3003";
+    public static final String ERROR_FIND_USER = "3020";
+    public static final String EMAIL_ERROR = "email";
+    public static final String CUR_USER = "user";
+    public static final String PREFERENCES = "preferences";
 
 
-    private void saveUser(BackendlessUser user){
-        SharedPreferences sharedPreferences=App.getInstance().getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE);
+    private void saveUser(BackendlessUser user) {
+        SharedPreferences sharedPreferences = App.getInstance().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(user);
         prefsEditor.putString(CUR_USER, json);
         prefsEditor.commit();
     }
-    public BackendlessUser getCurrentUser(){
-        SharedPreferences sharedPreferences=App.getInstance().getSharedPreferences(PREFERENCES,Context.MODE_PRIVATE);
+
+    public BackendlessUser getCurrentUser() {
+        SharedPreferences sharedPreferences = App.getInstance().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString(CUR_USER, "");
         return gson.fromJson(json, BackendlessUser.class);
+    }
+
+    public void restorePassword(String userEmail, final AuthListener<Void> listener) {
+        Backendless.UserService.restorePassword(userEmail, new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void response) {
+                if (listener != null) {
+                    listener.onSuccess(response);
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                returnError(fault.getCode(), listener);
+            }
+        });
+
     }
 
     public void logIn(final String userEmail, String userPassword, final AuthListener listener) {
@@ -96,8 +114,7 @@ public class UserAuthManager {
     }
 
     public boolean checkUserLogIn() {
-        //String userToken = UserTokenStorageFactory.instance().getStorage().get();
-        if (getCurrentUser()!=null) {
+        if (getCurrentUser() != null) {
             return true;
         }
         return false;
@@ -142,7 +159,7 @@ public class UserAuthManager {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-               returnError(fault.getCode(), listener);
+                returnError(fault.getCode(), listener);
             }
         });
     }
@@ -150,7 +167,7 @@ public class UserAuthManager {
     private void returnError(String errorCode, AuthListener listener) {
         App myApp = App.getInstance();
         String massage = myApp.getString(R.string.unknown_error);
-        String errorType="";
+        String errorType = "";
         if (listener != null) {
             switch (errorCode) {
                 case ERROR_EMAIL_OR_PASSWORD:
@@ -158,25 +175,29 @@ public class UserAuthManager {
                     break;
                 case ERROR_EMAIL_EXISTS:
                     massage = myApp.getString(R.string.error_3033);
-                    errorType=EMAIL_ERROR;
+                    errorType = EMAIL_ERROR;
                     break;
                 case ERROR_EMAIL:
                     massage = myApp.getString(R.string.error_3040);
-                    errorType=EMAIL_ERROR;
+                    errorType = EMAIL_ERROR;
                     break;
                 case ERROR_EMPTY_FIELDS:
                     massage = myApp.getString(R.string.error_3006);
                     break;
+                case ERROR_FIND_USER:
+                    massage = myApp.getString(R.string.error_3020);
+                    errorType = EMAIL_ERROR;
+                    break;
 
             }
-            listener.onError(massage,errorType);
+            listener.onError(massage, errorType);
         }
     }
 
     public interface AuthListener<T> {
         void onSuccess(T response);
 
-        void onError(String massage,String errorType);
+        void onError(String massage, String errorType);
 
     }
 }

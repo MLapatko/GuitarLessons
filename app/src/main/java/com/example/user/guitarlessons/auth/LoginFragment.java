@@ -45,7 +45,8 @@ import java.util.Map;
  */
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener,
-        GoogleApiClient.OnConnectionFailedListener,TextWatcher {
+        GoogleApiClient.OnConnectionFailedListener, TextWatcher {
+
     public static LoginFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -57,6 +58,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
 
     final int CREATE_USER_FRAGMENT = 2;
     final int REQUEST_AUTHORIZATION = 2;
+    public static final int RESTORE_PASSWORD_FRAGMENT = 3;
     final int SIGN_IN = 1;
     final String TAG = "mylog";
     final String SERVER_CLIENT_ID = "964645203843-isd2idnvj807sn7sudj6q33rrnkqbtgo.apps.googleusercontent.com";
@@ -76,6 +78,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
     TextInputLayout mEmailInputLayout;
     TextInputLayout mPasswordInputLayout;
 
+    private TextView mRestorePasswordTextView;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -92,6 +96,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
 
         mCreateAccTextView = view.findViewById(R.id.create_account);
         mCreateAccTextView.setOnClickListener(this);
+
+        mRestorePasswordTextView = view.findViewById(R.id.restore_password);
+        mRestorePasswordTextView.setOnClickListener(this);
 
         mSignInButton = view.findViewById(R.id.sign_in_google);
         mSignInButton.setOnClickListener(this);
@@ -130,9 +137,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
         switch (view.getId()) {
             case R.id.login_button:
                 if (!AuthValidation.checkEmail(mEmail.getText())) {
-                    focusError(getActivity().getString(R.string.error_3040),EMAIL_ERROR);
+                    focusError(getActivity().getString(R.string.error_3040), EMAIL_ERROR);
                 } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
-                    focusError(getActivity().getString(R.string.short_password),PASSWORD_ERROR);
+                    focusError(getActivity().getString(R.string.short_password), PASSWORD_ERROR);
                 } else {
                     logIn(mEmail.getText().toString(), mPassword.getText().toString());
                 }
@@ -144,6 +151,12 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                 break;
             case R.id.sign_in_google:
                 googleLogIn();
+                break;
+            case R.id.restore_password:
+                if (getActivity() instanceof FragmentsInterface) {
+                    ((FragmentsInterface) getActivity()).putFragments(RESTORE_PASSWORD_FRAGMENT);
+                }
+                break;
 
         }
 
@@ -161,7 +174,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                     @Override
                     public void onError(String massage, String errorCode) {
                         mViewSwitcher.setDisplayedChild(1);
-                        focusError(massage,errorCode);
+                        focusError(massage, errorCode);
                     }
                 });
     }
@@ -265,10 +278,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (mEmail.isFocused()){
+        if (mEmail.isFocused()) {
             mEmailInputLayout.setError(null);
-        }
-        else if (mPassword.isFocused()){
+        } else if (mPassword.isFocused()) {
             mPasswordInputLayout.setError(null);
         }
     }
