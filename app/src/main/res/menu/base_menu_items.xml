@@ -29,7 +29,7 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/metronome"
-                    android:icon="@drawable/ic_guitar_black_shape_gray"
+                    android:icon="@drawable/ic_metronome"
                     android:title="@string/metronome" />
             </group>
         </menu>

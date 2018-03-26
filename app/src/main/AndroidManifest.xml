@@ -49,10 +49,11 @@
         </activity>
         <activity
             android:name=".lessonContentScreen.LessonContentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|layoutDirection"
+            android:configChanges="orientation|screenSize|layoutDirection"
             android:screenOrientation="portrait" />
         <activity
             android:name=".songContentScreen.SongContentActivity"
+            android:configChanges="orientation|screenSize|layoutDirection"
             android:screenOrientation="portrait" />
         <activity
             android:name=".newsContent.NewsContentActivity"

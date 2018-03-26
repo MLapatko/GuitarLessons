@@ -27,16 +27,35 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/white"
                 android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/youtube"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/song_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/textview_margin"
+                    android:layout_marginStart="@dimen/lesson_title_margin"
+                    android:layout_marginTop="@dimen/lesson_title_margin"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/lesson_title_size"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/author_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/lesson_title_margin"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/song_author_text_size"
+                    android:textStyle="bold" />
 
                 <WebView
                     android:id="@+id/web_view"

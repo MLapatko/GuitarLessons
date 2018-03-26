@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.ViewFlipper;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.BaseActivity;
 import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.VideoInterface;
+import com.example.user.guitarlessons.lessonContentScreen.YoutubeViewFragment;
 import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Song;
@@ -26,7 +30,7 @@ import java.util.List;
  * Created by user on 03.03.2018.
  */
 
-public class SongContentActivity extends BaseActivity {
+public class SongContentActivity extends BaseActivity implements VideoInterface{
 
     public static void start(Context context, String songId, String genreTitle) {
         Intent starter = new Intent(context, SongContentActivity.class);
@@ -44,6 +48,7 @@ public class SongContentActivity extends BaseActivity {
     private Song mSong;
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private boolean mVideoStatus=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +80,12 @@ public class SongContentActivity extends BaseActivity {
                 name.setText(response.getTitle());
                 author.setText(response.getAuthor());
                 mWebView.loadData(response.getBody(), "text/html", "UTF-8");
+                if (!TextUtils.isEmpty(response.getVideoUrl())) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.add(R.id.youtube, YoutubeViewFragment.newInstance(response.getVideoUrl()),
+                            YoutubeViewFragment.class.getSimpleName());
+                    ft.commit();
+                }
                 mViewFlipper.setDisplayedChild(1);
             }
 
@@ -187,5 +198,20 @@ public class SongContentActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.song_content_activity;
+    }
+
+    @Override
+    public void isFullScreen(boolean status) {
+        mVideoStatus=status;
+    }
+    @Override
+    public void onBackPressed() {
+        if (mVideoStatus){
+            YoutubeViewFragment youtubeViewFragment= (YoutubeViewFragment) getSupportFragmentManager()
+                    .findFragmentByTag(YoutubeViewFragment.class.getSimpleName());
+            youtubeViewFragment.closeVideo();
+        }else {
+            super.onBackPressed();
+        }
     }
 }

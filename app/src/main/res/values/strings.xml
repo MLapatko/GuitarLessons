@@ -47,6 +47,8 @@
     <string name="restore_password">Восстановление пароля</string>
     <string name="check_email">Проверьте почту</string>
     <string name="error_3020">Пользователя с таким email не существует</string>
+    <string name="seek_bar_min_value">20</string>
+    <string name="shares_in_tact">Долей в такте</string>
 
     <string-array name="languageArray">
         <item>Русский</item>
