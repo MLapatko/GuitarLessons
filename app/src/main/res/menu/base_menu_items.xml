@@ -31,6 +31,10 @@
                     android:id="@+id/metronome"
                     android:icon="@drawable/ic_metronome"
                     android:title="@string/metronome" />
+                <item
+                    android:id="@+id/tunings"
+                    android:icon="@drawable/ic_controls"
+                    android:title="@string/tunings" />
             </group>
         </menu>
     </item>

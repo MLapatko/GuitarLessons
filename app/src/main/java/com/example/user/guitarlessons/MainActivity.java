@@ -29,6 +29,7 @@ import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
 import com.example.user.guitarlessons.newsScreen.NewsFragment;
 import com.example.user.guitarlessons.settingsScreen.SettingsActivity;
 import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
+import com.example.user.guitarlessons.tunings.TuningsFragment;
 
 public class MainActivity extends BaseActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
@@ -177,6 +178,10 @@ public class MainActivity extends BaseActivity implements
                 tag = MetronomeFragment.class.getSimpleName();
                 fragment = MetronomeFragment.newInstance();
                 break;
+            case R.id.tunings:
+                tag = TuningsFragment.class.getSimpleName();
+                fragment = TuningsFragment.newInstance();
+                break;
             case R.id.news:
                 tag = NewsFragment.class.getSimpleName();
                 fragment = NewsFragment.newInstance();
@@ -210,9 +215,9 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode==RESULT_OK){
-            if (requestCode==CODE_SETTINGS){
-                if (data.getBooleanExtra(SettingsActivity.LANGUAGE_STATUS,false)){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CODE_SETTINGS) {
+                if (data.getBooleanExtra(SettingsActivity.LANGUAGE_STATUS, false)) {
                     start(this);
                     finish();
                 }

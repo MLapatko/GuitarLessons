@@ -49,6 +49,7 @@
     <string name="error_3020">Пользователя с таким email не существует</string>
     <string name="seek_bar_min_value">20</string>
     <string name="shares_in_tact">Долей в такте</string>
+    <string name="tunings">Строи</string>
 
     <string-array name="language_array">
         <item>Русский</item>
