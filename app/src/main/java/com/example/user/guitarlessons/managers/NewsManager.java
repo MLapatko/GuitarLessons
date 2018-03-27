@@ -111,7 +111,7 @@ public class NewsManager {
                         }
                         setNewsSet(news);
                         if (listener != null) {
-                            listener.onSuccess(resultList);
+                            listener.onSuccess(new ArrayList<NewsItem>(news));
                         }
                     }
 
