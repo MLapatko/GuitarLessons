@@ -50,9 +50,13 @@
     <string name="seek_bar_min_value">20</string>
     <string name="shares_in_tact">Долей в такте</string>
 
-    <string-array name="languageArray">
+    <string-array name="language_array">
         <item>Русский</item>
         <item>English</item>
+    </string-array>
+    <string-array name="language_array_values">
+        <item>ru</item>
+        <item>en</item>
     </string-array>
 
     <string-array name="beats_array">
