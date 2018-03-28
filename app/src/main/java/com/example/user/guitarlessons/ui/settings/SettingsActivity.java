@@ -13,17 +13,18 @@ import com.example.user.guitarlessons.R;
  * Created by user on 26.03.2018.
  */
 
-public class SettingsActivity extends BaseActivity implements LanguageChangeListener {
+public class SettingsActivity extends BaseActivity
+        implements SettingsFragment.LanguageChangeListener {
 
-    public static final String LANGUAGE_STATUS="language status";
+    public static final String LANGUAGE_STATUS = "language status";
     private boolean isLanguageChange;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState!=null){
-            isLanguageChange=savedInstanceState.getBoolean(LANGUAGE_STATUS,false);
+        if (savedInstanceState != null) {
+            isLanguageChange = savedInstanceState.getBoolean(LANGUAGE_STATUS, false);
         }
 
         setBackButtonStatus(true);
@@ -50,7 +51,7 @@ public class SettingsActivity extends BaseActivity implements LanguageChangeList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 returnResult();
                 break;
@@ -65,15 +66,15 @@ public class SettingsActivity extends BaseActivity implements LanguageChangeList
         super.onBackPressed();
     }
 
-    private void returnResult(){
-        Intent i=new Intent();
-        i.putExtra(LANGUAGE_STATUS,isLanguageChange);
-        setResult(RESULT_OK,i);
+    private void returnResult() {
+        Intent i = new Intent();
+        i.putExtra(LANGUAGE_STATUS, isLanguageChange);
+        setResult(RESULT_OK, i);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(LANGUAGE_STATUS,isLanguageChange);
+        outState.putBoolean(LANGUAGE_STATUS, isLanguageChange);
     }
 }

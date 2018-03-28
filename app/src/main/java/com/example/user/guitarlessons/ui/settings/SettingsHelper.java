@@ -14,8 +14,8 @@ import java.util.Locale;
 public class SettingsHelper {
 
 
-    public final static String CURRENT_LANGUAGE="language";
-    public static final String APP_SETTINGS ="app settings" ;
+    public final static String CURRENT_LANGUAGE = "language";
+    public static final String APP_SETTINGS = "app settings";
 
     public static void setLanguage(Context context, String language) {
         Locale locale = new Locale(language);
@@ -28,12 +28,13 @@ public class SettingsHelper {
     }
 
     public static void saveLanguage(Context context, String mLanguage) {
-        SharedPreferences sharedPreferences=context.getSharedPreferences(APP_SETTINGS,
+        SharedPreferences sharedPreferences = context.getSharedPreferences(APP_SETTINGS,
                 Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(CURRENT_LANGUAGE,mLanguage).apply();
+        sharedPreferences.edit().putString(CURRENT_LANGUAGE, mLanguage).apply();
     }
+
     public static String getLanguage(Context context) {
-       return context.getSharedPreferences(APP_SETTINGS,Context.MODE_PRIVATE)
-               .getString(CURRENT_LANGUAGE,"ru");
+        return context.getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE)
+                .getString(CURRENT_LANGUAGE, Locale.getDefault().toLanguageTag());
     }
 }
