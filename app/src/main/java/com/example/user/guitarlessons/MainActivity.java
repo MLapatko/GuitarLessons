@@ -20,16 +20,17 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.user.guitarlessons.aboutAppScreen.AboutAppFragment;
-import com.example.user.guitarlessons.auth.LogInActivity;
-import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
-import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
+import com.example.user.guitarlessons.base.BaseActivity;
+import com.example.user.guitarlessons.ui.about.AboutAppFragment;
+import com.example.user.guitarlessons.ui.auth.LogInActivity;
+import com.example.user.guitarlessons.ui.courseslist.CoursesListFragment;
+import com.example.user.guitarlessons.ui.favoritelist.FavoriteFragment;
 import com.example.user.guitarlessons.managers.UserAuthManager;
-import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
-import com.example.user.guitarlessons.newsScreen.NewsFragment;
-import com.example.user.guitarlessons.settingsScreen.SettingsActivity;
-import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
-import com.example.user.guitarlessons.tunings.TuningsFragment;
+import com.example.user.guitarlessons.ui.metronome.MetronomeFragment;
+import com.example.user.guitarlessons.ui.newslist.NewsFragment;
+import com.example.user.guitarlessons.ui.settings.SettingsActivity;
+import com.example.user.guitarlessons.ui.songslist.SongsListFragment;
+import com.example.user.guitarlessons.ui.tunings.TuningsFragment;
 
 public class MainActivity extends BaseActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {

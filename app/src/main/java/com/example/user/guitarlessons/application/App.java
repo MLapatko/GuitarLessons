@@ -7,7 +7,7 @@ import com.backendless.Backendless;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.user.guitarlessons.managers.Defaults;
 import com.example.user.guitarlessons.managers.NotificationManager;
-import com.example.user.guitarlessons.settingsScreen.SettingsHelper;
+import com.example.user.guitarlessons.ui.settings.SettingsHelper;
 
 /**
  * Created by User on 12.02.2018.
