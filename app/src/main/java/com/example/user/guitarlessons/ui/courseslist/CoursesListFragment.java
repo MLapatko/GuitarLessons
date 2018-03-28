@@ -23,8 +23,6 @@ import java.util.List;
 
 public class CoursesListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "mylog";
-
     public static CoursesListFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -36,7 +34,7 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
 
     private RecyclerView mRecyclerView;
     private CoursesAdapter mCoursesAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ViewSwitcher mViewSwitcher;
 
     @Override
@@ -54,10 +52,9 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         mViewSwitcher = view.findViewById(R.id.viewSwitcher);
         mViewSwitcher.setDisplayedChild(0);
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         if (!checkData()) {
             onRefresh();
         }
@@ -75,13 +72,13 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
                     mCoursesAdapter = new CoursesAdapter(courses);
                     mRecyclerView.setAdapter(mCoursesAdapter);
                 }
-                swipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(Throwable e) {
-                swipeRefreshLayout.setRefreshing(false);
-                    mViewSwitcher.setDisplayedChild(1);
+                mSwipeRefreshLayout.setRefreshing(false);
+                mViewSwitcher.setDisplayedChild(1);
             }
         });
     }
@@ -98,12 +95,28 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
     @Override
     public void onStop() {
         super.onStop();
-        ContentManager.getInstance().stopProcess();
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            stopLoading();
+        }
     }
 
     @Override
     public void onRefresh() {
-        swipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setRefreshing(true);
         loadCourses();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            stopLoading();
+        }
+    }
+
+    private void stopLoading() {
+        ContentManager.getInstance().stopProcess();
+        mSwipeRefreshLayout.setRefreshing(false);
+        mViewSwitcher.setDisplayedChild(1);
     }
 }

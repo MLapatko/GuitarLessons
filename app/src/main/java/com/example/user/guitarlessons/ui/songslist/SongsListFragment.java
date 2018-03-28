@@ -58,31 +58,32 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        filterLayout=view.findViewById(R.id.filterLayout);
+        filterLayout = view.findViewById(R.id.filterLayout);
 
         filterLayout.setListener(new FilterLayout.FilterListener() {
-            List<Genre> genres=new ArrayList<>();
+            List<Genre> genres = new ArrayList<>();
+
             @Override
             public void onAllClicked() {
-                genres=ApiManager.getInstance().getGenresList();
+                genres = ApiManager.getInstance().getGenresList();
                 if (!genres.isEmpty()) {
                     mGenresAdapter = new GenresAdapter(genres);
                     mRecyclerView.setAdapter(mGenresAdapter);
-                }else {
+                } else {
                     onRefresh();
                 }
             }
 
             @Override
             public void onChordsClicked() {
-                genres=ApiManager.getInstance().getChordsSongs();
+                genres = ApiManager.getInstance().getChordsSongs();
                 mGenresAdapter = new GenresAdapter(genres);
                 mRecyclerView.setAdapter(mGenresAdapter);
             }
 
             @Override
             public void onTabsClicked() {
-                genres=ApiManager.getInstance().getTabsSongs();
+                genres = ApiManager.getInstance().getTabsSongs();
                 mGenresAdapter = new GenresAdapter(genres);
                 mRecyclerView.setAdapter(mGenresAdapter);
             }
@@ -96,10 +97,10 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
         ContentManager.getInstance().loadGenres(new ContentManager.ContentListener<List<Genre>>() {
             @Override
             public void onSuccess(List<Genre> genres) {
-                if (!genres.isEmpty()){
-                ApiManager.getInstance().updateSongs(genres);
-                filterLayout.refreshData();}
-                else {
+                if (!genres.isEmpty()) {
+                    ApiManager.getInstance().updateSongs(genres);
+                    filterLayout.refreshData();
+                } else {
                     mViewSwitcher.setDisplayedChild(1);
                 }
                 swipeRefreshLayout.setRefreshing(false);
@@ -108,26 +109,17 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
             @Override
             public void onError(Throwable e) {
                 swipeRefreshLayout.setRefreshing(false);
-                if (!checkData()) {
-                    mViewSwitcher.setDisplayedChild(1);
-                }
+                mViewSwitcher.setDisplayedChild(1);
             }
         });
-    }
-
-    public boolean checkData() {
-        if (!ApiManager.getInstance().getGenresList().isEmpty()) {
-            mGenresAdapter = new GenresAdapter(ApiManager.getInstance().getGenresList());
-            mRecyclerView.setAdapter(mGenresAdapter);
-            return true;
-        }
-        return false;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ContentManager.getInstance().stopProcess();
+        if (swipeRefreshLayout.isRefreshing()) {
+            stopLoading();
+        }
     }
 
     @Override
@@ -137,24 +129,37 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (swipeRefreshLayout.isRefreshing()){
+            stopLoading();
+        }
+    }
+
+    @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        List<Genre> genres=new ArrayList<>();
-        switch (i)
-        {
+        List<Genre> genres = new ArrayList<>();
+        switch (i) {
             case R.id.radio_all:
-               genres=ApiManager.getInstance().getGenresList();
+                genres = ApiManager.getInstance().getGenresList();
                 break;
             case R.id.radio_chords:
-                genres=ApiManager.getInstance().getChordsSongs();
+                genres = ApiManager.getInstance().getChordsSongs();
                 break;
             case R.id.radio_tabs:
-                genres=ApiManager.getInstance().getTabsSongs();
+                genres = ApiManager.getInstance().getTabsSongs();
                 break;
         }
         if (!genres.isEmpty()) {
             mGenresAdapter = new GenresAdapter(genres);
             mRecyclerView.setAdapter(mGenresAdapter);
         }
+    }
+
+    private void stopLoading() {
+        ContentManager.getInstance().stopProcess();
+        swipeRefreshLayout.setRefreshing(false);
+        mViewSwitcher.setDisplayedChild(1);
     }
 
 }

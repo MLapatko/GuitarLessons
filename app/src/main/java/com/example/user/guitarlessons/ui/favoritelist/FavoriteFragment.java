@@ -59,7 +59,7 @@ public class FavoriteFragment extends BaseFragment implements SwipeRefreshLayout
                     mAdapter.setList(ApiManager.getInstance().getFavorite());
                     mAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
-                }else {
+                } else {
                     onRefresh();
                 }
             }
@@ -118,5 +118,13 @@ public class FavoriteFragment extends BaseFragment implements SwipeRefreshLayout
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
         getFavorite();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ContentManager.getInstance().stopProcess();
+        swipeRefreshLayout.setRefreshing(false);
+
     }
 }

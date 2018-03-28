@@ -5,5 +5,5 @@ package com.example.user.guitarlessons;
  */
 
 public interface VideoInterface {
- void isFullScreen(boolean status);
+    void isFullScreen(boolean status);
 }

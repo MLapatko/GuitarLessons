@@ -45,8 +45,8 @@ public class ContentManager {
                 try {
                     courses = ApiManager.getInstance().getCourses();
                 } catch (Exception e) {
-                    emitter.onError(e);
                 }
+
                 Single<List<Course>> courseListSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Course>> e) throws Exception {
@@ -122,7 +122,6 @@ public class ContentManager {
                 try {
                     genres = ApiManager.getInstance().getGenres();
                 } catch (Exception e) {
-                    emitter.onError(e);
                 }
 
                 Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
@@ -194,37 +193,38 @@ public class ContentManager {
         final Single<List<Object>> favoriteSingle = Single.create(new SingleOnSubscribe<List<Object>>() {
             @Override
             public void subscribe(final SingleEmitter emitter) throws Exception {
+
                 Single<List<Object>> favoriteListSingle = Single.create(new SingleOnSubscribe<List<Object>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Object>> e) throws Exception {
                         e.onSuccess(new ArrayList<>());
                     }
                 });
+
                 Single<List<Lesson>> lessonSingle = Single.create(new SingleOnSubscribe<List<Lesson>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Lesson>> em) throws Exception {
+                        List<Lesson> favoriteLessons = Collections.emptyList();
                         try {
-                            List<Lesson> favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
-                            em.onSuccess(favoriteLessons);
+                            favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
                         } catch (Exception e) {
-                            emitter.onSuccess(new ArrayList<Lesson>());
                         }
-
-
+                        em.onSuccess(favoriteLessons);
                     }
                 });
+
                 Single<List<Song>> songSingle = Single.create(new SingleOnSubscribe<List<Song>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Song>> e) throws Exception {
+                        List<Song> favoriteSongs = Collections.emptyList();
                         try {
-                            List<Song> favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
-                            e.onSuccess(favoriteSongs);
+                            favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
                         } catch (Exception ex) {
-                            emitter.onSuccess(new ArrayList<Song>());
                         }
-
+                        e.onSuccess(favoriteSongs);
                     }
                 });
+
                 favoriteListSingle = favoriteListSingle.zipWith(songSingle, new BiFunction<List<Object>, List<Song>, List<Object>>() {
                     @Override
                     public List<Object> apply(List<Object> objects, List<Song> songs) throws Exception {
@@ -232,6 +232,7 @@ public class ContentManager {
                         return objects;
                     }
                 });
+
                 favoriteListSingle = favoriteListSingle.zipWith(lessonSingle, new BiFunction<List<Object>, List<Lesson>, List<Object>>() {
                     @Override
                     public List<Object> apply(List<Object> objects, List<Lesson> lessons) throws Exception {
@@ -239,6 +240,7 @@ public class ContentManager {
                         return objects;
                     }
                 });
+
                 favoriteListSingle.subscribeWith(new DisposableSingleObserver<List<Object>>() {
                     @Override
                     public void onSuccess(List<Object> objects) {
