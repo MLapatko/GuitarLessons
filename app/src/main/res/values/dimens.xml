@@ -12,4 +12,12 @@
     <dimen name="cardView_filter_radius">20dp</dimen>
     <dimen name="news_image_height">200dp</dimen>
     <dimen name="news_title_size">18sp</dimen>
+    <dimen name="lesson_title_size">16sp</dimen>
+    <dimen name="song_author_text_size">14sp</dimen>
+    <dimen name="lesson_title_margin">15dp</dimen>
+    <dimen name="bpm_text_size">35sp</dimen>
+    <dimen name="metronome_margin_top">40dp</dimen>
+    <dimen name="metronome_spinner_width">90dp</dimen>
+    <dimen name="spinner_title_margin">4dp</dimen>
+    <dimen name="number_picker_margin">40dp</dimen>
 </resources>

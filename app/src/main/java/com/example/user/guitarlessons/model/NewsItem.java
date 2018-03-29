@@ -1,5 +1,7 @@
 package com.example.user.guitarlessons.model;
 
+import android.text.TextUtils;
+
 import me.toptas.rssconverter.RssItem;
 
 /**
@@ -17,6 +19,23 @@ public class NewsItem extends RssItem {
     public int hashCode() {
         int prime=31;
         return prime+getTitle().hashCode()+getPublishDate().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null){
+            return false;
+        }
+        if (obj==this){
+            return true;
+        }
+        if (obj instanceof NewsItem){
+            if (TextUtils.equals(((NewsItem) obj).getTitle(),this.getTitle()) &&
+                    TextUtils.equals(((NewsItem) obj).getPublishDate(),this.getPublishDate())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public NewsItem(RssItem item) {

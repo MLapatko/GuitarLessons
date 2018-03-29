@@ -40,4 +40,5 @@
     <string name="languageList">languageList</string>
     <string name="interface_language">Interface language</string>
     <string name="about_app">About</string>
+    <string name="tunings">Tunings</string>
 </resources>

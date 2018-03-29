@@ -13,21 +13,24 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.user.guitarlessons.aboutAppScreen.AboutAppFragment;
-import com.example.user.guitarlessons.auth.LogInActivity;
-import com.example.user.guitarlessons.coursesListScreen.CoursesListFragment;
-import com.example.user.guitarlessons.favoriteListScreen.FavoriteFragment;
+import com.example.user.guitarlessons.base.BaseActivity;
+import com.example.user.guitarlessons.ui.about.AboutAppFragment;
+import com.example.user.guitarlessons.ui.auth.LogInActivity;
+import com.example.user.guitarlessons.ui.courseslist.CoursesListFragment;
+import com.example.user.guitarlessons.ui.favoritelist.FavoriteFragment;
 import com.example.user.guitarlessons.managers.UserAuthManager;
-import com.example.user.guitarlessons.metronomeScreen.MetronomeFragment;
-import com.example.user.guitarlessons.newsScreen.NewsFragment;
-import com.example.user.guitarlessons.settingsScreen.SettingsFragment;
-import com.example.user.guitarlessons.songsListScreen.SongsListFragment;
+import com.example.user.guitarlessons.ui.metronome.MetronomeFragment;
+import com.example.user.guitarlessons.ui.newslist.NewsFragment;
+import com.example.user.guitarlessons.ui.settings.SettingsActivity;
+import com.example.user.guitarlessons.ui.songslist.SongsListFragment;
+import com.example.user.guitarlessons.ui.tunings.TuningsFragment;
 
 public class MainActivity extends BaseActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
@@ -37,13 +40,15 @@ public class MainActivity extends BaseActivity implements
         context.startActivity(starter);
     }
 
-    BottomNavigationView mBottomNavView;
-    NavigationView mNavView;
-    DrawerLayout mDrawer;
-    ActionBarDrawerToggle mDrawerToggle;
-    int mPreviousItem;
+    private static final int CODE_SETTINGS = 2;
+    private BottomNavigationView mBottomNavView;
+    private NavigationView mNavView;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
     private TextView mUerEmailTextView;
     private View header;
+    private String mPreviousFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +66,10 @@ public class MainActivity extends BaseActivity implements
         mNavView = findViewById(R.id.nav_view);
         mNavView.setNavigationItemSelectedListener(this);
 
-        header=mNavView.getHeaderView(0);
+        header = mNavView.getHeaderView(0);
 
-        mUerEmailTextView=header.findViewById(R.id.user_email_header);
+        mUerEmailTextView = header.findViewById(R.id.user_email_header);
         mUerEmailTextView.setText(UserAuthManager.getInstance().getCurrentUser().getEmail());
-
         onNavigationItemSelected(mBottomNavView.getMenu().findItem(R.id.courses));
 
         setBackButtonStatus(false);
@@ -127,85 +131,76 @@ public class MainActivity extends BaseActivity implements
 
             mNavView.getMenu().findItem(item.getItemId()).setChecked(true);
         }
-
-        putFragment(item);
-        mPreviousItem = item.getItemId();
+        setContent(item);
         return true;
     }
 
-    private void putFragment(MenuItem item) {
-        if (item.getItemId() == mPreviousItem) {
-            return;
+    private void setContent(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivityForResult(i, CODE_SETTINGS);
+                break;
+            default:
+                putFragment(item);
         }
+    }
+
+    private void putFragment(MenuItem item) {
+
         setToolbarTitle(item.getTitle().toString());
+        String tag = "";
+        Fragment fragment = null;
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        for (Fragment fragment : manager.getFragments()) {
-            if (!fragment.isHidden()) {
-                ft.hide(fragment);
+
+        if (!TextUtils.isEmpty(mPreviousFragment)) {
+            Fragment prevFragment = manager.findFragmentByTag(mPreviousFragment);
+            if (prevFragment != null) {
+                ft.hide(prevFragment);
             }
+
         }
         switch (item.getItemId()) {
             case R.id.courses:
-                if (manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(CoursesListFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, CoursesListFragment.newInstance(),
-                            CoursesListFragment.class.getSimpleName());
-                }
+                tag = CoursesListFragment.class.getSimpleName();
+                fragment = CoursesListFragment.newInstance();
                 break;
             case R.id.songs:
-                if (manager.findFragmentByTag(SongsListFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(SongsListFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, SongsListFragment.newInstance(),
-                            SongsListFragment.class.getSimpleName());
-                }
+                tag = SongsListFragment.class.getSimpleName();
+                fragment = SongsListFragment.newInstance();
                 break;
             case R.id.favorite:
-                if (manager.findFragmentByTag(FavoriteFragment.class.getSimpleName()) != null) {
-                    ft.show(getSupportFragmentManager().findFragmentByTag(FavoriteFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, FavoriteFragment.newInstance(),
-                            FavoriteFragment.class.getSimpleName());
-                }
+                tag = FavoriteFragment.class.getSimpleName();
+                fragment = FavoriteFragment.newInstance();
                 break;
             case R.id.metronome:
-                if (manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(MetronomeFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, MetronomeFragment.newInstance(),
-                            MetronomeFragment.class.getSimpleName());
-                }
+                tag = MetronomeFragment.class.getSimpleName();
+                fragment = MetronomeFragment.newInstance();
+                break;
+            case R.id.tunings:
+                tag = TuningsFragment.class.getSimpleName();
+                fragment = TuningsFragment.newInstance();
                 break;
             case R.id.news:
-                if (manager.findFragmentByTag(NewsFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(NewsFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, NewsFragment.newInstance(),
-                            NewsFragment.class.getSimpleName());
-                }
+                tag = NewsFragment.class.getSimpleName();
+                fragment = NewsFragment.newInstance();
                 break;
             case R.id.about:
-                if (manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(AboutAppFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, AboutAppFragment.newInstance(),
-                            AboutAppFragment.class.getSimpleName());
-                }
-                break;
-            case R.id.settings:
-                if (manager.findFragmentByTag(SettingsFragment.class.getSimpleName()) != null) {
-                    ft.show(manager.findFragmentByTag(SettingsFragment.class.getSimpleName()));
-                } else {
-                    ft.add(R.id.content_main, SettingsFragment.newInstance(),
-                            SettingsFragment.class.getSimpleName());
-                }
+                tag = AboutAppFragment.class.getSimpleName();
+                fragment = AboutAppFragment.newInstance();
                 break;
             case R.id.exit:
                 logOut();
                 break;
         }
+        if (!TextUtils.isEmpty(tag) && manager.findFragmentByTag(tag) != null) {
+            ft.show(manager.findFragmentByTag(tag));
+        } else if (fragment != null) {
+            ft.add(R.id.content_main, fragment, tag);
+        }
+        mPreviousFragment = tag;
         ft.commit();
     }
 
@@ -217,5 +212,17 @@ public class MainActivity extends BaseActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CODE_SETTINGS) {
+                if (data.getBooleanExtra(SettingsActivity.LANGUAGE_STATUS, false)) {
+                    start(this);
+                    finish();
+                }
+            }
+        }
     }
 }

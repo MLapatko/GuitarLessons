@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.user.guitarlessons.auth.LogInActivity;
+import com.example.user.guitarlessons.ui.auth.LogInActivity;
 import com.example.user.guitarlessons.managers.UserAuthManager;
 
 /**

@@ -1,7 +1,5 @@
 package com.example.user.guitarlessons.managers;
 
-import android.util.Log;
-
 import com.example.user.guitarlessons.model.Course;
 import com.example.user.guitarlessons.model.Genre;
 import com.example.user.guitarlessons.model.Lesson;
@@ -47,8 +45,8 @@ public class ContentManager {
                 try {
                     courses = ApiManager.getInstance().getCourses();
                 } catch (Exception e) {
-                    emitter.onError(e);
                 }
+
                 Single<List<Course>> courseListSingle = Single.create(new SingleOnSubscribe<List<Course>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Course>> e) throws Exception {
@@ -124,7 +122,6 @@ public class ContentManager {
                 try {
                     genres = ApiManager.getInstance().getGenres();
                 } catch (Exception e) {
-                    emitter.onError(e);
                 }
 
                 Single<List<Genre>> genreListSingle = Single.create(new SingleOnSubscribe<List<Genre>>() {
@@ -192,81 +189,42 @@ public class ContentManager {
                 });
     }
 
-    /* public void getLesson(final String idLesson, final ContentListener<Lesson> listener) {
-         Single<Lesson> lessonSingle = Single.create(new SingleOnSubscribe<Lesson>() {
-             @Override
-             public void subscribe(SingleEmitter<Lesson> e) throws Exception {
-                 Lesson lesson=ApiManager.getInstance().getLessonById(idLesson);
-                 e.onSuccess(lesson);
-             }
-         });
-       lessonSingle=lessonSingle.flatMap(new Function<Lesson, Single<Lesson>>() {
-             @Override
-             public Single<Lesson> apply(final Lesson lesson) throws Exception {
-                 return Single.create(new SingleOnSubscribe<Lesson>() {
-                     @Override
-                     public void subscribe(SingleEmitter<Lesson> e) throws Exception {
-                         LessonDetails details=ApiManager.getInstance().getLessonsDetails(lesson.getObjectId()).get(0);
-                         lesson.setDetails(details);
-                         e.onSuccess(lesson);
-
-                     }
-                 });
-             }
-         });
-       lessonSingle.subscribeOn(Schedulers.io())
-                 .observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableSingleObserver<Lesson>() {
-           @Override
-           public void onSuccess(Lesson lesson) {
-               if (listener!=null){
-                   listener.onSuccess(lesson);
-               }
-           }
-
-           @Override
-           public void onError(Throwable e) {
-                 if (listener!=null){
-                     listener.onError(e);
-                 }
-           }
-       });
-
-     }*/
     public void getFavorite(final ContentListener<List<Object>> listener) {
         final Single<List<Object>> favoriteSingle = Single.create(new SingleOnSubscribe<List<Object>>() {
             @Override
             public void subscribe(final SingleEmitter emitter) throws Exception {
+
                 Single<List<Object>> favoriteListSingle = Single.create(new SingleOnSubscribe<List<Object>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Object>> e) throws Exception {
                         e.onSuccess(new ArrayList<>());
                     }
                 });
+
                 Single<List<Lesson>> lessonSingle = Single.create(new SingleOnSubscribe<List<Lesson>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Lesson>> em) throws Exception {
+                        List<Lesson> favoriteLessons = Collections.emptyList();
                         try {
-                            List<Lesson> favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
-                            em.onSuccess(favoriteLessons);
+                            favoriteLessons = ApiManager.getInstance().getFavoriteLessons();
                         } catch (Exception e) {
-                           emitter.onSuccess(new ArrayList<Lesson>());
                         }
-
-
+                        em.onSuccess(favoriteLessons);
                     }
                 });
+
                 Single<List<Song>> songSingle = Single.create(new SingleOnSubscribe<List<Song>>() {
                     @Override
                     public void subscribe(SingleEmitter<List<Song>> e) throws Exception {
+                        List<Song> favoriteSongs = Collections.emptyList();
                         try {
-                            List<Song> favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
-                            e.onSuccess(favoriteSongs);
+                            favoriteSongs = ApiManager.getInstance().getFavoriteSongs();
                         } catch (Exception ex) {
-                            emitter.onSuccess(new ArrayList<Song>());
                         }
-
+                        e.onSuccess(favoriteSongs);
                     }
                 });
+
                 favoriteListSingle = favoriteListSingle.zipWith(songSingle, new BiFunction<List<Object>, List<Song>, List<Object>>() {
                     @Override
                     public List<Object> apply(List<Object> objects, List<Song> songs) throws Exception {
@@ -274,6 +232,7 @@ public class ContentManager {
                         return objects;
                     }
                 });
+
                 favoriteListSingle = favoriteListSingle.zipWith(lessonSingle, new BiFunction<List<Object>, List<Lesson>, List<Object>>() {
                     @Override
                     public List<Object> apply(List<Object> objects, List<Lesson> lessons) throws Exception {
@@ -281,6 +240,7 @@ public class ContentManager {
                         return objects;
                     }
                 });
+
                 favoriteListSingle.subscribeWith(new DisposableSingleObserver<List<Object>>() {
                     @Override
                     public void onSuccess(List<Object> objects) {
@@ -292,7 +252,7 @@ public class ContentManager {
 
                     @Override
                     public void onError(Throwable e) {
-                            emitter.onError(e);
+                        emitter.onError(e);
                     }
                 });
             }
