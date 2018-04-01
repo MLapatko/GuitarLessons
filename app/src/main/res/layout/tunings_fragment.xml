@@ -19,40 +19,104 @@
             android:layout_marginTop="@dimen/number_picker_margin"
             android:descendantFocusability="blocksDescendants" />
 
-        <TextView
-            android:id="@+id/first_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/second_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/first_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/first_str" />
 
-        <TextView
-            android:id="@+id/third_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/first_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/first_string_text" />
 
-        <TextView
-            android:id="@+id/fourth_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/second_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/first_string_text"
+                android:text="@string/second_str" />
 
-        <TextView
-            android:id="@+id/fifth_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/second_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/first_string"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/first_string_text" />
 
-        <TextView
-            android:id="@+id/sixth_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/third_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/second_string_text"
+                android:text="@string/third_str" />
+
+            <TextView
+                android:id="@+id/third_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/second_string"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/third_string_text" />
+
+            <TextView
+                android:id="@+id/fourth_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/third_string_text"
+                android:text="@string/fourth_str" />
+
+            <TextView
+                android:id="@+id/fourth_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/third_string"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/fourth_string_text" />
+
+            <TextView
+                android:id="@+id/fifth_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fourth_string_text"
+                android:text="@string/fifth_str" />
+
+            <TextView
+                android:id="@+id/fifth_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fourth_string"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/fifth_string_text" />
+
+            <TextView
+                android:id="@+id/sixth_string_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fifth_string_text"
+                android:text="@string/sixth_str" />
+
+            <TextView
+                android:id="@+id/sixth_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fifth_string"
+                android:layout_marginStart="@dimen/str_value_margin"
+                android:layout_toEndOf="@+id/sixth_string_text" />
+        </RelativeLayout>
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_data"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:text="@string/no_data" />
 </ViewSwitcher>

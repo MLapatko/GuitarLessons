@@ -10,7 +10,7 @@
         android:id="@+id/user_email_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:layout_gravity="bottom"
-        android:layout_margin="@dimen/textview_margin"/>
+        android:layout_margin="@dimen/textview_margin"
+        android:textColor="@android:color/white" />
 </LinearLayout>

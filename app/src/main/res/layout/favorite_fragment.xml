@@ -30,7 +30,7 @@
                 <com.example.user.guitarlessons.FilterLayout
                     android:id="@+id/filterLayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="41dp"
+                    android:layout_height="@dimen/filter_layout_height"
                     android:layout_alignBottom="@+id/recyclerView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/layout_margin" />

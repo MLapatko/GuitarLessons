@@ -8,7 +8,7 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/app_bar_layout_height"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -60,9 +60,9 @@
                 android:layout_marginBottom="@dimen/textview_margin"
                 android:layout_marginEnd="@dimen/textview_margin"
                 android:layout_marginStart="@dimen/textview_margin"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/news_title_size"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"/>
+                android:textStyle="bold" />
 
             <WebView
                 android:id="@+id/news_content"

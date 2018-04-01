@@ -30,7 +30,7 @@ import java.util.List;
  * Created by user on 03.03.2018.
  */
 
-public class SongContentActivity extends BaseActivity implements VideoInterface{
+public class SongContentActivity extends BaseActivity implements VideoInterface {
 
     public static void start(Context context, String songId, String genreTitle) {
         Intent starter = new Intent(context, SongContentActivity.class);
@@ -48,7 +48,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
     private Song mSong;
     private WebView mWebView;
     private ProgressBar mProgressBar;
-    private boolean mVideoStatus=false;
+    private boolean mVideoStatus = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
         setToolbarTitle(getIntent().getStringExtra(GENRE_TITLE));
 
         mViewFlipper = findViewById(R.id.viewFlipper);
-        mProgressBar=findViewById(R.id.toolbar_progress_bar);
+        mProgressBar = findViewById(R.id.toolbar_progress_bar);
 
         name = findViewById(R.id.song_name);
         author = findViewById(R.id.author_name);
@@ -112,7 +112,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
             case R.id.add_favorite:
                 if (mSong != null) {
                     item.setEnabled(false);
-                    if (ApiManager.getInstance().isFavorite(songId)!=-1) {
+                    if (ApiManager.getInstance().isFavorite(songId) != -1) {
                         deleteFromUsersLessons(mSong, item);
                     } else {
                         addToUsersLessons(mSong, item);
@@ -127,7 +127,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_favorite);
-        if (ApiManager.getInstance().isFavorite(songId)!=-1) {
+        if (ApiManager.getInstance().isFavorite(songId) != -1) {
             item.setIcon(R.drawable.ic_favorite_white);
         } else {
             item.setIcon(R.drawable.ic_favorite_gray);
@@ -175,6 +175,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
                     }
                 });
     }
+
     public void checkData() {
         if (ApiManager.getInstance().getFavorite().isEmpty()) {
             ContentManager.getInstance().getFavorite(new ContentManager.ContentListener<List<Object>>() {
@@ -190,6 +191,7 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
             });
         }
     }
+
     @Override
     protected int getToolBarId() {
         return R.id.tool_bar;
@@ -202,15 +204,16 @@ public class SongContentActivity extends BaseActivity implements VideoInterface{
 
     @Override
     public void isFullScreen(boolean status) {
-        mVideoStatus=status;
+        mVideoStatus = status;
     }
+
     @Override
     public void onBackPressed() {
-        if (mVideoStatus){
-            YoutubeViewFragment youtubeViewFragment= (YoutubeViewFragment) getSupportFragmentManager()
+        if (mVideoStatus) {
+            YoutubeViewFragment youtubeViewFragment = (YoutubeViewFragment) getSupportFragmentManager()
                     .findFragmentByTag(YoutubeViewFragment.class.getSimpleName());
             youtubeViewFragment.closeVideo();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }

@@ -32,6 +32,7 @@ import java.util.List;
  */
 
 public class LessonContentActivity extends BaseActivity implements VideoInterface {
+
     public static void start(Context context, String idLesson, String courseTitle) {
         Intent starter = new Intent(context, LessonContentActivity.class);
         starter.putExtra(LESSON_ID, idLesson);
@@ -47,7 +48,7 @@ public class LessonContentActivity extends BaseActivity implements VideoInterfac
     private ViewFlipper mViewFlipper;
     private Lesson mLesson;
     private ProgressBar mProgressBar;
-    private boolean mVideoStatus=false;
+    private boolean mVideoStatus = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,11 +133,11 @@ public class LessonContentActivity extends BaseActivity implements VideoInterfac
 
     @Override
     public void onBackPressed() {
-        if (mVideoStatus){
-         YoutubeViewFragment youtubeViewFragment= (YoutubeViewFragment) getSupportFragmentManager()
-                 .findFragmentByTag(YoutubeViewFragment.class.getSimpleName());
-         youtubeViewFragment.closeVideo();
-        }else {
+        if (mVideoStatus) {
+            YoutubeViewFragment youtubeViewFragment = (YoutubeViewFragment) getSupportFragmentManager()
+                    .findFragmentByTag(YoutubeViewFragment.class.getSimpleName());
+            youtubeViewFragment.closeVideo();
+        } else {
             super.onBackPressed();
         }
     }
@@ -203,6 +204,7 @@ public class LessonContentActivity extends BaseActivity implements VideoInterfac
                     }
                 });
     }
+
     public void checkData() {
         if (ApiManager.getInstance().getFavorite().isEmpty()) {
             ContentManager.getInstance().getFavorite(new ContentManager.ContentListener<List<Object>>() {
@@ -231,6 +233,6 @@ public class LessonContentActivity extends BaseActivity implements VideoInterfac
 
     @Override
     public void isFullScreen(boolean status) {
-        mVideoStatus=status;
+        mVideoStatus = status;
     }
 }

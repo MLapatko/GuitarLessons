@@ -12,18 +12,18 @@ import com.example.user.guitarlessons.managers.UserAuthManager;
  */
 
 public class SplashActivity extends AppCompatActivity {
-    final String TAG="myLog";
-    private boolean login=false;
+
+    private boolean login = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
 
-        login= UserAuthManager.getInstance().checkUserLogIn();
+        login = UserAuthManager.getInstance().checkUserLogIn();
         if (login) {
             MainActivity.start(this);
-        }
-        else {
+        } else {
             LogInActivity.start(this);
         }
 

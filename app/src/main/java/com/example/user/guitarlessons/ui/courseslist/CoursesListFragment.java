@@ -106,14 +106,6 @@ public class CoursesListFragment extends BaseFragment implements SwipeRefreshLay
         loadCourses();
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            stopLoading();
-        }
-    }
-
     private void stopLoading() {
         ContentManager.getInstance().stopProcess();
         mSwipeRefreshLayout.setRefreshing(false);

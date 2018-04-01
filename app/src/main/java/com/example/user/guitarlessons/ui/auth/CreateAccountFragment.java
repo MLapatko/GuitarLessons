@@ -36,12 +36,11 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
     public static final String EMAIL_ERROR = "email";
     public static final String CONF_PASSWORD = "conf password";
 
-    EditText mEmail;
-    EditText mPassword;
-    EditText mConfPassword;
-    Button mConfirmButton;
-    final static String TAG = "mylog";
-    ViewSwitcher mViewSwitcher;
+    private EditText mEmail;
+    private EditText mPassword;
+    private EditText mConfPassword;
+    private Button mConfirmButton;
+    private ViewSwitcher mViewSwitcher;
 
     TextInputLayout mEmailInputLayout;
     TextInputLayout mPasswordInputLayout;
@@ -54,7 +53,7 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
         mEmail = view.findViewById(R.id.user_email);
         mEmail.requestFocus();
         mPassword = view.findViewById(R.id.user_password);
-        mConfPassword=view.findViewById(R.id.confirm_password);
+        mConfPassword = view.findViewById(R.id.confirm_password);
         mConfirmButton = view.findViewById(R.id.ok_button);
         mConfirmButton.setOnClickListener(this);
 
@@ -63,7 +62,7 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
 
         mEmailInputLayout = view.findViewById(R.id.user_email_input);
         mPasswordInputLayout = view.findViewById(R.id.user_password_input);
-        mConfPasswordLayout=view.findViewById(R.id.confirm_password_input);
+        mConfPasswordLayout = view.findViewById(R.id.confirm_password_input);
 
         mEmail.addTextChangedListener(this);
         mPassword.addTextChangedListener(this);
@@ -76,9 +75,9 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
         switch (view.getId()) {
             case R.id.ok_button:
                 if (!AuthValidation.checkEmail(mEmail.getText())) {
-                    focusError(getActivity().getString(R.string.error_3040),EMAIL_ERROR);
+                    focusError(getActivity().getString(R.string.error_3040), EMAIL_ERROR);
                 } else if (!AuthValidation.checkPasswordLength(mPassword.getText())) {
-                    focusError(getActivity().getString(R.string.short_password),PASSWORD_ERROR);
+                    focusError(getActivity().getString(R.string.short_password), PASSWORD_ERROR);
                 } else if (!AuthValidation.comperePassword(mPassword.getText(), mConfPassword.getText())) {
                     focusError(getActivity().getString(R.string.different_passwords),
                             CONF_PASSWORD);
@@ -102,12 +101,12 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
                     @Override
                     public void onError(String massage, String errorType) {
                         mViewSwitcher.setDisplayedChild(1);
-                        focusError(massage,errorType);
+                        focusError(massage, errorType);
                     }
                 });
     }
 
-    private void focusError(String massage,String errorType) {
+    private void focusError(String massage, String errorType) {
         switch (errorType) {
             case EMAIL_ERROR:
                 mEmailInputLayout.setError(massage);
@@ -120,7 +119,8 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
             case CONF_PASSWORD:
                 mConfPasswordLayout.setError(massage);
                 mConfPassword.requestFocus();
-            default: Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
+            default:
+                Toast.makeText(getActivity(), massage, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -140,19 +140,16 @@ public class CreateAccountFragment extends BaseFragment implements View.OnClickL
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (mEmail.isFocused()){
+        if (mEmail.isFocused()) {
             mEmailInputLayout.setError(null);
-        }
-        else if(mPassword.isFocused()){
+        } else if (mPassword.isFocused()) {
             mPasswordInputLayout.setError(null);
-        }
-        else if (mConfPassword.isFocused()){
+        } else if (mConfPassword.isFocused()) {
             mConfPasswordLayout.setError(null);
         }
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
-
     }
 }

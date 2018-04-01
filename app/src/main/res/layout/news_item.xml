@@ -20,18 +20,18 @@
 
         <TextView
             android:id="@+id/news_date"
-            android:layout_margin="@dimen/textview_margin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/textview_margin" />
 
         <TextView
             android:id="@+id/news_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/textview_margin"
-            android:layout_marginEnd="@dimen/textview_margin"
             android:layout_marginBottom="@dimen/textview_margin"
+            android:layout_marginEnd="@dimen/textview_margin"
+            android:layout_marginStart="@dimen/textview_margin"
             android:textSize="@dimen/news_title_size"
             android:textStyle="bold" />
     </LinearLayout>

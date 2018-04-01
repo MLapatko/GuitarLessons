@@ -55,7 +55,7 @@ class GenresAdapter extends ExpandableRecyclerViewAdapter<GenresAdapter.GenreVie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SongContentActivity.start(view.getContext(),song.getObjectId(),group.getTitle());
+                SongContentActivity.start(view.getContext(), song.getObjectId(), group.getTitle());
             }
         });
     }
