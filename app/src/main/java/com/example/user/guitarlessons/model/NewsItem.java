@@ -17,21 +17,21 @@ public class NewsItem extends RssItem {
 
     @Override
     public int hashCode() {
-        int prime=31;
-        return prime+getTitle().hashCode()+getPublishDate().hashCode();
+        int prime = 31;
+        return prime + getTitle().hashCode() + getPublishDate().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null){
+        if (obj == null) {
             return false;
         }
-        if (obj==this){
+        if (obj == this) {
             return true;
         }
-        if (obj instanceof NewsItem){
-            if (TextUtils.equals(((NewsItem) obj).getTitle(),this.getTitle()) &&
-                    TextUtils.equals(((NewsItem) obj).getPublishDate(),this.getPublishDate())){
+        if (obj instanceof NewsItem) {
+            if (TextUtils.equals(((NewsItem) obj).getTitle(), this.getTitle()) &&
+                    TextUtils.equals(((NewsItem) obj).getPublishDate(), this.getPublishDate())) {
                 return true;
             }
         }
@@ -39,12 +39,12 @@ public class NewsItem extends RssItem {
     }
 
     public NewsItem(RssItem item) {
-        if (item!=null){
-            this.description =item.getDescription();
-            this.image =item.getImage();
-            this.link =item.getLink();
-            this.publishDate =item.getPublishDate();
-            this.title =item.getTitle();
+        if (item != null) {
+            this.description = item.getDescription();
+            this.image = item.getImage();
+            this.link = item.getLink();
+            this.publishDate = item.getPublishDate();
+            this.title = item.getTitle();
         }
     }
 
@@ -68,14 +68,4 @@ public class NewsItem extends RssItem {
         return description;
     }
 
-    @Override
-    public String toString() {
-        return "NewsItem{" +
-                "title='" + title + '\'' +
-                ", link='" + link + '\'' +
-                ", image='" + image + '\'' +
-                ", publishDate='" + publishDate + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

@@ -56,15 +56,15 @@ public class MetronomeFragment extends BaseFragment implements SeekBar.OnSeekBar
         mPlayButton.setImageResource(R.drawable.ic_music_player_play);
         mPlayButton.setOnClickListener(this);
 
-        mPlusButton=view.findViewById(R.id.plus_button);
+        mPlusButton = view.findViewById(R.id.plus_button);
         mPlusButton.setOnClickListener(this);
 
-        mMinusButton=view.findViewById(R.id.minus_button);
+        mMinusButton = view.findViewById(R.id.minus_button);
         mMinusButton.setOnClickListener(this);
 
         mBpmTextView = view.findViewById(R.id.bpm);
 
-        mBeatSpinner=view.findViewById(R.id.spinner);
+        mBeatSpinner = view.findViewById(R.id.spinner);
 
         mMetronome = new Metronome();
         mMetronome.setBpm(mCurrentProgress);
@@ -85,14 +85,12 @@ public class MetronomeFragment extends BaseFragment implements SeekBar.OnSeekBar
         });
 
 
-
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         mCurrentProgress = i + SEEKBAR_MIN;
         updateBpmTextView();
-        //pause = (60000 - 16.8 * mCurrentProgress) / mCurrentProgress;
         mMetronome.setBpm(mCurrentProgress);
     }
 
@@ -127,23 +125,24 @@ public class MetronomeFragment extends BaseFragment implements SeekBar.OnSeekBar
                 } else {
                     isPlaying = true;
                     mPlayButton.setImageResource(R.drawable.ic_pause_button);
-                   mMetronome.play();
+                    mMetronome.play();
                 }
                 break;
             case R.id.plus_button:
-                mCurrentProgress+=1;
-                mSeekBar.setProgress(mCurrentProgress-SEEKBAR_MIN);
+                mCurrentProgress += 1;
+                mSeekBar.setProgress(mCurrentProgress - SEEKBAR_MIN);
                 updateBpmTextView();
                 break;
             case R.id.minus_button:
-                mCurrentProgress-=1;
-                mSeekBar.setProgress(mCurrentProgress-SEEKBAR_MIN);
+                mCurrentProgress -= 1;
+                mSeekBar.setProgress(mCurrentProgress - SEEKBAR_MIN);
                 updateBpmTextView();
                 break;
         }
         mPlayButton.setEnabled(true);
     }
-    private void updateBpmTextView(){
+
+    private void updateBpmTextView() {
         mBpmTextView.setText(String.valueOf(mCurrentProgress));
     }
 

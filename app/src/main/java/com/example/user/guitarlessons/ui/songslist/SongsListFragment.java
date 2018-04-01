@@ -7,12 +7,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.RadioGroup;
 import android.widget.ViewSwitcher;
 
-import com.example.user.guitarlessons.base.BaseFragment;
 import com.example.user.guitarlessons.FilterLayout;
 import com.example.user.guitarlessons.R;
+import com.example.user.guitarlessons.base.BaseFragment;
 import com.example.user.guitarlessons.managers.ApiManager;
 import com.example.user.guitarlessons.managers.ContentManager;
 import com.example.user.guitarlessons.model.Genre;
@@ -24,7 +23,7 @@ import java.util.List;
  * Created by user on 21.02.2018.
  */
 
-public class SongsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
+public class SongsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
     public static SongsListFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -126,34 +125,6 @@ public class SongsListFragment extends BaseFragment implements SwipeRefreshLayou
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
         loadGenres();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (swipeRefreshLayout.isRefreshing()){
-            stopLoading();
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        List<Genre> genres = new ArrayList<>();
-        switch (i) {
-            case R.id.radio_all:
-                genres = ApiManager.getInstance().getGenresList();
-                break;
-            case R.id.radio_chords:
-                genres = ApiManager.getInstance().getChordsSongs();
-                break;
-            case R.id.radio_tabs:
-                genres = ApiManager.getInstance().getTabsSongs();
-                break;
-        }
-        if (!genres.isEmpty()) {
-            mGenresAdapter = new GenresAdapter(genres);
-            mRecyclerView.setAdapter(mGenresAdapter);
-        }
     }
 
     private void stopLoading() {

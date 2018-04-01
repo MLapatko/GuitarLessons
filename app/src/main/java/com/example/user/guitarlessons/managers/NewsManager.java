@@ -52,37 +52,40 @@ public class NewsManager {
             this.newsSet.addAll(news);
         }
     }
-    public NewsItem findNewsSet(int id){
-        Iterator<NewsItem> iterator=this.newsSet.iterator();
-        while (iterator.hasNext()){
-            NewsItem item=iterator.next();
-            if (item.hashCode()==id){
+
+    public NewsItem findNewsSet(int id) {
+        Iterator<NewsItem> iterator = this.newsSet.iterator();
+        while (iterator.hasNext()) {
+            NewsItem item = iterator.next();
+            if (item.hashCode() == id) {
                 return item;
             }
         }
         return null;
     }
-    public static String newsContentHelper(String content,String imageUrl, String newsTitle){
-        Document document= Jsoup.parse(content);
-        Elements imgElements=document.select("[src]");
-        Elements imageTitle=document.select("[src*="+imageUrl+"]");
+
+    public static String newsContentHelper(String content, String imageUrl, String newsTitle) {
+        Document document = Jsoup.parse(content);
+        Elements imgElements = document.select("[src]");
+        Elements imageTitle = document.select("[src*=" + imageUrl + "]");
         imageTitle.remove();
-        Elements title=document.select("figcaption:containsOwn("+newsTitle+")");
+        Elements title = document.select("figcaption:containsOwn(" + newsTitle + ")");
         title.remove();
-        Elements elSiteLink=document.select("[href=http://celebrity.moscow]");
-        for (Element el:elSiteLink) {
+        Elements elSiteLink = document.select("[href=http://celebrity.moscow]");
+        for (Element el : elSiteLink) {
             el.parent().remove();
         }
-        for (Element element: imgElements) {
-            element.attr("height","auto");
-            element.attr("width","100%");
+        for (Element element : imgElements) {
+            element.attr("height", "auto");
+            element.attr("width", "100%");
         }
         return String.valueOf(document);
     }
-    public static String formatDate(String currentDate)throws ParseException {
-        SimpleDateFormat dateFormat=new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
-        Date date=dateFormat.parse(currentDate);
-        SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy");
+
+    public static String formatDate(String currentDate) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+        Date date = dateFormat.parse(currentDate);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         return format.format(date);
     }
 
@@ -90,9 +93,9 @@ public class NewsManager {
         return newsSet;
     }
 
-    public void getNews(String url, final NewsListener listener) {
+    public void getNews(String url, String baseUrl, final NewsListener listener) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://celebrity.moscow")
+                .baseUrl(baseUrl)
                 .addConverterFactory(RssConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();

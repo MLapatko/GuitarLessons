@@ -14,10 +14,18 @@
     <dimen name="news_title_size">18sp</dimen>
     <dimen name="lesson_title_size">16sp</dimen>
     <dimen name="song_author_text_size">14sp</dimen>
-    <dimen name="lesson_title_margin">15dp</dimen>
+    <dimen name="lesson_title_margin">17dp</dimen>
     <dimen name="bpm_text_size">35sp</dimen>
     <dimen name="metronome_margin_top">40dp</dimen>
     <dimen name="metronome_spinner_width">90dp</dimen>
     <dimen name="spinner_title_margin">4dp</dimen>
     <dimen name="number_picker_margin">40dp</dimen>
+    <dimen name="cardview_coner_rad">3dp</dimen>
+    <dimen name="filter_layout_height">41dp</dimen>
+    <dimen name="create_acc_margin">5dp</dimen>
+    <dimen name="app_bar_layout_height">250dp</dimen>
+    <dimen name="progress_bar_in_tool_bar_size">24dp</dimen>
+    <dimen name="youtubeplayerview_height">240dp</dimen>
+    <dimen name="str_value_margin">5dp</dimen>
+    <dimen name="metronome_title_margin_start">11dp</dimen>
 </resources>

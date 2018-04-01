@@ -7,19 +7,22 @@ import android.text.TextUtils;
  */
 
 public class AuthValidation {
-    public static boolean checkEmail(CharSequence charSequence){
-        if (charSequence==null){
+
+    public static boolean checkEmail(CharSequence charSequence) {
+        if (charSequence == null) {
             return false;
         }
-       return android.util.Patterns.EMAIL_ADDRESS.matcher(charSequence).matches();
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(charSequence).matches();
     }
-    public static boolean checkPasswordLength(CharSequence charSequence){
-        if (charSequence==null ||charSequence.length()<7){
+
+    public static boolean checkPasswordLength(CharSequence charSequence) {
+        if (charSequence == null || charSequence.length() < 7) {
             return false;
         }
         return true;
     }
-    public static boolean comperePassword(CharSequence password, CharSequence confPassword ){
-        return TextUtils.equals(password,confPassword);
+
+    public static boolean comperePassword(CharSequence password, CharSequence confPassword) {
+        return TextUtils.equals(password, confPassword);
     }
 }

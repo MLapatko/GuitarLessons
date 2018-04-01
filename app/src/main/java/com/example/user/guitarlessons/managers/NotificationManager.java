@@ -13,22 +13,23 @@ public class NotificationManager {
 
     private static NotificationManager instance;
 
-     public static NotificationManager getInstance() {
+    public static NotificationManager getInstance() {
 
-        if (instance==null){
-            instance=new NotificationManager();
+        if (instance == null) {
+            instance = new NotificationManager();
         }
         return instance;
     }
-    private static String SENDER_ID="964645203843";
+
+    private static String SENDER_ID = "964645203843";
 
     public void getDeviceRegistration(final NotificationListener listener) {
         Backendless.Messaging.getDeviceRegistration(new AsyncCallback<DeviceRegistration>() {
             @Override
             public void handleResponse(DeviceRegistration response) {
-               if (listener!=null){
-                   listener.onSuccess();
-               }
+                if (listener != null) {
+                    listener.onSuccess();
+                }
             }
 
             @Override
@@ -37,25 +38,28 @@ public class NotificationManager {
             }
         });
     }
-    private void registerDevice(final NotificationListener listener){
+
+    private void registerDevice(final NotificationListener listener) {
         Backendless.Messaging.registerDevice(SENDER_ID, new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
-                if (listener!=null){
+                if (listener != null) {
                     listener.onSuccess();
                 }
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                if (listener!=null){
+                if (listener != null) {
                     listener.onError(fault);
                 }
             }
         });
     }
-    public interface NotificationListener{
+
+    public interface NotificationListener {
         void onSuccess();
+
         void onError(BackendlessFault fault);
     }
 }

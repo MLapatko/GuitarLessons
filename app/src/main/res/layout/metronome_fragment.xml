@@ -9,9 +9,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/metronome_margin_top"
         android:layout_weight="1"
         android:gravity="center"
-        android:layout_marginTop="@dimen/metronome_margin_top"
         android:orientation="horizontal">
 
         <ImageButton
@@ -55,8 +55,9 @@
             android:id="@+id/beat_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/shares_in_tact"
-            android:layout_marginBottom="@dimen/spinner_title_margin"/>
+            android:layout_marginBottom="@dimen/spinner_title_margin"
+            android:layout_marginStart="@dimen/metronome_title_margin_start"
+            android:text="@string/shares_in_tact" />
 
         <Spinner
             android:id="@+id/spinner"

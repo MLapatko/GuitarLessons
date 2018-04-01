@@ -21,6 +21,7 @@ import com.example.user.guitarlessons.ui.songcontent.SongContentActivity;
  */
 
 public class FavoritesAdapter extends BaseRecyclerViewAdapter {
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -41,22 +42,20 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
         super.onBindViewHolder(holder, position);
         switch (getItemViewType(position)) {
             case ModelType.LESSON_TYPE:
-                holder = (LessonsViewHolder) holder;
                 ((LessonsViewHolder) holder).onBind((Lesson) mList.get(position));
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        LessonContentActivity.start(view.getContext(),((Lesson) mList.get(position)).getObjectId(),"");
+                        LessonContentActivity.start(view.getContext(), ((Lesson) mList.get(position)).getObjectId(), "");
                     }
                 });
                 break;
             case ModelType.SONG_TYPE:
-                holder = (SongsViewHolder) holder;
                 ((SongsViewHolder) holder).onBind((Song) mList.get(position));
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        SongContentActivity.start(view.getContext(),((Song) mList.get(position)).getObjectId(),"");
+                        SongContentActivity.start(view.getContext(), ((Song) mList.get(position)).getObjectId(), "");
                     }
                 });
                 break;
@@ -111,7 +110,7 @@ public class FavoritesAdapter extends BaseRecyclerViewAdapter {
 
         public void onBind(Lesson lesson) {
             lessonTitle.setText(lesson.getTitle());
-           if (TextUtils.isEmpty(lesson.getVideoUrl())) {
+            if (TextUtils.isEmpty(lesson.getVideoUrl())) {
                 contentType.setImageResource(R.drawable.ic_file);
             } else {
                 contentType.setImageResource(R.drawable.ic_youtube_play_button);

@@ -22,6 +22,7 @@ import java.util.List;
  */
 
 public class NewsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+
     public static NewsFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -30,10 +31,14 @@ public class NewsFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         fragment.setArguments(args);
         return fragment;
     }
-    RecyclerView mRecyclerView;
-    NewsAdapter mAdapter;
+
+    public static final String BASE_URL = "http://celebrity.moscow";
+    private static final String PATH = "/feed/";
+    private RecyclerView mRecyclerView;
+    private NewsAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ViewSwitcher mViewSwitcher;
+
     @Override
     protected int getFragmentLayoutId() {
         return R.layout.news_fragment;
@@ -42,23 +47,23 @@ public class NewsFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView=view.findViewById(R.id.news_recyclerView);
+        mRecyclerView = view.findViewById(R.id.news_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter=new NewsAdapter();
+        mAdapter = new NewsAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        mSwipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mViewSwitcher=view.findViewById(R.id.view_switcher);
+        mViewSwitcher = view.findViewById(R.id.view_switcher);
         mViewSwitcher.setDisplayedChild(1);
         onRefresh();
     }
 
     public void getNews() {
-        NewsManager.getInstance().getNews("/feed/", new NewsManager.NewsListener() {
+        NewsManager.getInstance().getNews(PATH, BASE_URL, new NewsManager.NewsListener() {
             @Override
             public void onSuccess(List<NewsItem> item) {
-                if (item.size()>0) {
+                if (item.size() > 0) {
                     mAdapter.setList(item);
                     mAdapter.notifyDataSetChanged();
                 }
@@ -68,7 +73,7 @@ public class NewsFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onError(Throwable e) {
-                Log.d("mylog",e.toString());
+                Log.d("mylog", e.toString());
                 mSwipeRefreshLayout.setRefreshing(false);
                 mViewSwitcher.setDisplayedChild(0);
             }

@@ -40,7 +40,9 @@
                     android:id="@+id/lesson_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/lesson_title_margin"
+                    android:layout_marginStart="@dimen/lesson_title_margin"
+                    android:layout_marginTop="@dimen/lesson_title_margin"
+                    android:layout_marginBottom="0dp"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/lesson_title_size"
                     android:textStyle="bold" />

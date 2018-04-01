@@ -25,7 +25,7 @@ public abstract class BaseRecyclerViewAdapter<T extends ModelType, VH extends Re
     }
 
     public void addList(List<T> list) {
-        if (mList!=null) {
+        if (mList != null) {
             mList.addAll(list);
             notifyDataSetChanged();
         }

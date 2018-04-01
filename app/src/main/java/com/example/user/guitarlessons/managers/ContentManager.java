@@ -90,7 +90,7 @@ public class ContentManager {
             }
         });
 
-        stopProcess();
+       // stopProcess();
         mDisposable = courseSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -167,7 +167,7 @@ public class ContentManager {
             }
         });
 
-        stopProcess();
+        //stopProcess();
         mDisposable = genreSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -257,7 +257,7 @@ public class ContentManager {
                 });
             }
         });
-        stopProcess();
+        //stopProcess();
         favoriteSingle.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<List<Object>>() {

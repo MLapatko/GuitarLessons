@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/layout_margin"
@@ -31,9 +30,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="16dp" />
+                    android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -48,9 +45,7 @@
                     android:ems="10"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:maxLength="15"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="47dp" />
+                    android:maxLength="15" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -86,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="@dimen/create_acc_margin"
                     android:clickable="true"
                     android:text="@string/create_account" />
             </LinearLayout>

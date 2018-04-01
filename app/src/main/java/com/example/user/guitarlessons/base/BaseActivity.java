@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    public Toolbar mToolbar;
+    protected Toolbar mToolbar;
 
     protected abstract int getToolBarId();
 
@@ -28,8 +28,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void initToolBar() {
-            mToolbar = findViewById(getToolBarId());
-        if (mToolbar!=null) {
+        mToolbar = findViewById(getToolBarId());
+        if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
     }
@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-               finish();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -48,13 +48,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected void setBackButtonStatus(boolean status) {
-        if (getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(status);
             getSupportActionBar().setDisplayShowHomeEnabled(status);
         }
     }
-    protected void setToolbarTitle(String title){
-        if (mToolbar!=null) {
+
+    protected void setToolbarTitle(String title) {
+        if (mToolbar != null) {
             mToolbar.setTitle(title);
         }
     }

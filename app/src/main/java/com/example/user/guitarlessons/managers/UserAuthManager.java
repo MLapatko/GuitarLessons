@@ -42,6 +42,7 @@ public class UserAuthManager {
     public static final String EMAIL_ERROR = "email";
     public static final String CUR_USER = "user";
     public static final String PREFERENCES = "preferences";
+    public static final String PROPERTY_EMAIL = "email";
 
 
     private void saveUser(BackendlessUser user) {
@@ -97,7 +98,7 @@ public class UserAuthManager {
     public void registrateUser(final String userEmail, final String userPassword,
                                final AuthListener listener) {
         BackendlessUser user = new BackendlessUser();
-        user.setProperty("email", userEmail);
+        user.setProperty(PROPERTY_EMAIL, userEmail);
         user.setPassword(userPassword);
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
             @Override

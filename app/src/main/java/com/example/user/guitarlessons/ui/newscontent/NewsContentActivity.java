@@ -53,8 +53,8 @@ public class NewsContentActivity extends BaseActivity {
         mNews = NewsManager.getInstance().findNewsSet(getIntent().getIntExtra(ID_NEWS, 0));
         mNewsImage = findViewById(R.id.news_image);
         mWebView = findViewById(R.id.news_content);
-        mDateTextView=findViewById(R.id.news_date);
-        mTitleTextView=findViewById(R.id.news_title);
+        mDateTextView = findViewById(R.id.news_date);
+        mTitleTextView = findViewById(R.id.news_title);
 
         setBackButtonStatus(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -68,7 +68,7 @@ public class NewsContentActivity extends BaseActivity {
                 .into(mNewsImage);
 
         mWebView.loadData(String.valueOf(NewsManager.newsContentHelper(mNews.getDescription(),
-                mNews.getImage(),mNews.getTitle())), "text/html", "utf-8");
+                mNews.getImage(), mNews.getTitle())), "text/html", "utf-8");
         try {
             mDateTextView.setText(NewsManager.formatDate(mNews.getPublishDate()));
         } catch (ParseException e) {
@@ -79,17 +79,17 @@ public class NewsContentActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.news_menu,menu);
+        getMenuInflater().inflate(R.menu.news_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.share:
-                Intent i=new Intent(Intent.ACTION_SEND);
+                Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_SUBJECT,mNews.getTitle());
+                i.putExtra(Intent.EXTRA_SUBJECT, mNews.getTitle());
                 i.putExtra(Intent.EXTRA_TEXT, mNews.getLink());
                 startActivity(i);
                 break;
