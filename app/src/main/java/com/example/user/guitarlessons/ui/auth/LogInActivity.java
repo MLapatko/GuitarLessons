@@ -49,7 +49,7 @@ public class LogInActivity extends BaseActivity implements FragmentsInterface {
     public void putFragments(int type) {
         mCurrentType = type;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_out_left, R.anim.slide_in_right,
+        ft.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,
                 android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
         switch (type) {
