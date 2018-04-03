@@ -61,6 +61,9 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:screenOrientation="portrait" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b4efa69194204674abdd2d157091fd2c62ddb050" />
     </application>
 
 </manifest>
