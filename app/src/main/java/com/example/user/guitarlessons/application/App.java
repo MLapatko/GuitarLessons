@@ -6,10 +6,13 @@ import android.util.Log;
 
 import com.backendless.Backendless;
 import com.backendless.exceptions.BackendlessFault;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.example.user.guitarlessons.managers.Defaults;
 import com.example.user.guitarlessons.managers.NotificationManager;
 import com.example.user.guitarlessons.ui.settings.SettingsHelper;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.Locale;
 
 /**
@@ -29,6 +32,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
         instance = this;
         Backendless.setUrl(Defaults.SERVER_URL);
         Backendless.initApp(App.getInstance(), Defaults.APPLICATION_ID, Defaults.API_KEY);
