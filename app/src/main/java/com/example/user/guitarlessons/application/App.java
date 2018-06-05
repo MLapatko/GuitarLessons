@@ -11,9 +11,9 @@ import com.example.user.guitarlessons.managers.Defaults;
 import com.example.user.guitarlessons.managers.NotificationManager;
 import com.example.user.guitarlessons.ui.settings.SettingsHelper;
 
-import io.fabric.sdk.android.Fabric;
-
 import java.util.Locale;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by User on 12.02.2018.
@@ -35,7 +35,7 @@ public class App extends Application {
         Fabric.with(this, new Crashlytics());
 
         Backendless.setUrl(Defaults.SERVER_URL);
-        Backendless.initApp(App.getInstance(), Defaults.APPLICATION_ID, Defaults.API_KEY);
+        Backendless.initApp(this, Defaults.APPLICATION_ID, Defaults.API_KEY);
 
         getDiviceRegistration();
 

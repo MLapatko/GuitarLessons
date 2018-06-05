@@ -3,6 +3,7 @@ package com.example.user.guitarlessons.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -39,12 +40,16 @@ public class UserAuthManager {
     public static final String ERROR_EMAIL_EXISTS = "3033";
     public static final String ERROR_EMAIL_OR_PASSWORD = "3003";
     public static final String ERROR_FIND_USER = "3020";
+    public static final String ERROR_NO_INTERNET="no internet";
     public static final String EMAIL_ERROR = "email";
     public static final String CUR_USER = "user";
     public static final String PREFERENCES = "preferences";
     public static final String PROPERTY_EMAIL = "email";
 
-
+    private boolean isInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) App.getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
     private void saveUser(BackendlessUser user) {
         SharedPreferences sharedPreferences = App.getInstance().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
@@ -62,37 +67,45 @@ public class UserAuthManager {
     }
 
     public void restorePassword(String userEmail, final AuthListener<Void> listener) {
-        Backendless.UserService.restorePassword(userEmail, new AsyncCallback<Void>() {
-            @Override
-            public void handleResponse(Void response) {
-                if (listener != null) {
-                    listener.onSuccess(response);
+        if (isInternet()) {
+            Backendless.UserService.restorePassword(userEmail, new AsyncCallback<Void>() {
+                @Override
+                public void handleResponse(Void response) {
+                    if (listener != null) {
+                        listener.onSuccess(response);
+                    }
                 }
-            }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                returnError(fault.getCode(), listener);
-            }
-        });
+                @Override
+                public void handleFault(BackendlessFault fault) {
+                    returnError(fault.getCode(), listener);
+                }
+            });
+        }else if (listener!=null){
+            returnError(ERROR_NO_INTERNET,listener);
+        }
 
     }
 
     public void logIn(final String userEmail, String userPassword, final AuthListener listener) {
-        Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser user) {
-                if (listener != null) {
-                    saveUser(user);
-                    listener.onSuccess(user);
+        if (isInternet()) {
+            Backendless.UserService.login(userEmail, userPassword, new AsyncCallback<BackendlessUser>() {
+                @Override
+                public void handleResponse(BackendlessUser user) {
+                    if (listener != null) {
+                        saveUser(user);
+                        listener.onSuccess(user);
+                    }
                 }
-            }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                returnError(fault.getCode(), listener);
-            }
-        }, true);
+                @Override
+                public void handleFault(BackendlessFault fault) {
+                    returnError(fault.getCode(), listener);
+                }
+            }, true);
+        }else if (listener!=null){
+            returnError(ERROR_NO_INTERNET,listener);
+        }
     }
 
     public void registrateUser(final String userEmail, final String userPassword,
@@ -100,6 +113,7 @@ public class UserAuthManager {
         BackendlessUser user = new BackendlessUser();
         user.setProperty(PROPERTY_EMAIL, userEmail);
         user.setPassword(userPassword);
+        if (isInternet()){
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser response) {
@@ -111,6 +125,9 @@ public class UserAuthManager {
                 returnError(fault.getCode(), listener);
             }
         });
+        }else if (listener!=null){
+            returnError(ERROR_NO_INTERNET,listener);
+        }
 
     }
 
@@ -127,42 +144,50 @@ public class UserAuthManager {
                                                final AuthListener listener) {
 
         if (idToken != null && accessToken != null)
-            Backendless.UserService.loginWithGooglePlusSdk(idToken,
-                    accessToken,
-                    googlePlusFieldsMapping,
-                    permissions,
-                    new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser backendlessUser) {
-                            if (listener != null) {
-                                saveUser(backendlessUser);
-                                listener.onSuccess(backendlessUser);
+            if (isInternet()) {
+                Backendless.UserService.loginWithGooglePlusSdk(idToken,
+                        accessToken,
+                        googlePlusFieldsMapping,
+                        permissions,
+                        new AsyncCallback<BackendlessUser>() {
+                            @Override
+                            public void handleResponse(BackendlessUser backendlessUser) {
+                                if (listener != null) {
+                                    saveUser(backendlessUser);
+                                    listener.onSuccess(backendlessUser);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-                            returnError(backendlessFault.getCode(), listener);
-                        }
-                    }, true);
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                returnError(backendlessFault.getCode(), listener);
+                            }
+                        }, true);
+            }else if (listener!=null){
+                returnError(ERROR_NO_INTERNET,listener);
+            }
     }
 
     public void logOut(final AuthListener listener) {
-        Backendless.UserService.logout(new AsyncCallback<Void>() {
-            @Override
-            public void handleResponse(Void response) {
-                if (listener != null) {
-                    saveUser(null);
-                    ApiManager.getInstance().clearData();
-                    listener.onSuccess(response);
+        if (isInternet()) {
+            Backendless.UserService.logout(new AsyncCallback<Void>() {
+                @Override
+                public void handleResponse(Void response) {
+                    if (listener != null) {
+                        saveUser(null);
+                        ApiManager.getInstance().clearData();
+                        listener.onSuccess(response);
+                    }
                 }
-            }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                returnError(fault.getCode(), listener);
-            }
-        });
+                @Override
+                public void handleFault(BackendlessFault fault) {
+                    returnError(fault.getCode(), listener);
+                }
+            });
+        }else if (listener!=null){
+            returnError(ERROR_NO_INTERNET,listener);
+        }
     }
 
     private void returnError(String errorCode, AuthListener listener) {
@@ -188,6 +213,9 @@ public class UserAuthManager {
                 case ERROR_FIND_USER:
                     massage = myApp.getString(R.string.error_3020);
                     errorType = EMAIL_ERROR;
+                    break;
+                case ERROR_NO_INTERNET:
+                    massage = myApp.getString(R.string.no_internet);
                     break;
 
             }
